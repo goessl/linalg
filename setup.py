@@ -6,7 +6,7 @@ long_description = (this_directory / 'README.md').read_text()
 
 setup(
     name = 'linalg',
-    version = '0.8',
+    version = '0.8.1',
     description = 'A linear algebra package for generic datatypes.',
     long_description = long_description,
     long_description_content_type = 'text/markdown',

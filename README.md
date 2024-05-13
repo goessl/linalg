@@ -26,6 +26,10 @@ This package provides the following functions:
   - `swap_rows(A, i, j)`, `swap_columns(A, i, j)`, `swap_pivot(A, p, i, j)
 - `row_echelon(M, reduced=True, criterion=bool)`: Transformation into (reduced) row echelon form.
   - `is_row_echelon(A, reduced=True, comparison=eq)`
+- `rank_decomposition(A, criterion=bool)`
+  - `rands(M, N, s)`: Random matrix with given shape and singular values.
+  - `randr(M, N, r)`: Random matrix of rank.
+- `pseudo_inverse(A, criterion=bool)`
 
 ## Conventions
 
@@ -36,6 +40,8 @@ This package provides the following functions:
 
 - [ ] progress visualisation
 - [ ] readme
+- [ ] minimum dimensions (do functions work for 0x0-matricies?)
+- [ ] `rank_decomposition` & `pseudo_inverse` tests with `Fraction`s
 
 ## License (MIT)
 

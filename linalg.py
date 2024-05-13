@@ -164,3 +164,86 @@ if __name__ == '__main__':
         A = randf(shape=(N, N))
         row_echelon(A, reduced=True)
         assert is_row_echelon(A, reduced=True)
+
+
+
+from scipy.stats import ortho_group
+
+def rands(M, N, s):
+    """Return a MxN matrix with the given singular values."""
+    S = np.zeros((M, N))
+    for i, si in enumerate(s):
+        S[i, i] = si
+    U, V = ortho_group.rvs(M), ortho_group.rvs(N)
+    return U @ S @ V.T
+
+def randr(M, N, r):
+    """Return a MxN matrix with rank r.
+    
+    The singular values are uniformly distributed in ]-1, -0.5]u[+0.5, +1[."""
+    s = (np.random.random(size=r)/2 + 0.5) * np.random.choice((-1, +1), size=r)
+    s = np.pad(s, (0, min(M, N)-r))
+    return rands(M, N, s)
+
+def rank_decomposition(A, criterion=bool):
+    """Return a rank decomposition B, C of A such that A=BC.
+    
+    `criterion` will be given elements and it must return `True` if a division by the element is stable.
+    """
+    #https://en.wikipedia.org/wiki/Rank_factorization#Rank_factorization_from_reduced_row_echelon_forms
+    pivots = row_echelon(B:=A.copy(), criterion=criterion)
+    #delete non pivot columns from A
+    A = np.delete(A, [i for i in range(A.shape[1]) if i not in pivots], 1)
+    #delete zero rows from B
+    for i in reversed(range(B.shape[0])):
+        if all(not criterion(B[i, j]) for j in range(B.shape[1])):
+            B = np.delete(B, i, 0)
+    return A, B
+
+
+if __name__ == '__main__':
+    for _ in range(100):
+        M, N = np.random.randint(2, 10, size=2)
+        s = sorted(np.random.random(min(M, N)), reverse=True)
+        A = rands(M, N, s)
+        
+        assert A.shape==(M, N) and np.allclose(sorted(s, reverse=True),
+                np.linalg.svd(A, compute_uv=False))
+    
+    for _ in range(100):
+        M, N = np.random.randint(2, 10, size=2)
+        r = np.random.randint(0, min(M, N)+1)
+        A = randr(M, N, r)
+        
+        assert A.shape==(M, N) and np.linalg.matrix_rank(A)==r
+    
+    for _ in range(100):
+        M, N  = np.random.randint(2, 10, size=2)
+        r = np.random.randint(0, min(M, N)+1)
+        A = randr(M, N, r)
+        B, C = rank_decomposition(A, criterion=lambda x: not np.isclose(x, 0))
+        
+        assert B.shape==(M, r) and C.shape==(r, N)
+        assert np.allclose(A, B@C)
+
+
+
+def pseudo_inverse(A, criterion=bool):
+    #https://en.wikipedia.org/wiki/Moore%E2%80%93Penrose_inverse#Rank_decomposition
+    B, C = rank_decomposition(A, criterion=criterion)
+    return C.T @ inv_gauss(C@C.T, criterion=criterion) \
+            @ inv_gauss(B.T@B, criterion=criterion) @ B.T
+
+
+if __name__ == '__main__':
+    for _ in range(100):
+        M, N = np.random.randint(2, 10, size=2)
+        r = np.random.randint(0, min(M, N)+1)
+        A = randr(M, N, r)
+        
+        Ainv = pseudo_inverse(A, criterion=lambda x: not np.isclose(x, 0))
+        #https://en.wikipedia.org/wiki/Moore%E2%80%93Penrose_inverse#Definition
+        assert np.allclose(A@Ainv@A, A) \
+                and np.allclose(Ainv@A@Ainv, Ainv) \
+                and np.allclose((A@Ainv).conj().T, A@Ainv) \
+                and np.allclose((Ainv@A).conj().T, Ainv@A)
