@@ -30,6 +30,8 @@ This package provides the following functions:
   - `rands(M, N, s)`: Random matrix with given shape and singular values.
   - `randr(M, N, r)`: Random matrix of rank.
 - `pseudo_inverse(A, criterion=bool)`
+- `LU(A, criterion=bool)`, `PLU(A, criterion=bool)`, `LUQ(A, criterion=bool)`, `PLUQ(A, criterion=bool)`
+  - `is_tril(L, criterion=bool)`, `is_triu(U, criterion=bool)`, `is_perm(P)`
 
 ## Conventions
 
@@ -38,6 +40,7 @@ This package provides the following functions:
 
 ## TODO
 
+- [ ] `is_tril`, `is_triu`, `is_perm` criterion
 - [ ] progress visualisation
 - [ ] readme
 - [ ] minimum dimensions (do functions work for 0x0-matricies?)

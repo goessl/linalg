@@ -247,3 +247,157 @@ if __name__ == '__main__':
                 and np.allclose(Ainv@A@Ainv, Ainv) \
                 and np.allclose((A@Ainv).conj().T, A@Ainv) \
                 and np.allclose((Ainv@A).conj().T, Ainv@A)
+
+
+
+def is_tril(L, criterion=bool):
+    return all(not criterion(Li) for Li in L[np.triu_indices_from(L, k=1)])
+
+def is_triu(U, criterion=bool):
+    return all(not criterion(Ui) for Ui in U[np.tril_indices_from(U, k=-1)])
+
+def is_perm(P):
+    #https://en.wikipedia.org/wiki/Permutation_matrix
+    return np.array_equal(P.T@P, np.eye(P.shape[0])) and np.all(P>=0)
+
+def LU(A, criterion=bool):
+    """Return the LU decomposition of A.
+    
+    Transformation happens in-place (A becomes U).
+    Doolittle decomposition (L diagonal ones) if `A.shape[0]<=A.shape[1]`,
+    Crout decomposition (U diagonal ones) otherwise.
+    https://en.wikipedia.org/wiki/LU_decomposition#LU_Crout_decomposition
+    Elements must support division, multiplication & subtraction.
+    """
+    A = A if (T:=A.shape[1]>=A.shape[0]) else A.T #more size efficient
+    L = np.identity(A.shape[0], dtype=A.dtype)
+    
+    for i in range(A.shape[0]-1):
+        if not criterion(A[i, i]):
+            raise ZeroDivisionError
+        L[i+1:, i] = A[i+1:, i] / A[i, i]
+        A[i+1:,:] -= L[i+1:, i][:, np.newaxis] * A[i, :]
+    return (L, A) if T else (A.T, L.T)
+
+def PLU(A, criterion=bool):
+    """Return the PLU decomposition of A.
+    
+    Transformation happens in-place (A becomes U).
+    Doolittle decomposition (L diagonal ones).
+    https://en.wikipedia.org/wiki/LU_decomposition#LU_Crout_decomposition
+    Memory efficient if `A.shape[0]<=A.shape[1]`,
+    otherwise LUQ would be more efficient.
+    Elements must support abs (numerical return type such that
+    numpy can compare them), division, multiplication & subtraction.
+    """
+    P = np.identity(A.shape[0], dtype=np.int_)
+    L = np.identity(A.shape[0], dtype=A.dtype)
+    
+    for i in range(min(A.shape[0]-1, A.shape[1])):
+        if not criterion(A[(p := np.argmax(abs(A[i:, i])) + i), i]):
+            raise ZeroDivisionError
+        swap_columns(P, i, p)
+        swap_pivot(L, i, p, p)
+        swap_rows(A, i, p)
+        
+        L[i+1:, i] = A[i+1:, i] / A[i, i]
+        A[i+1:, :] -= L[i+1:, i][:, np.newaxis] * A[i, :]
+    return P, L, A
+
+def LUQ(A, criterion=bool):
+    """Return the LUQ decomposition of A.
+    
+    Transformation happens in-place (A becomes L).
+    Crout decomposition (U diagonal ones).
+    https://en.wikipedia.org/wiki/LU_decomposition#LU_Crout_decomposition
+    Memory efficient if `A.shape[0]>A.shape[1]`,
+    otherwise LUQ would be more efficient.
+    Elements must support abs (numerical return type such that
+    numpy can compare them), division, multiplication & subtraction.
+    """
+    U = np.identity(A.shape[1], dtype=A.dtype)
+    Q = np.identity(A.shape[1], dtype=np.int_)
+    
+    for i in range(min(A.shape[0], A.shape[1]-1)):
+        if not criterion(A[i, (p := np.argmax(abs(A[i, i:])) + i)]):
+            raise ZeroDivisionError
+        swap_columns(A, i, p)
+        swap_pivot(U, i, p, p)
+        swap_rows(Q, i, p)
+        
+        U[i, i+1:] = A[i, i+1:] / A[i, i]
+        A[:, i+1:] -= U[i, i+1:] * A[:, i][:, np.newaxis]
+    return A, U, Q
+
+def PLUQ(A, criterion=bool):
+    """Return the PLUQ decomposition of A.
+    
+    Transformation happens in-place (A becomes U).
+    Doolittle decomposition (L diagonal ones) if `A.shape[0]<=A.shape[1]`,
+    Crout decomposition (U diagonal ones) otherwise.
+    https://en.wikipedia.org/wiki/LU_decomposition#LU_Crout_decomposition
+    Elements must support abs (numerical return type such that
+    numpy can compare them), division, multiplication & subtraction.
+    """
+    if A.shape[0] > A.shape[1]:
+        P, L, U, Q = PLUQ(A.T, criterion=criterion)
+        return Q.T, U.T, L.T, P.T
+    
+    P = np.identity(A.shape[0], dtype=np.int_)
+    L = np.identity(A.shape[0], dtype=A.dtype)
+    Q = np.identity(A.shape[1], dtype=np.int_)
+    
+    for i in range(A.shape[0]-1):
+        p_row, p_col = \
+                np.unravel_index(np.argmax(abs(A[i:, i:])), A[i:, i:].shape)
+        p_row += i
+        p_col += i
+        if not criterion(A[p_row, p_col]):
+            raise ZeroDivisionError
+        swap_columns(P, i, p_row)
+        swap_pivot(L, i, p_row, p_row)
+        swap_pivot(A, i, p_row, p_col)
+        swap_rows(Q, i, p_col)
+        
+        L[i+1:, i] = A[i+1:, i] / A[i, i]
+        A[i+1:, :] -= L[i+1:, i][:, np.newaxis] * A[i, :]
+    return P, L, A, Q
+
+
+if __name__ == '__main__':
+    for _ in range(100):
+        M, N = np.random.randint(1, 10, size=2)
+        A = randf(shape=(M, N))
+        
+        L, U = LU(A.copy())
+        assert is_tril(L) and is_triu(U) and np.array_equal(L@U, A)
+        assert A.shape[0]<=A.shape[1] and all(Lii==1 for Lii in np.diag(L)) \
+                or A.shape[0]>A.shape[1] and all(Uii==1 for Uii in np.diag(U))
+    
+    for _ in range(100):
+        M, N = np.random.randint(1, 3, size=2)
+        A = randf(shape=(M, N))
+        
+        P, L, U = PLU(A.copy())
+        assert is_perm(P) and is_tril(L) and is_triu(U) \
+                and np.array_equal(P@L@U, A)
+        assert all(Lii==1 for Lii in np.diag(L))
+    
+    for _ in range(100):
+        M, N = np.random.randint(1, 10, size=2)
+        A = randf(shape=(M, N))
+        
+        L, U, Q = LUQ(A.copy())
+        assert is_tril(L) and is_triu(U) and is_perm(Q) \
+                and np.array_equal(L@U@Q, A)
+        assert all(Uii==1 for Uii in np.diag(U))
+    
+    for _ in range(100):
+        M, N = np.random.randint(1, 10, size=2)
+        A = randf(shape=(M, N))
+        
+        P, L, U, Q = PLUQ(A.copy())
+        assert is_perm(P) and is_tril(L) and is_triu(U) and is_perm(Q) \
+                and np.array_equal(P@L@U@Q, A)
+        assert A.shape[0]<=A.shape[1] and all(Lii==1 for Lii in np.diag(L)) \
+                or A.shape[0]>A.shape[1] and all(Uii==1 for Uii in np.diag(U))
