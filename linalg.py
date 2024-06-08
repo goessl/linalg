@@ -235,6 +235,10 @@ def pinv(A, nonzero=bool):
     return C.T @ inv(C@C.T, nonzero=nonzero) \
             @ inv(B.T@B, nonzero=nonzero) @ B.T
 
+def lstsq(X, y, nonzero=bool):
+    """Return the linear least squares solution `b` for `y=Xb`."""
+    return pinv(X.T@X, nonzero=nonzero) @ X.T @ y
+
 
 if __name__ == '__main__':
     for _ in range(100):
@@ -248,6 +252,14 @@ if __name__ == '__main__':
                 and np.allclose(Ainv@A@Ainv, Ainv) \
                 and np.allclose((A@Ainv).conj().T, A@Ainv) \
                 and np.allclose((Ainv@A).conj().T, Ainv@A)
+        
+        
+        M, N = np.random.randint(1, 10, size=2)
+        X, y = randf(shape=(M, N)), randf(shape=M)
+        
+        actual = np.linalg.lstsq(X.astype(np.float64), y.astype(np.float64), rcond=None)[0]
+        prediction = lstsq(X, y)
+        assert np.allclose(prediction.astype(np.float64), actual)
 
 
 
