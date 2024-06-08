@@ -63,7 +63,7 @@ if __name__ == '__main__':
 
 
 
-def inv_gauss(A, criterion=bool):
+def inv(A, nonzero=bool):
     """Return the inverse of A.
     
     Calculates the inverse of A by Gaussian elimination with complete pivoting.
@@ -77,7 +77,7 @@ def inv_gauss(A, criterion=bool):
         #pivot
         i_max, j_max = \
                 np.unravel_index(np.argmax(abs(A[i:, i:])), A[i:, i:].shape)
-        if not criterion(A[i+i_max, i+j_max]):
+        if not nonzero(A[i+i_max, i+j_max]):
             raise ZeroDivisionError
         swap_pivot(A, i, i+i_max, i+j_max)
         swap_rows(P, i, i+i_max), swap_columns(Q, i, i+j_max)
@@ -98,7 +98,7 @@ if __name__ == '__main__':
         A = randf(shape=(N, N))
         
         actual = np.linalg.inv(A.astype(np.float64))
-        prediction = inv_gauss(A)
+        prediction = inv(A)
         assert np.allclose(prediction.astype(np.float64), actual)
 
 
@@ -121,7 +121,7 @@ def is_row_echelon(A, reduced=True, comparison=eq):
                     return False
     return True
 
-def row_echelon(A, reduced=True, criterion=bool):
+def row_echelon(A, reduced=True, nonzero=bool):
     """Transform A into (reduced) row echelon form and return the pivot column indices.
     
     Transform A into (reduced) row echelon form by Gaussian elimination with pivoting.
@@ -134,7 +134,7 @@ def row_echelon(A, reduced=True, criterion=bool):
     pivots = []
     while i<A.shape[0] and j<A.shape[1]:
         #find pivot
-        if not criterion(A[(i_max := np.argmax(abs(A[i:, j])) + i), j]):
+        if not nonzero(A[(i_max := np.argmax(abs(A[i:, j])) + i), j]):
             j += 1
         else:
             #pivot
@@ -185,18 +185,18 @@ def randr(M, N, r):
     s = np.pad(s, (0, min(M, N)-r))
     return rands(M, N, s)
 
-def rank_decomposition(A, criterion=bool):
+def rank_decomposition(A, nonzero=bool):
     """Return a rank decomposition B, C of A such that A=BC.
     
     `criterion` will be given elements and it must return `True` if a division by the element is stable.
     """
     #https://en.wikipedia.org/wiki/Rank_factorization#Rank_factorization_from_reduced_row_echelon_forms
-    pivots = row_echelon(B:=A.copy(), criterion=criterion)
+    pivots = row_echelon(B:=A.copy(), nonzero=nonzero)
     #delete non pivot columns from A
     A = np.delete(A, [i for i in range(A.shape[1]) if i not in pivots], 1)
     #delete zero rows from B
     for i in reversed(range(B.shape[0])):
-        if all(not criterion(B[i, j]) for j in range(B.shape[1])):
+        if all(not nonzero(B[i, j]) for j in range(B.shape[1])):
             B = np.delete(B, i, 0)
     return A, B
 
@@ -221,18 +221,19 @@ if __name__ == '__main__':
         M, N  = np.random.randint(2, 10, size=2)
         r = np.random.randint(0, min(M, N)+1)
         A = randr(M, N, r)
-        B, C = rank_decomposition(A, criterion=lambda x: not np.isclose(x, 0))
+        B, C = rank_decomposition(A, nonzero=lambda x: not np.isclose(x, 0))
         
         assert B.shape==(M, r) and C.shape==(r, N)
         assert np.allclose(A, B@C)
 
 
 
-def pseudo_inverse(A, criterion=bool):
+def pinv(A, nonzero=bool):
+    """Return the Moore–Penrose inverse of `A`."""
     #https://en.wikipedia.org/wiki/Moore%E2%80%93Penrose_inverse#Rank_decomposition
-    B, C = rank_decomposition(A, criterion=criterion)
-    return C.T @ inv_gauss(C@C.T, criterion=criterion) \
-            @ inv_gauss(B.T@B, criterion=criterion) @ B.T
+    B, C = rank_decomposition(A, nonzero=nonzero)
+    return C.T @ inv(C@C.T, nonzero=nonzero) \
+            @ inv(B.T@B, nonzero=nonzero) @ B.T
 
 
 if __name__ == '__main__':
@@ -241,7 +242,7 @@ if __name__ == '__main__':
         r = np.random.randint(0, min(M, N)+1)
         A = randr(M, N, r)
         
-        Ainv = pseudo_inverse(A, criterion=lambda x: not np.isclose(x, 0))
+        Ainv = pinv(A, nonzero=lambda x: not np.isclose(x, 0))
         #https://en.wikipedia.org/wiki/Moore%E2%80%93Penrose_inverse#Definition
         assert np.allclose(A@Ainv@A, A) \
                 and np.allclose(Ainv@A@Ainv, Ainv) \
@@ -260,7 +261,7 @@ def is_perm(P):
     #https://en.wikipedia.org/wiki/Permutation_matrix
     return np.array_equal(P.T@P, np.eye(P.shape[0])) and np.all(P>=0)
 
-def LU(A, criterion=bool):
+def LU(A, nonzero=bool):
     """Return the LU decomposition of A.
     
     Transformation happens in-place (A becomes U).
@@ -268,18 +269,19 @@ def LU(A, criterion=bool):
     Crout decomposition (U diagonal ones) otherwise.
     https://en.wikipedia.org/wiki/LU_decomposition#LU_Crout_decomposition
     Elements must support division, multiplication & subtraction.
+    `nonzero` must return if a division by the given element is possible.
     """
     A = A if (T:=A.shape[1]>=A.shape[0]) else A.T #more size efficient
     L = np.identity(A.shape[0], dtype=A.dtype)
     
     for i in range(A.shape[0]-1):
-        if not criterion(A[i, i]):
+        if not nonzero(A[i, i]):
             raise ZeroDivisionError
         L[i+1:, i] = A[i+1:, i] / A[i, i]
         A[i+1:,:] -= L[i+1:, i][:, np.newaxis] * A[i, :]
     return (L, A) if T else (A.T, L.T)
 
-def PLU(A, criterion=bool):
+def PLU(A, nonzero=bool):
     """Return the PLU decomposition of A.
     
     Transformation happens in-place (A becomes U).
@@ -289,12 +291,13 @@ def PLU(A, criterion=bool):
     otherwise LUQ would be more efficient.
     Elements must support abs (numerical return type such that
     numpy can compare them), division, multiplication & subtraction.
+    `nonzero` must return if a division by the given element is possible.
     """
     P = np.identity(A.shape[0], dtype=np.int_)
     L = np.identity(A.shape[0], dtype=A.dtype)
     
     for i in range(min(A.shape[0]-1, A.shape[1])):
-        if not criterion(A[(p := np.argmax(abs(A[i:, i])) + i), i]):
+        if not nonzero(A[(p := np.argmax(abs(A[i:, i])) + i), i]):
             raise ZeroDivisionError
         swap_columns(P, i, p)
         swap_pivot(L, i, p, p)
@@ -304,7 +307,7 @@ def PLU(A, criterion=bool):
         A[i+1:, :] -= L[i+1:, i][:, np.newaxis] * A[i, :]
     return P, L, A
 
-def LUQ(A, criterion=bool):
+def LUQ(A, nonzero=bool):
     """Return the LUQ decomposition of A.
     
     Transformation happens in-place (A becomes L).
@@ -314,12 +317,13 @@ def LUQ(A, criterion=bool):
     otherwise LUQ would be more efficient.
     Elements must support abs (numerical return type such that
     numpy can compare them), division, multiplication & subtraction.
+    `nonzero` must return if a division by the given element is possible.
     """
     U = np.identity(A.shape[1], dtype=A.dtype)
     Q = np.identity(A.shape[1], dtype=np.int_)
     
     for i in range(min(A.shape[0], A.shape[1]-1)):
-        if not criterion(A[i, (p := np.argmax(abs(A[i, i:])) + i)]):
+        if not nonzero(A[i, (p := np.argmax(abs(A[i, i:])) + i)]):
             raise ZeroDivisionError
         swap_columns(A, i, p)
         swap_pivot(U, i, p, p)
@@ -329,7 +333,7 @@ def LUQ(A, criterion=bool):
         A[:, i+1:] -= U[i, i+1:] * A[:, i][:, np.newaxis]
     return A, U, Q
 
-def PLUQ(A, criterion=bool):
+def PLUQ(A, nonzero=bool):
     """Return the PLUQ decomposition of A.
     
     Transformation happens in-place (A becomes U).
@@ -338,9 +342,10 @@ def PLUQ(A, criterion=bool):
     https://en.wikipedia.org/wiki/LU_decomposition#LU_Crout_decomposition
     Elements must support abs (numerical return type such that
     numpy can compare them), division, multiplication & subtraction.
+    `nonzero` must return if a division by the given element is possible.
     """
     if A.shape[0] > A.shape[1]:
-        P, L, U, Q = PLUQ(A.T, criterion=criterion)
+        P, L, U, Q = PLUQ(A.T, nonzero=nonzero)
         return Q.T, U.T, L.T, P.T
     
     P = np.identity(A.shape[0], dtype=np.int_)
@@ -352,7 +357,7 @@ def PLUQ(A, criterion=bool):
                 np.unravel_index(np.argmax(abs(A[i:, i:])), A[i:, i:].shape)
         p_row += i
         p_col += i
-        if not criterion(A[p_row, p_col]):
+        if not nonzero(A[p_row, p_col]):
             raise ZeroDivisionError
         swap_columns(P, i, p_row)
         swap_pivot(L, i, p_row, p_row)
@@ -373,28 +378,16 @@ if __name__ == '__main__':
         assert is_tril(L) and is_triu(U) and np.array_equal(L@U, A)
         assert A.shape[0]<=A.shape[1] and all(Lii==1 for Lii in np.diag(L)) \
                 or A.shape[0]>A.shape[1] and all(Uii==1 for Uii in np.diag(U))
-    
-    for _ in range(100):
-        M, N = np.random.randint(1, 3, size=2)
-        A = randf(shape=(M, N))
         
         P, L, U = PLU(A.copy())
         assert is_perm(P) and is_tril(L) and is_triu(U) \
                 and np.array_equal(P@L@U, A)
         assert all(Lii==1 for Lii in np.diag(L))
-    
-    for _ in range(100):
-        M, N = np.random.randint(1, 10, size=2)
-        A = randf(shape=(M, N))
         
         L, U, Q = LUQ(A.copy())
         assert is_tril(L) and is_triu(U) and is_perm(Q) \
                 and np.array_equal(L@U@Q, A)
         assert all(Uii==1 for Uii in np.diag(U))
-    
-    for _ in range(100):
-        M, N = np.random.randint(1, 10, size=2)
-        A = randf(shape=(M, N))
         
         P, L, U, Q = PLUQ(A.copy())
         assert is_perm(P) and is_tril(L) and is_triu(U) and is_perm(Q) \
