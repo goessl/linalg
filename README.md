@@ -30,6 +30,12 @@ pip install git+https://github.com/goessl/linalg.git
 - `det_laplace(A)`: Return the determinant of `A`. Calculates the determinant by Laplace expansion. Uses the row/column with the most zero elements.
 - `minor_laplace(A, i, j)`: Return the `i,j`-th minor of `A`. See `det_laplace` for more.
 
+### Gauss
+
+- `det_gauss(A)`: Return the determinant of `A`. Calculates the determinant by Gaussian elimination with complete pivoting. The matrix will be transformed in place into an upper triangular matrix (columns left of pivot won't be reduced).
+- `inv_gauss(A)`: Return the inverse of `A`. Calculates the inverse by Gaussian elimination with complete pivoting. The matrix will be transformed in place into the identity matrix.
+- `minor_gauss(A, i, j)`: Return the `i,j`-th minor of `A`. See `det_gauss` for more.
+
 ### Bareiss
 
 - `det_bareiss(A)`: Return the determinant of an integer matrix `A`. Calculates the determinant by the Bareiss algorithm. Transforms `A` in place.
@@ -42,6 +48,7 @@ pip install git+https://github.com/goessl/linalg.git
 ### Utility
 
 - `_prod(iterable)`: Like `math.prod` but for non-numeric types. `math.prod` might reject non-numeric types: https://docs.python.org/3/library/math.html#math.prod. For `float`s keep using `math.prod` for better precision.
+- `assert_sqmatrix(A)`: Assert square matrix.
 - `swap_rows(A, i, j)`: Swap the `i`-th and `j`-th row of `A` in-place.
 - `swap_columns(A, i, j)`: Swap the `i`-th and `j`-th column of `A` in-place.
 - `swap_pivot(A, p, i, j)`: Swap the `p`-&`i`-th rows and `p`-&`j`-th columns of `A` in-place.
@@ -51,6 +58,7 @@ pip install git+https://github.com/goessl/linalg.git
 ## Conventions
 
 - Matrices are represented as `numpy.ndarray`s.
+- Elements are assumed to be exact. E.g. Gaussian elemination only stops if the pivot `A[i, i]` is `bool(A[i, i])==False`. Or doesn't reduce elements to the lower left of the pivot because they should already be eliminated to zero.
 
 ## todo
 
