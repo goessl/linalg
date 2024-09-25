@@ -41,6 +41,11 @@ def _prod(iterable):
     return reduce(mul, iterable)
 
 
+def assert_sqmatrix(A):
+    """Assert square matrix."""
+    assert A.ndim==2 and A.shape[0]==A.shape[1]
+
+
 #https://stackoverflow.com/a/54069951
 def swap_rows(A, i, j):
     """Swap the `i`-th and `j`-th row of `A` in-place."""
@@ -109,6 +114,7 @@ def det_leibniz(A):
     
     Calculates the determinant by the Leibniz formula.
     """
+    assert_sqmatrix(A)
     return sum(p * _prod(A[tuple(range(len(s))), s]) \
             for s, p in _permutations(range(A.shape[0])))
 
@@ -141,6 +147,7 @@ def det_laplace(A):
     Uses the row/column with the most zero elements.
     """
     #https://en.wikipedia.org/wiki/Laplace_expansion
+    assert_sqmatrix(A)
     if A.shape == (0, 0):
         return 1
     elif A.shape == (1, 1):
@@ -173,6 +180,81 @@ if __name__ == '__main__':
 
 
 
+# - - - Gauss - - -
+def minor_gauss(A, i, j):
+    """Return the `i,j`-th minor of `A`.
+    
+    See `det_gauss` for more.
+    """
+    return det_gauss(submatrix(A, i, j))
+
+def det_gauss(A):
+    """Return the determinant of `A`.
+    
+    Calculates the determinant by Gaussian elimination with complete pivoting.
+    The matrix will be transformed in place into an upper triangular matrix
+    (columns left of pivot won't be reduced).
+    """
+    #https://en.wikipedia.org/wiki/Gaussian_elimination#Computing_determinants
+    assert_sqmatrix(A)
+    s = True
+    for i in range(A.shape[0]):
+        #pivot
+        i_max, j_max = \
+                np.unravel_index(np.argmax(abs(A[i:, i:])), A[i:, i:].shape)
+        if not A[i+i_max, i+j_max]:
+            return A[i+i_max, i+j_max]
+        swap_pivot(A, i, i+i_max, i+j_max)
+        s ^= bool(i_max) != bool(j_max)
+        #reduce (not left of pivot, these elements will not influence result)
+        A[i+1:, i:] -= A[i, i:] * (A[i+1:, i] / A[i, i])[:, np.newaxis]
+    
+    return +_prod(np.diag(A)) if s else -_prod(np.diag(A))
+
+def inv_gauss(A):
+    """Return the inverse of `A`.
+    
+    Calculates the inverse by Gaussian elimination with complete pivoting.
+    The matrix will be transformed in place into the identity matrix.
+    """
+    #https://math.stackexchange.com/a/744213/1170417
+    assert_sqmatrix(A)
+    P, Q = np.eye(A.shape[0], dtype=A.dtype), np.eye(A.shape[0], dtype=A.dtype)
+    for i in range(A.shape[0]):
+        #pivot
+        i_max, j_max = \
+                np.unravel_index(np.argmax(abs(A[i:, i:])), A[i:, i:].shape)
+        if not A[i+i_max, i+j_max]:
+            raise ZeroDivisionError
+        swap_pivot(A, i, i+i_max, i+j_max)
+        swap_rows(P, i, i+i_max), swap_columns(Q, i, i+j_max)
+        #normalize pivot
+        P[i, :] /= A[i, i]
+        A[i, :] /= A[i, i]
+        #zeros above and below
+        P[:i, :] -= P[i, :] * A[:i, i][:, np.newaxis]
+        A[:i, :] -= A[i, :] * A[:i, i][:, np.newaxis]
+        P[i+1:, :] -= P[i, :] * A[i+1:, i][:, np.newaxis]
+        A[i+1:, :] -= A[i, :] * A[i+1:, i][:, np.newaxis]
+    return Q @ P
+
+
+if __name__ == '__main__':
+    for _ in range(100):
+        N = randint(1, 10)
+        A = randf((N, N))
+        
+        prediction = det_gauss(A.copy())
+        actual = np.linalg.det(A.astype(np.float64))
+        assert np.isclose(float(prediction), actual)
+        
+        A_inv = inv_gauss(A.copy())
+        assert np.array_equal(A@A_inv, np.eye(N))
+
+
+
+
+
 # - - - Bareiss - - -
 def det_bareiss(A):
     """Return the determinant of an integer matrix `A`.
@@ -181,6 +263,7 @@ def det_bareiss(A):
     Transforms `A` in place.
     """
     #https://en.wikipedia.org/wiki/Bareiss_algorithm#The_algorithm
+    assert_sqmatrix(A)
     s = True
     for i in range(A.shape[0]):
         #pivot
