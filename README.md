@@ -30,10 +30,21 @@ pip install git+https://github.com/goessl/linalg.git
 - `det_laplace(A)`: Return the determinant of `A`. Calculates the determinant by Laplace expansion. Uses the row/column with the most zero elements.
 - `minor_laplace(A, i, j)`: Return the `i,j`-th minor of `A`. See `det_laplace` for more.
 
+### Bareiss
+
+- `det_bareiss(A)`: Return the determinant of an integer matrix `A`. Calculates the determinant by the Bareiss algorithm. Transforms `A` in place.
+
+### Random Creation
+
+- `randint(low, high=None, size=None)`: Return a random `int` or an array of random `int`s. Like `numpy.random.randint` but with native `int`s.
+- `randf(shape=None, precision=1000)`: Return a random `Fraction` or an array of random `Fraction`s. Their numerators `n` are `-precision <= n <= +precision` and their denominators `d` are `1 <= d <= +precision`.
+
 ### Utility
 
-- `randf(shape=None, precision=1000)`: Return a random `Fraction` or an array of random `Fraction`s. Their numerators `n` are `-precision <= n <= +precision` and their denominators `d` are `1 <= d <= +precision`.
 - `_prod(iterable)`: Like `math.prod` but for non-numeric types. `math.prod` might reject non-numeric types: https://docs.python.org/3/library/math.html#math.prod. For `float`s keep using `math.prod` for better precision.
+- `swap_rows(A, i, j)`: Swap the `i`-th and `j`-th row of `A` in-place.
+- `swap_columns(A, i, j)`: Swap the `i`-th and `j`-th column of `A` in-place.
+- `swap_pivot(A, p, i, j)`: Swap the `p`-&`i`-th rows and `p`-&`j`-th columns of `A` in-place.
 - `submatrix(A, i, j)`: Return a copy of `A` without the `i`-th row and `j`-th column.
 - `_permutations(iterable, r=None)`: `itertools.permutation`, but yields `permutation, parity`.
 
