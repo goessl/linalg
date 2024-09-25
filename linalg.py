@@ -5,17 +5,32 @@ from fractions import Fraction
 
 
 
+# - - - Random Creation - - -
+def randint(low, high=None, size=None):
+    """Return a random `int` or an array of random `int`s.
+    
+    Like `numpy.random.randint` but with native `int`s.
+    """
+    if size is None:
+        return int(np.random.randint(low, high))
+    else:
+        return np.random.randint(low, high, size=size).astype(object)
+
 def randf(shape=None, precision=1000):
     """Return a random `Fraction` or an array of random `Fraction`s.
     
     Their numerators `n` are `-precision <= n <= +precision`
     and their denominators `d` are `1 <= d <= +precision`.
     """
-    n = np.random.randint(-precision, +precision+1, shape)
-    d = np.random.randint(1, +precision+1, shape)
+    n = randint(-precision, +precision+1, shape)
+    d = randint(1, +precision+1, shape)
     return Fraction(n, d) if shape is None else np.vectorize(Fraction)(n, d)
 
 
+
+
+
+# - - - Utility - - -
 def _prod(iterable):
     """Like `math.prod` but for non-numeric types.
     
@@ -24,6 +39,21 @@ def _prod(iterable):
     For `float`s keep using `math.prod` for better precision.
     """
     return reduce(mul, iterable)
+
+
+#https://stackoverflow.com/a/54069951
+def swap_rows(A, i, j):
+    """Swap the `i`-th and `j`-th row of `A` in-place."""
+    A[[i, j], :] = A[[j, i], :]
+
+def swap_columns(A, i, j):
+    """Swap the `i`-th and `j`-th column of `A` in-place."""
+    A[:, [i, j]] = A[:, [j, i]]
+
+def swap_pivot(A, p, i, j):
+    """Swap the `p`-&`i`-th rows and `p`-&`j`-th columns of `A` in-place."""
+    swap_rows(A, p, i)
+    swap_columns(A, p, j)
 
 
 def submatrix(A, i, j):
@@ -85,7 +115,7 @@ def det_leibniz(A):
 
 if __name__ == '__main__':
     for _ in range(100):
-        N = np.random.randint(1, 7)
+        N = randint(1, 7)
         A = randf((N, N))
         
         prediction = det_leibniz(A)
@@ -132,9 +162,49 @@ def det_laplace(A):
 
 if __name__ == '__main__':
     for _ in range(100):
-        N = np.random.randint(1, 6)
+        N = randint(1, 6)
         A = randf((N, N))
         
         prediction = det_laplace(A)
         actual = np.linalg.det(A.astype(np.float64))
         assert np.isclose(float(prediction), actual)
+
+
+
+
+
+# - - - Bareiss - - -
+def det_bareiss(A):
+    """Return the determinant of an integer matrix `A`.
+    
+    Calculates the determinant by the Bareiss algorithm.
+    Transforms `A` in place.
+    """
+    #https://en.wikipedia.org/wiki/Bareiss_algorithm#The_algorithm
+    s = True
+    for i in range(A.shape[0]):
+        #pivot
+        i_max, j_max = \
+                np.unravel_index(np.argmax(abs(A[i:, i:])), A[i:, i:].shape)
+        #cancellation
+        if not A[i+i_max, i+j_max]:
+            return 0
+        swap_pivot(A, i, i+i_max, i+j_max)
+        s ^= bool(i_max) != bool(j_max)
+        #reduction
+        A[i+1:, i:] = \
+                (A[i, i]*A[i+1:, i:] - A[i+1:, i][:, np.newaxis]*A[i, i:]) \
+                // (A[i-1, i-1] if i>0 else 1)
+    
+    return +A[-1, -1] if s else -A[-1, -1]
+
+
+if __name__ == '__main__':
+    for _ in range(1000):
+        N = randint(1, 10)
+        A = randint(-100, +100, size=(N, N))
+        
+        prediction = det_bareiss(A.copy())
+        actual = np.linalg.det(A.astype(np.int64))
+        assert isinstance(prediction, int) \
+                and np.isclose(float(prediction), actual)
