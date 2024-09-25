@@ -20,6 +20,11 @@ pip install git+https://github.com/goessl/linalg.git
 
 ## Usage
 
+### Leibniz
+
+- `det_leibniz(A)`: Return the determinant of `A`. Calculates the determinant by the Leibniz formula.
+- `minor_leibniz(A, i, j)`: Return the `i,j`-th minor of `A`. See `det_leibniz` for more.
+
 ### Laplace
 
 - `det_laplace(A)`: Return the determinant of `A`. Calculates the determinant by Laplace expansion. Uses the row/column with the most zero elements.
@@ -28,16 +33,24 @@ pip install git+https://github.com/goessl/linalg.git
 ### Utility
 
 - `randf(shape=None, precision=1000)`: Return a random `Fraction` or an array of random `Fraction`s. Their numerators `n` are `-precision <= n <= +precision` and their denominators `d` are `1 <= d <= +precision`.
+- `_prod(iterable)`: Like `math.prod` but for non-numeric types. `math.prod` might reject non-numeric types: https://docs.python.org/3/library/math.html#math.prod. For `float`s keep using `math.prod` for better precision.
 - `submatrix(A, i, j)`: Return a copy of `A` without the `i`-th row and `j`-th column.
+- `_permutations(iterable, r=None)`: `itertools.permutation`, but yields `permutation, parity`.
+
+## Conventions
+
+- Matrices are represented as `numpy.ndarray`s.
 
 ## todo
 
- - [ ] complexities
- - [ ] `tqdm`
+- [ ] `sum` & `prod` for non-numeric types (`math.prod` might reject non-numerics; both have `start` argument with unnecessary additional operation; but have better float precision -> automatic fallback?)
+- [ ] complexities
+- [ ] progress visualisation with `tqdm`
+- [ ] minimum dimensions (do functions work for 0x0-matrices?)
 
 ## License (MIT)
 
-Copyright (c) 2022-2024 Sebastian Gössl
+Copyright (c) 2024 Sebastian Gössl
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
