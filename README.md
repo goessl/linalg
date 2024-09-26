@@ -1,6 +1,6 @@
 # linalg
 
-A type-independent and exact linear algebra package.
+A type-independent and exact linear algebra package with progress visualisation.
 ```python
 >>> import numpy as np
 >>> from fractions import Fraction
@@ -19,6 +19,8 @@ pip install git+https://github.com/goessl/linalg.git
 ```
 
 ## Usage
+
+- `matmul(A, B, progress=set())`: Return the matrix product of `A` & `B`. Matrices must be non-empty (L,N,M>0). For a LxN- & a NxM-matrix (where the result will be LxM) there will be - L(N-1)M additions (`+`), - LNM multiplications (`*`), - so L(2N-1)M operations in total.
 
 ### Leibniz
 
@@ -48,6 +50,7 @@ pip install git+https://github.com/goessl/linalg.git
 ### Utility
 
 - `_prod(iterable)`: Like `math.prod` but for non-numeric types. `math.prod` might reject non-numeric types: https://docs.python.org/3/library/math.html#math.prod. For `float`s keep using `math.prod` for better precision.
+- `assert_matrix(A)`: Assert matrix.
 - `assert_sqmatrix(A)`: Assert square matrix.
 - `swap_rows(A, i, j)`: Swap the `i`-th and `j`-th row of `A` in-place.
 - `swap_columns(A, i, j)`: Swap the `i`-th and `j`-th column of `A` in-place.
@@ -55,10 +58,20 @@ pip install git+https://github.com/goessl/linalg.git
 - `submatrix(A, i, j)`: Return a copy of `A` without the `i`-th row and `j`-th column.
 - `_permutations(iterable, r=None)`: `itertools.permutation`, but yields `permutation, parity`.
 
+### `Progress`
+
+Progress handler for algorithms. Use as context. Total number of operations must be known beforehand. Call `update(op, n=1)` to increment tracking.
+- `__init__(totals, descprefix='')`: Create a new progress handler. `totals` should be a dictionary with the tracked operations as keys and the total number of operations as values.
+- `__enter__()`
+- `__exit__(type, value, traceback)`
+- `update(op, n=1)`: Increment the operation `op` progress by `n`. If `op` is not tracked nothing happens.
+
 ## Conventions
 
+- Elements obviously must support the required scalar operations. This includes operations with special integers: `+int(0)` & `*int(1)` should yield the same scalar, `*int(-1)` should yield the additional inverse.
 - Matrices are represented as `numpy.ndarray`s.
 - Elements are assumed to be exact. E.g. Gaussian elemination only stops if the pivot `A[i, i]` is `bool(A[i, i])==False`. Or doesn't reduce elements to the lower left of the pivot because they should already be eliminated to zero.
+- Progress visualisation is done with the `progress=set()` argument. Specify which operations should be tracked (e.g. `{'+', '*'}`) and `tqdm` bars will visualise the progress.
 
 ## todo
 

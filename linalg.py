@@ -2,6 +2,7 @@ import numpy as np
 from functools import reduce
 from operator import mul
 from fractions import Fraction
+from tqdm.auto import tqdm
 
 
 
@@ -41,6 +42,10 @@ def _prod(iterable):
     return reduce(mul, iterable)
 
 
+def assert_matrix(A):
+    """Assert matrix."""
+    assert A.ndim == 2
+
 def assert_sqmatrix(A):
     """Assert square matrix."""
     assert A.ndim==2 and A.shape[0]==A.shape[1]
@@ -64,6 +69,96 @@ def swap_pivot(A, p, i, j):
 def submatrix(A, i, j):
     """Return a copy of `A` without the `i`-th row and `j`-th column."""
     return np.delete(np.delete(A, i, 0), j, 1)
+
+
+
+
+
+# - - - progress - - -
+class Progress:
+    """Progress handler for algorithms.
+    
+    Use as context. Total number of operations must be known beforehand.
+    Call `update(op, n=1)` to increment tracking.
+    """
+    
+    def __init__(self, totals, descprefix=''):
+        """Create a new progress handler.
+        
+        `totals` should be a dictionary with the tracked operations as keys
+        and the total number of operations as values.
+        """
+        self.pbars = \
+                {o:tqdm(desc=descprefix+o, total=t) for o, t in totals.items()}
+    
+    def __enter__(self):
+        return self
+    
+    def __exit__(self, type, value, traceback):
+        for pbar in self.pbars.values():
+            pbar.close()
+    
+    def update(self, op, n=1):
+        """Increment the operation `op` progress by `n`.
+        
+        If `op` is not tracked nothing happens.
+        """
+        if op in self.pbars:
+            self.pbars[op].update(n)
+    
+    def add(self, a, b):
+        c = a + b
+        self.update('+')
+        return c
+    
+    def mul(self, a, b):
+        c = a * b
+        self.update('*')
+        return c
+    
+    def sum(self, iterable):
+        return reduce(self.add, iterable)
+    
+    def prod(self, iterable):
+        return reduce(self.mul, iterable)
+
+
+
+
+
+# - - - matmul - - -
+def matmul(A, B, progress=set()):
+    """Return the matrix product of `A` & `B`.
+    
+    Matrices must be non-empty (L,N,M>0).
+    For a LxN- & a NxM-matrix (where the result will be LxM) there will be
+    - L(N-1)M additions (`+`),
+    - LNM multiplications (`*`),
+    - so L(2N-1)M operations in total.
+    """
+    assert_matrix(A)
+    assert_matrix(B)
+    assert A.shape[1] == B.shape[0]
+    totals = {
+        '+': A.shape[0] * (A.shape[1] - 1) * B.shape[1],
+        '*': A.shape[0] * A.shape[1] * B.shape[1]
+    }
+    with Progress({o:totals[o] for o in progress}, 'matmul ') as progress:
+        C = np.empty((A.shape[0], B.shape[1]), dtype=np.result_type(A, B))
+        for i, j in np.ndindex(*C.shape):
+            C[i, j] = progress.sum(progress.mul(aik, bkj)
+                    for aik, bkj in zip(A[i, :],  B[:, j]))
+        return C
+
+
+if __name__ == '__main__':
+    for _ in range(100):
+        L, N, M = randint(1, 20, size=3)
+        A, B = randf((L, N)), randf((N, M))
+        
+        prediction = matmul(A, B)
+        actual = A @ B
+        assert np.array_equal(prediction, actual)
 
 
 
