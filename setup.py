@@ -18,7 +18,7 @@ setup(
     py_modules = ['linalg'],
     url = 'https://github.com/goessl/linalg',
     python_requires = '>=3.5',
-    install_requires = ['numpy'],
+    install_requires = ['numpy', 'tqdm'],
     
     classifiers = [
         'Development Status :: 5 - Production/Stable',
