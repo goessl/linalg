@@ -25,22 +25,26 @@ pip install git+https://github.com/goessl/linalg.git
 ### Leibniz
 
 - `det_leibniz(A)`: Return the determinant of `A`. Calculates the determinant by the Leibniz formula.
-- `minor_leibniz(A, i, j)`: Return the `i,j`-th minor of `A`. See `det_leibniz` for more.
 
 ### Laplace
 
 - `det_laplace(A)`: Return the determinant of `A`. Calculates the determinant by Laplace expansion. Uses the row/column with the most zero elements.
-- `minor_laplace(A, i, j)`: Return the `i,j`-th minor of `A`. See `det_laplace` for more.
 
 ### Gauss
 
 - `det_gauss(A)`: Return the determinant of `A`. Calculates the determinant by Gaussian elimination with complete pivoting. The matrix will be transformed in place into an upper triangular matrix (columns left of pivot won't be reduced).
 - `inv_gauss(A)`: Return the inverse of `A`. Calculates the inverse by Gaussian elimination with complete pivoting. The matrix will be transformed in place into the identity matrix.
-- `minor_gauss(A, i, j)`: Return the `i,j`-th minor of `A`. See `det_gauss` for more.
 
 ### Bareiss
 
 - `det_bareiss(A)`: Return the determinant of an integer matrix `A`. Calculates the determinant by the Bareiss algorithm. Transforms `A` in place.
+
+### Adjugate
+
+- `minor(A, i, j, det=det_gauss)`: Return the `i,j`-th minor of `A`. Uses the given determinant algorithm.
+- `cofactor(A, i, j, det=det_gauss)`: Return the `i,j`-th cofactor of `A`. Uses the given determinant algorithm.
+- `adj(A, det=det_gauss)`: Return the adjugate of `A`. Uses the given determinant algorithm.
+- `cof(A, det=det_gauss)`: Return the cofactor matrix of `A`. Uses the given determinant algorithm.
 
 ### Random Creation
 
