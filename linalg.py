@@ -32,6 +32,18 @@ def randf(shape=None, precision=1000):
 
 
 # - - - Utility - - -
+def posneg(x, s):
+    """Return `+x` if `s==True` or `-x` if `s==False`.
+    
+    To use the unary operators `+` (`__pos__`) & `-` (`__neg__`)
+    instead of multiplication with `+1` & `-1` (`__mul__`)
+    as the univariate operators may be more optimised
+    and multiplication with integers doesn't have to be implemented
+    (might be the case for custom prototyped number types).
+    """
+    return +x if s else -x
+
+
 def _prod(iterable):
     """Like `math.prod` but for non-numeric types.
     
@@ -200,6 +212,10 @@ def det_leibniz(A):
     """Return the determinant of `A`.
     
     Calculates the determinant by the Leibniz formula.
+    For a NxN-matrix there will be
+    - $N!-1$ additions (`+`),
+    - $(N-1)N!$ multiplications (`*`),
+    - so $NN!-1$ operations in total.
     """
     assert_sqmatrix(A)
     return sum(p * _prod(A[tuple(range(len(s))), s]) \
@@ -226,6 +242,11 @@ def det_gauss(A):
     Calculates the determinant by Gaussian elimination with complete pivoting.
     The matrix will be transformed in place into an upper triangular matrix
     (columns left of pivot won't be reduced).
+    For a NxN-matrix there will be
+    - $N(N^2-1)/3$ subtractions (`-`),
+    - $N(N^2+2)/3-1$ multiplications (`*`),
+    - $N(N-1)/2$ divisions (`/`),
+    - so $N(4N^2+3N-1)/6-1$ operations in total.
     """
     #https://en.wikipedia.org/wiki/Gaussian_elimination#Computing_determinants
     assert_sqmatrix(A)
@@ -246,8 +267,14 @@ def det_gauss(A):
 def inv_gauss(A):
     """Return the inverse of `A`.
     
-    Calculates the inverse by Gaussian elimination with complete pivoting.
+    Calculates the inverse by Gaussian elimination with full pivoting.
     The matrix will be transformed in place into the identity matrix.
+    For a NxN-matrix there will be
+    - $N^3-N^2$ additions (`+`),
+    - $2N^3-3N^2+2N-1$ subtractions (`-`),
+    - $3N^3-3N^2$ multiplications (`*`),
+    - $2N^2$ divisions (`/`),
+    - so $6N^3-5N^2+2N-1$ operations in total.
     """
     #https://math.stackexchange.com/a/744213/1170417
     assert_sqmatrix(A)
@@ -294,6 +321,11 @@ def det_bareiss(A):
     
     Calculates the determinant by the Bareiss algorithm.
     Transforms `A` in place.
+    For a NxN-matrix there will be
+    - $N(N^2-1)/3$ subtractions (`-`),
+    - $2N(N^2-1)/3$ multiplications (`*`),
+    - $N(N^2-3N+2)/3$ floor divisions (`//`),
+    - so $N(4N^2-3N-1)/3$ operations in total.
     """
     #https://en.wikipedia.org/wiki/Bareiss_algorithm#The_algorithm
     assert_sqmatrix(A)
@@ -344,7 +376,7 @@ def adj(A, det=det_gauss):
     """
     adjA = np.empty_like(A)
     for i, j in np.ndindex(*adjA.shape):
-        adjA[i, j] = (-1)**(i+j) * minor(A, j, i, det)
+        adjA[i, j] = posneg(minor(A, j, i, det), not (i+j)%2)
     return adjA
 
 if __name__ == '__main__':
@@ -365,6 +397,10 @@ def det_laplace(A):
     
     Calculates the determinant by Laplace expansion.
     Uses the row/column with the most zero elements.
+    For a NxN-matrix there will be
+    - $N!-1$ additions (`+`),
+    - $floor((e-1)N!)-1$ multiplications (`*`) (https://oeis.org/A038156),
+    - so $floor(eN!)-2$ operations in total (https://oeis.org/A026243).
     """
     #https://en.wikipedia.org/wiki/Laplace_expansion
     assert_sqmatrix(A)
@@ -379,11 +415,11 @@ def det_laplace(A):
     nonzeros_in_columns = np.count_nonzero(A, axis=0)
     if min(nonzeros_in_rows) <= min(nonzeros_in_columns):
         i = np.argmin(nonzeros_in_rows)
-        return sum((-1)**(i+j)*aij*minor(A, i, j, det_laplace) \
+        return sum(posneg(aij*minor(A, i, j, det_laplace), not (i+j)%2) \
                 for j, aij in enumerate(A[i,:]) if aij)
     else:
         j = np.argmin(nonzeros_in_columns)
-        return sum((-1)**(i+j)*aij*minor(A, i, j, det_laplace) \
+        return sum(posneg(aij*minor(A, i, j, det_laplace), not (i+j)%2) \
                 for i, aij in enumerate(A[:,j]) if aij)
 
 
