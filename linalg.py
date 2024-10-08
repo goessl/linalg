@@ -130,11 +130,11 @@ class Progress:
 def matmul(A, B, progress=set()):
     """Return the matrix product of `A` & `B`.
     
+    Matrices must be non-empty (L,N,M>0).
     For a LxN- & a NxM-matrix (where the result will be LxM) there will be
     - L(N-1)M additions (`+`),
     - LNM multiplications (`*`),
     - so L(2N-1)M operations in total.
-    Matrices must be non-empty (L,N,M>0).
     """
     assert_matrix(A)
     assert_matrix(B)
