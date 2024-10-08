@@ -1,6 +1,6 @@
 import numpy as np
 from functools import reduce
-from operator import mul
+from operator import add, mul
 from fractions import Fraction
 from tqdm.auto import tqdm
 
@@ -32,12 +32,35 @@ def randf(shape=None, precision=1000):
 
 
 # - - - Utility - - -
+def posneg(x, s):
+    """Return `+x` if `s==True` or `-x` if `s==False`.
+    
+    To use the unary operators `+` (`__pos__`) & `-` (`__neg__`)
+    instead of multiplication with `+1` & `-1` (`__mul__`)
+    as the univariate operators may be more optimised
+    and multiplication with integers doesn't have to be implemented
+    (might be the case for custom prototyped number types).
+    """
+    return +x if s else -x
+
+
+def _sum(iterable):
+    """Like `sum` but without initial '+0'.
+    
+    Avoids initial '+int(0)'
+    for correct operation counting in complexity analysis.
+    For `float`s keep using `sum` for better precision.
+    See [README.md#todo](README.md#Conventions) for justification.
+    """
+    return reduce(add, iterable)
+
 def _prod(iterable):
     """Like `math.prod` but for non-numeric types.
     
     `math.prod` might reject non-numeric types:
     https://docs.python.org/3/library/math.html#math.prod.
     For `float`s keep using `math.prod` for better precision.
+    See [README.md#todo](README.md#Conventions) for justification.
     """
     return reduce(mul, iterable)
 
@@ -177,22 +200,22 @@ def _permutations(iterable, r=None):
     
     indices = list(range(n))
     cycles = list(range(n, n-r, -1))
-    parity = 0
-    yield tuple(pool[i] for i in indices[:r]), +1
+    parity = True
+    yield tuple(pool[i] for i in indices[:r]), parity
     
     while n:
         for i in reversed(range(r)):
             cycles[i] -= 1
             if cycles[i] == 0:
                 if ((n-i) & 1) == 0:
-                    parity = 1 - parity
+                    parity = not parity
                 indices[i:] = indices[i+1:] + indices[i:i+1]
                 cycles[i] = n - i
             else:
                 j = cycles[i]
                 indices[i], indices[-j] = indices[-j], indices[i]
-                parity = 1 - parity
-                yield tuple(pool[i] for i in indices[:r]), -2*parity+1
+                parity = not parity
+                yield tuple(pool[i] for i in indices[:r]), parity
                 break
         else:
             return
@@ -201,9 +224,13 @@ def det_leibniz(A):
     """Return the determinant of `A`.
     
     Calculates the determinant by the Leibniz formula.
+    For a NxN-matrix there will be
+    - $N!-1$ additions (`+`),
+    - $(N-1)N!$ multiplications (`*`),
+    - so $NN!-1$ operations in total.
     """
     assert_sqmatrix(A)
-    return sum(p * _prod(A[tuple(range(len(s))), s]) \
+    return _sum(posneg(_prod(A[tuple(range(len(s))), s]), p) \
             for s, p in _permutations(range(A.shape[0])))
 
 
@@ -227,6 +254,11 @@ def det_gauss(A):
     Calculates the determinant by Gaussian elimination with complete pivoting.
     The matrix will be transformed in place into an upper triangular matrix
     (columns left of pivot won't be reduced).
+    For a NxN-matrix there will be
+    - $N(N^2-1)/3$ subtractions (`-`),
+    - $N(N^2+2)/3-1$ multiplications (`*`),
+    - $N(N-1)/2$ divisions (`/`),
+    - so $N(4N^2+3N-1)/6-1$ operations in total.
     """
     #https://en.wikipedia.org/wiki/Gaussian_elimination#Computing_determinants
     assert_sqmatrix(A)
@@ -242,13 +274,19 @@ def det_gauss(A):
         #reduce (not left of pivot, these elements will not influence result)
         A[i+1:, i:] -= A[i, i:] * (A[i+1:, i] / A[i, i])[:, np.newaxis]
     
-    return +_prod(np.diag(A)) if s else -_prod(np.diag(A))
+    return posneg(_prod(np.diag(A)), s)
 
 def inv_gauss(A):
     """Return the inverse of `A`.
     
     Calculates the inverse by Gaussian elimination with complete pivoting.
     The matrix will be transformed in place into the identity matrix.
+    For a NxN-matrix there will be
+    - $N^3-N^2$ additions (`+`),
+    - $2N^3-3N^2+2N-1$ subtractions (`-`),
+    - $3N^3-3N^2$ multiplications (`*`),
+    - $2N^2$ divisions (`/`),
+    - so $6N^3-5N^2+2N-1$ operations in total.
     """
     #https://math.stackexchange.com/a/744213/1170417
     assert_sqmatrix(A)
@@ -294,6 +332,11 @@ def det_bareiss(A):
     
     Calculates the determinant by the Bareiss algorithm.
     Transforms `A` in place.
+    For a NxN-matrix there will be
+    - $N(N^2-1)/3$ subtractions (`-`),
+    - $2N(N^2-1)/3$ multiplications (`*`),
+    - $N(N^2-3N+2)/3$ floor divisions (`//`),
+    - so $N(4N^2-3N-1)/3$ operations in total.
     """
     #https://en.wikipedia.org/wiki/Bareiss_algorithm#The_algorithm
     assert_sqmatrix(A)
@@ -312,7 +355,7 @@ def det_bareiss(A):
                 (A[i, i]*A[i+1:, i:] - A[i+1:, i][:, np.newaxis]*A[i, i:]) \
                 // (A[i-1, i-1] if i>0 else 1)
     
-    return +A[-1, -1] if s else -A[-1, -1]
+    return posneg(A[-1, -1], s)
 
 
 if __name__ == '__main__':
@@ -343,7 +386,7 @@ def cofactor(A, i, j, det=det_gauss):
     
     Uses the given determinant algorithm.
     """
-    return (-1)**(i+j)*minor(A, i, j, det)
+    return posneg(minor(A, i, j, det), not (i+j)%2)
 
 def adj(A, det=det_gauss):
     """Return the adjugate of `A`.
@@ -380,6 +423,10 @@ def det_laplace(A):
     
     Calculates the determinant by Laplace expansion.
     Uses the row/column with the most zero elements.
+    For a NxN-matrix there will be
+    - $N!-1$ additions (`+`),
+    - $floor((e-1)N!)-1$ multiplications (`*`) (https://oeis.org/A038156),
+    - so $floor(eN!)-2$ operations in total (https://oeis.org/A026243).
     """
     #https://en.wikipedia.org/wiki/Laplace_expansion
     assert_sqmatrix(A)
