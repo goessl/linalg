@@ -136,12 +136,28 @@ pip install git+https://github.com/goessl/linalg.git
   - $M(M-1)/2$ divisions (`/`),
   so $M(M-1)N+M(M-1)/2$ operations in total.
 
+### Row Echelon, Rank Decomposition, Pseudoinverse
+
+- `is_ref(A, reduced=True)`: Return if `A` is of (reduced) row echelon form.
+- `ref_gauss(A, reduced=True)`: Transform `A` into (reduced) row echelon form.
+  By Gaussian elimination with pivoting.
+  Transforms `A` in place.
+  For a MxN-matrix of rank r there will be
+  - $MNr-Nr(r+1)/2$ subtractions (`-`),
+  - $MNr-Nr(r+1)/2$ multiplications (`*`),
+  - $Mr-r(r+1)/2$ divisions (`/`),
+  - so $Mr(2N+1)-Nr(r+1)-r(r+1)/2$ operations in total.
+- `rank_decomposition(A)`: Return a rank decomposition `B, C` of `A` such that `A=BC`.
+- `pinv(A)`: Return the Moore–Penrose inverse of `A`.
+- `lstsq(X, y)`: Return the linear least squares solution `b` for `y=Xb`.
+
 ### Random Creation
 
 - `randint(low, high=None, size=None)`: Return a random `int` or an array of random `int`s.
   Like `numpy.random.randint` but with native `int`s.
 - `randf(shape=None, precision=1000)`: Return a random `Fraction` or an array of random `Fraction`s.
   Their numerators `n` are `-precision <= n <= +precision` and their denominators `d` are `1 <= d <= +precision`.
+- `randfr(M, N, r, precision=1000)`: Return a random MxN `Fraction` matrix of rank `r`.
 
 ### Utility
 
