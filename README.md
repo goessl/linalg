@@ -26,6 +26,15 @@ pip install git+https://github.com/goessl/linalg.git
   - $L(N-1)M$ additions (`+`),
   - $LNM$ multiplications (`*`),
   - so $L(2N-1)M$ operations in total.
+- `backsub(T, y, tril=False)`: Return the solution for `Tx=y` where the matrix `T` is triangular.
+  Back substitution like BLAS `xTRSV`.
+  `tril=False` if `T` is upper triangular, `tril=True` if `T` is lower triangular.
+  For a N-vector/NxN-matrix there will be
+  - $N(N-3)/2+1$ additions (`+`),
+  - $N$ subtractions (`-`),
+  - $N(N-1)/2$ multiplications (`*`),
+  - $N$ divisions (`/`),
+  - so $N^2+1$ operations in total.
 
 ### Leibniz
 

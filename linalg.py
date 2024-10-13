@@ -205,6 +205,51 @@ if __name__ == '__main__':
 
 
 
+# - - - Back substitution - - -
+def backsub(T, y, tril=False):
+    """Return the solution for `Tx=y` where the matrix `T` is triangular.
+    
+    Back substitution like BLAS `xTRSV`.
+    `tril=False` if `T` is upper triangular,
+    `tril=True` if `T` is lower triangular.
+    For a N-vector/NxN-matrix there will be
+    - $N(N-3)/2+1$ additions (`+`),
+    - $N$ subtractions (`-`),
+    - $N(N-1)/2$ multiplications (`*`),
+    - $N$ divisions (`/`),
+    - so $N2+1$ operations in total.
+    """
+    assert_sqmatrix(T)
+    x = np.empty_like(y)
+    if tril:
+        for i in range(len(x)):
+            x[i] = (y[i] - T[i, :i]@x[:i]) / T[i, i]
+    else:
+        for i in reversed(range(len(x))):
+            x[i] = (y[i] - T[i, i+1:]@x[i+1:]) / T[i, i]
+    return x
+
+
+if __name__ == '__main__':
+    for _ in range(100):
+        N = randint(1, 10)
+        L = np.tril(randf((N, N)))
+        x = randf(N)
+        try:
+            assert np.array_equal(x, backsub(L, L@x, tril=True))
+        except:
+            assert np.any(np.diag(L) == 0)
+        
+        U = np.triu(randf((N, N)))
+        try:
+            assert np.array_equal(x, backsub(U, U@x))
+        except:
+            assert np.any(np.diag(U) == 0)
+
+
+
+
+
 # - - - Leibniz - - -
 def _permutations(iterable, r=None):
     """`itertools.permutation`, but yields `permutation, parity`."""
