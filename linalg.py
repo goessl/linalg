@@ -771,7 +771,7 @@ if __name__ == '__main__':
         
         X, y = randf((M, N)), randf(M)
         
+        prediction = lstsq(X, y)
         actual = np.linalg.lstsq(
                 X.astype(np.float64), y.astype(np.float64), rcond=None)[0]
-        prediction = lstsq(X, y)
         assert np.allclose(prediction.astype(np.float64), actual)
