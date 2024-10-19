@@ -15,7 +15,6 @@ setup(
     author_email = 'goessl@student.tugraz.at',
     license = 'MIT',
     
-    py_modules = ['linalg'],
     url = 'https://github.com/goessl/linalg',
     python_requires = '>=3.5',
     install_requires = ['numpy', 'tqdm'],
