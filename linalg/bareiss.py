@@ -27,8 +27,10 @@ def det_bareiss(A):
         swap_pivot(A, i, i+i_max, i+j_max)
         s ^= bool(i_max) != bool(j_max)
         #reduction
+        #A[i+1:, i:]*A[i, i] instead of A[i, i]*A[i+1:, i:]
+        #to keep CounterWrapper.__mul__ from wrapping an array
         A[i+1:, i:] = \
-                (A[i, i]*A[i+1:, i:] - A[i+1:, i][:, np.newaxis]*A[i, i:]) \
+                (A[i+1:, i:]*A[i, i] - A[i+1:, i][:, np.newaxis]*A[i, i:]) \
                 // (A[i-1, i-1] if i>0 else 1)
     
     return posneg(A[-1, -1], s)
