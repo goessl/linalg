@@ -51,7 +51,7 @@ pip install git+https://github.com/goessl/linalg.git
 
 - `det_leibniz(A)`: Return the determinant of `A`.
   Calculates the determinant by the Leibniz formula.
-  For a NxN matrix there will be
+  For a NxN matrix there will be at most
   - $N!-1$ additions (`+`),
   - $(N-1)N!$ multiplications (`*`),
   - so $NN!-1$ arithmetic operations in total.
