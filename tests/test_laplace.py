@@ -16,7 +16,8 @@ def test_det_laplace():
         actual = np.linalg.det(A.astype(np.float64))
         assert np.isclose(float(prediction), actual)
         
-        assert set(CounterWrapper.counter) <= {'+', '*'}
-        assert CounterWrapper.counter['+'] <= factorial(N)-1
+        assert set(CounterWrapper.counter) <= {'+', '-', '*'}
+        assert CounterWrapper.counter['+'] + CounterWrapper.counter['-'] \
+                <= factorial(N)-1
         assert CounterWrapper.counter['*'] <= floor((e-1)*factorial(N))-1
-        assert CounterWrapper.counter.total() <= floor(e*factorial(N))-1
+        assert CounterWrapper.counter.total() <= floor(e*factorial(N))-2

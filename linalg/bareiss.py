@@ -8,11 +8,11 @@ def det_bareiss(A):
     
     Calculates the determinant by the Bareiss algorithm.
     Transforms `A` in place.
-    For a NxN-matrix there will be
+    For a NxN matrix there will be
     - $N(N^2-1)/3$ subtractions (`-`),
     - $2N(N^2-1)/3$ multiplications (`*`),
     - $N(N^2-3N+2)/3$ floor divisions (`//`),
-    - so $N(4N^2-3N-1)/3$ operations in total.
+    - so $N(4N^2-3N-1)/3$ arithmetic operations in total.
     """
     #https://en.wikipedia.org/wiki/Bareiss_algorithm#The_algorithm
     assert_sqmatrix(A)

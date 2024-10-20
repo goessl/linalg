@@ -18,8 +18,8 @@ def test_det_bareiss():
         assert isinstance(prediction, int) \
                 and np.isclose(float(prediction), actual)
         
-        assert set(CounterWrapper.counter) <= {'+', '*', '//'}
-        assert CounterWrapper.counter['+'] == N*(N**2-1)//3
+        assert set(CounterWrapper.counter) <= {'-', '*', '//'}
+        assert CounterWrapper.counter['-'] == N*(N**2-1)//3
         assert CounterWrapper.counter['*'] == 2*N*(N**2-1)//3
         assert CounterWrapper.counter['//'] == N*(N**2-3*N+2)//3
         assert CounterWrapper.counter.total() == N*(4*N**2-3*N-1)//3

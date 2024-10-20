@@ -38,10 +38,10 @@ def det_leibniz(A):
     """Return the determinant of `A`.
     
     Calculates the determinant by the Leibniz formula.
-    For a NxN-matrix there will be
+    For a NxN matrix there will be
     - $N!-1$ additions (`+`),
     - $(N-1)N!$ multiplications (`*`),
-    - so $NN!-1$ operations in total.
+    - so $NN!-1$ arithmetic operations in total.
     """
     assert_sqmatrix(A)
     return _sum(posneg(_prod(A[tuple(range(len(s))), s]), p) \

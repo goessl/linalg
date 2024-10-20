@@ -17,7 +17,7 @@ def posneg(x, s):
 
 
 def _sum(iterable):
-    """Like `sum` but without initial '+0'.
+    """Like `sum` but without initial `+0`.
     
     Avoids initial '+int(0)'
     for correct operation counting in complexity analysis.

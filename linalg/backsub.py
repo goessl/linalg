@@ -9,12 +9,12 @@ def backsub(T, y, tril=False):
     Back substitution like BLAS `xTRSV`.
     `tril=False` if `T` is upper triangular,
     `tril=True` if `T` is lower triangular.
-    For a N-vector/NxN-matrix there will be
+    For a N vector/NxN matrix there will be
     - $N(N-3)/2+1$ additions (`+`),
-    - $N$ subtractions (`-`),
+    - $N-1$ subtractions (`-`),
     - $N(N-1)/2$ multiplications (`*`),
     - $N$ divisions (`/`),
-    - so $N2+1$ operations in total.
+    - so $N^2$ arithmetic operations in total.
     """
     assert_sqmatrix(T)
     x = np.empty_like(y)

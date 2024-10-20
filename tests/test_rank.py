@@ -1,20 +1,42 @@
 import numpy as np
 from linalg.rank import *
 from linalg.rand import *
+from linalg.counterwrapper import *
 
 
 
 def test_ref_gauss():
     for _ in range(100):
-        N = randint(1, 10)
-        A = randf((N, N))
+        M, N  = randint(1, 10, size=2)
+        r = randint(0, min(M, N)+1)
+        A = randfr(M, N, r)
         
+        CounterWrapper.counter.clear()
+        A = toCounterWrappers(A)
         ref_gauss(A, False)
+        A = fromCounterWrappers(A)
         assert is_ref(A, False)
         
-        A = randf((N, N))
+        assert set(CounterWrapper.counter) <= {'-', '*', '/'}
+        assert CounterWrapper.counter['-'] == N*r*(2*M-r-1)//2
+        assert CounterWrapper.counter['*'] == N*r*(2*M-r-1)//2
+        assert CounterWrapper.counter['/'] == r*(2*M-r-1)//2
+        assert CounterWrapper.counter.total() == r*(2*M-r-1)*(2*N+1)//2
+        
+        
+        A = randfr(M, N, r)
+        
+        CounterWrapper.counter.clear()
+        A = toCounterWrappers(A)
         ref_gauss(A, True)
+        A = fromCounterWrappers(A)
         assert is_ref(A, True)
+        
+        assert set(CounterWrapper.counter) <= {'-', '*', '/'}
+        assert CounterWrapper.counter['-'] == N*r*(M-1)
+        assert CounterWrapper.counter['*'] == N*r*(M-1)
+        assert CounterWrapper.counter['/'] == N*r
+        assert CounterWrapper.counter.total() == N*r*(2*M-1)
 
 
 def test_rank_decomposition():

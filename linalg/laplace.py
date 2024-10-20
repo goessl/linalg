@@ -9,10 +9,11 @@ def det_laplace(A):
     
     Calculates the determinant by Laplace expansion.
     Uses the row/column with the most zero elements.
-    For a NxN-matrix there will be
-    - $N!-1$ additions (`+`),
+    For a NxN matrix there will be at most
+    - $N!-1$ additions (`+`) and subtractions (`-`),
     - $floor((e-1)N!)-1$ multiplications (`*`) (https://oeis.org/A038156),
-    - so $floor(eN!)-2$ operations in total (https://oeis.org/A026243).
+    - so $floor(eN!)-2$ arithmetic operations
+      in total (https://oeis.org/A026243).
     """
     #https://en.wikipedia.org/wiki/Laplace_expansion
     assert_sqmatrix(A)

@@ -10,11 +10,11 @@ def det_gauss(A):
     Calculates the determinant by Gaussian elimination with complete pivoting.
     The matrix will be transformed in place into an upper triangular matrix
     (columns left of pivot won't be reduced).
-    For a NxN-matrix there will be
+    For a NxN matrix there will be
     - $N(N^2-1)/3$ subtractions (`-`),
     - $N(N^2+2)/3-1$ multiplications (`*`),
     - $N(N-1)/2$ divisions (`/`),
-    - so $N(4N^2+3N-1)/6-1$ operations in total.
+    - so $N(4N^2+3N-1)/6-1$ arithmetic operations in total.
     """
     #https://en.wikipedia.org/wiki/Gaussian_elimination#Computing_determinants
     assert_sqmatrix(A)
@@ -37,12 +37,12 @@ def inv_gauss(A):
     
     Calculates the inverse by Gaussian elimination with complete pivoting.
     The matrix will be transformed in place into the identity matrix.
-    For a NxN-matrix there will be
+    For a NxN matrix there will be
     - $N^3-N^2$ additions (`+`),
     - $2N^3-3N^2+2N-1$ subtractions (`-`),
-    - $3N^3-3N^2$ multiplications (`*`),
-    - $2N^2$ divisions (`/`),
-    - so $6N^3-5N^2+2N-1$ operations in total.
+    - $2N^3-2N^2$ multiplications (`*`),
+    - $2N^2-N+1$ divisions (`/`),
+    - so $5N^3-4N^2+N$ arithmetic operations in total.
     """
     #https://math.stackexchange.com/a/744213/1170417
     assert_sqmatrix(A)

@@ -18,8 +18,9 @@ def test_backsub():
                     toCounterWrappers(L), toCounterWrappers(Lx), tril=True))
             assert np.array_equal(prediction, x)
             
-            assert set(CounterWrapper.counter) <= {'+', '*', '/'}
-            assert CounterWrapper.counter['+'] == N*(N-1)//2
+            assert set(CounterWrapper.counter) <= {'+', '-', '*', '/'}
+            assert CounterWrapper.counter['+'] == N*(N-3)//2+1
+            assert CounterWrapper.counter['-'] == N-1
             assert CounterWrapper.counter['*'] == N*(N-1)//2
             assert CounterWrapper.counter['/'] == N
             assert CounterWrapper.counter.total() == N**2
@@ -36,11 +37,12 @@ def test_backsub():
                     toCounterWrappers(U), toCounterWrappers(Ux)))
             assert np.array_equal(prediction, x)
             
-            assert set(CounterWrapper.counter) <= {'+', '*', '/'}
-            assert CounterWrapper.counter['+'] == N*(N-1)//2
+            assert set(CounterWrapper.counter) <= {'+', '-', '*', '/'}
+            assert CounterWrapper.counter['+'] == N*(N-3)//2+1
+            assert CounterWrapper.counter['-'] == N-1
             assert CounterWrapper.counter['*'] == N*(N-1)//2
             assert CounterWrapper.counter['/'] == N
             assert CounterWrapper.counter.total() == N**2
             
-        except:
+        except ZeroDivisionError:
             assert np.any(np.diag(U) == 0)

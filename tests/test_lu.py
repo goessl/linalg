@@ -17,9 +17,9 @@ def test_LU():
             assert M<=N and np.all(np.diag(L)==1) \
                     or A.shape[0]>A.shape[1] and np.all(np.diag(U)==1)
             
-            assert set(CounterWrapper.counter) <= {'+', '*', '/'}
+            assert set(CounterWrapper.counter) <= {'-', '*', '/'}
             M, N = sorted((M, N))
-            assert CounterWrapper.counter['+'] == M*(M-1)*N//2
+            assert CounterWrapper.counter['-'] == M*(M-1)*N//2
             assert CounterWrapper.counter['*'] == M*(M-1)*N//2
             assert CounterWrapper.counter['/'] == M*(M-1)//2
             assert CounterWrapper.counter.total() == M*(M-1)*N+M*(M-1)//2
@@ -40,12 +40,13 @@ def test_PLU():
                     and np.array_equal(P@L@U, A)
             assert np.all(np.diag(L) == 1)
             
-            assert set(CounterWrapper.counter) <= {'+', '*', '/'}
+            assert set(CounterWrapper.counter) <= {'-', '*', '/'}
             O = min(M-1, N)
-            assert CounterWrapper.counter['+'] == N*O*(2*M-O-1)//2
+            assert CounterWrapper.counter['-'] == N*O*(2*M-O-1)//2
             assert CounterWrapper.counter['*'] == N*O*(2*M-O-1)//2
             assert CounterWrapper.counter['/'] == O*(2*M-O-1)//2
-            assert CounterWrapper.counter.total() == N*O*(2*M-O-1)+O*(2*M-O-1)//2
+            assert CounterWrapper.counter.total() \
+                    == N*O*(2*M-O-1)+O*(2*M-O-1)//2
         
         except ZeroDivisionError:
             pass
@@ -63,12 +64,13 @@ def test_LUQ():
                     and np.array_equal(L@U@Q, A)
             assert np.all(np.diag(U) == 1)
             
-            assert set(CounterWrapper.counter) <= {'+', '*', '/'}
+            assert set(CounterWrapper.counter) <= {'-', '*', '/'}
             O = min(M, N-1)
-            assert CounterWrapper.counter['+'] == M*O*(2*N-O-1)//2
+            assert CounterWrapper.counter['-'] == M*O*(2*N-O-1)//2
             assert CounterWrapper.counter['*'] == M*O*(2*N-O-1)//2
             assert CounterWrapper.counter['/'] == O*(2*N-O-1)//2
-            assert CounterWrapper.counter.total() == M*O*(2*N-O-1)+O*(2*N-O-1)//2
+            assert CounterWrapper.counter.total() \
+                    == M*O*(2*N-O-1)+O*(2*N-O-1)//2
         
         except ZeroDivisionError:
             pass
@@ -87,12 +89,12 @@ def test_PLUQ():
             assert M<=N and np.all(np.diag(L)==1) \
                     or M>N and np.all(np.diag(U)==1)
             
-            assert set(CounterWrapper.counter) <= {'+', '*', '/'}
+            assert set(CounterWrapper.counter) <= {'-', '*', '/'}
             M, N = sorted((M, N))
-            assert CounterWrapper.counter['+'] == M*N*(M-1)//2
-            assert CounterWrapper.counter['*'] == M*N*(M-1)//2
+            assert CounterWrapper.counter['-'] == M*(M-1)*N//2
+            assert CounterWrapper.counter['*'] == M*(M-1)*N//2
             assert CounterWrapper.counter['/'] == M*(M-1)//2
-            assert CounterWrapper.counter.total() == M*N*(M-1)+M*(M-1)//2
+            assert CounterWrapper.counter.total() == M*(M-1)*N+M*(M-1)//2
         
         except ZeroDivisionError:
             pass

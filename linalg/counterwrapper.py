@@ -47,12 +47,12 @@ class CounterWrapper:
     
     def __sub__(self, other):
         if not (isinstance(other, int) and other==0):
-            CounterWrapper.counter['+'] += 1 #don't count -int(0)
+            CounterWrapper.counter['-'] += 1 #don't count -int(0)
         return CounterWrapper(self.v - (other.v if isinstance(other, CounterWrapper) else other))
     
     def __rsub__(self, other):
         if not (isinstance(other, int) and other==0):
-            CounterWrapper.counter['+'] += 1 #don't count int(0)-
+            CounterWrapper.counter['-'] += 1 #don't count int(0)-
         return CounterWrapper(other - self.v)
     
     def __mul__(self, other):

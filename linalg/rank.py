@@ -26,11 +26,16 @@ def ref_gauss(A, reduced=True):
     
     By Gaussian elimination with pivoting.
     Transforms `A` in place.
-    For a MxN-matrix of rank r there will be
-    - $MNr-Nr(r+1)/2$ subtractions (`-`),
-    - $MNr-Nr(r+1)/2$ multiplications (`*`),
-    - $Mr-r(r+1)/2$ divisions (`/`),
-    - so $Mr(2N+1)-Nr(r+1)-r(r+1)/2$ operations in total.
+    For the not reduced form of a MxN-matrix of rank r there will be
+    - $Nr(2M-r-1)/2$ subtractions (`-`),
+    - $Nr(2M-r-1)/2$ multiplications (`*`),
+    - $r(2M-r-1)/2$ divisions (`/`),
+    - so $r(2M-r-1)(2N+1)/2$ operations in total.
+    For the reduced form there will be
+    - $Nr(M-1)$ subtractions (`-`),
+    - $Nr(M-1)$ multiplications (`*`),
+    - $Nr$ divisions (`/`),
+    - so $Nr(2M-1)$ operations in total.
     """
     #https://en.wikipedia.org/wiki/Gaussian_elimination#Pseudocode
     i, j = 0, 0
