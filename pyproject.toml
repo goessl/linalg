@@ -1,0 +1,26 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "linalg"
+version = "0.9"
+description = "Linear algebra."
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+authors = [
+  {name="Sebastian Gössl", email="goessl@student.tugraz.at"}
+]
+dependencies = [
+  "numpy"
+]
+
+[project.urls]
+Homepage = "https://github.com/goessl/linalg"
+Documentation = "https://goessl.github.io/linalg"
+Repository = "https://github.com/goessl/linalg.git"
+
+[project.optional-dependencies]
+test = ["pytest"]
