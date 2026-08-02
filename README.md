@@ -1,6 +1,18 @@
 # linalg
 
-Linear algebra.
+Linear algebra with scalar object support & progress visualisation.
+
+```python
+>>> import numpy as np
+>>> from linalg import *
+>>> a, b = np.random.rand(10000), np.random.rand(10000)
+>>> c = vadd(a, b)
+>>> with visualise('add'):
+...     c = vadd(a, b)
+...
+vadd
+add: 100%|████████████████████████████| 10000/10000 [00:00<00:00, 216824.89it/s]
+```
 
 ## Installation
 
@@ -12,14 +24,53 @@ pip install git+https://github.com/goessl/linalg.git
 
 **Enjoy the [documentation webpage](https://goessl.github.io/linalg).**
 
+
+## Dependencies
+
+- [`numpy`](https://numpy.org/)
+- [`tqdm`](https://tqdm.github.io/)
+
 ## Roadmap
 
 - [x] Deploy
-- [ ] Production
+- [x] Production
+- [ ] [`blas`](linalg/blas.py)
+    - [x] `numpy.ufunc`s with callback (same broadcasting, same promotion, ...)
+    - [ ] in-place operations
+    - [ ] `outer`
+    - [ ] `matmul`
+- [x] [`progress`](linalg/progress.py)
+    - [x] progress visualisation in context block
+    - [ ] complexity tracking for functions in development
+- [ ] `leibniz`
+    - [ ] `det_leibniz`
+- [ ] `laplace`
+    - [ ] `det_laplace`
+- [ ] `gauss`
+    - [ ] `det_gauss`
+    - [ ] `inv_gauss`
+    - [ ] `bareiss`
+- [ ] `adjugate`
+    - [ ] `minor`
+    - [ ] `cofactor`
+    - [ ] `adj`
+    - [ ] `cof`
+- [ ] `lu`
+    - [ ] `lu`
+    - [ ] `plu`
+    - [ ] `luq`
+    - [ ] `pluq`
+    - [ ] `banachiewicz`
+- [ ] `rank`
+    - [ ] `ref_gauss`
+    - [ ] `rank_decomp`
+    - [ ] `pinv`
+    - [ ] `lstsq`
+- [ ] `faddeev_leverrier`
+    - [ ] `det_faddeev_leverrier`
+    - [ ] `charp_faddeev_leverrier`
+    - [ ] `adj_faddeev_leverrier`
 - [x] Ballin
-- [ ] [`blas`](blas.md)
-  - [x] `numpy.ufunc`s with callback (same broadcasting, same promotion, ...)
-  - [ ] in-place
 
 ## License (MIT)
 

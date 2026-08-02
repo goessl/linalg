@@ -1,7 +1,7 @@
 site_name: linalg
 site_url: https://goessl.github.io/linalg/
 site_author: Sebastian Gössl
-site_description: Linear algebra.
+site_description: Linear algebra with scalar object support & progress visualisation.
 
 repo_name: goessl/linalg
 repo_url: https://github.com/goessl/linalg
@@ -52,12 +52,18 @@ extra:
       name: lordgoessl on Instagram
 
 markdown_extensions:
+  - admonition
   - pymdownx.arithmatex:
       generic: true
   - pymdownx.highlight
   - pymdownx.superfences
   - pymdownx.tasklist:
       custom_checkbox: true
+
+extra_css:
+  - stylesheets/complexity.css
+  - stylesheets/see-also.css
+  - stylesheets/references.css
 
 extra_javascript:
   - mathjax.js
@@ -66,3 +72,4 @@ extra_javascript:
 nav:
   - Home: index.md
   - blas.md
+  - progress.md

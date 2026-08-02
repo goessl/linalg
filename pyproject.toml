@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "linalg"
-version = "0.9"
-description = "Linear algebra."
+version = "1.0"
+description = "Linear algebra with scalar object support & progress visualisation."
 readme = "README.md"
 requires-python = ">=3.12"
 license = "MIT"
@@ -14,7 +14,8 @@ authors = [
   {name="Sebastian Gössl", email="goessl@student.tugraz.at"}
 ]
 dependencies = [
-  "numpy"
+  "numpy",
+  "tqdm"
 ]
 
 [project.urls]

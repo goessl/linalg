@@ -7,6 +7,7 @@
 ## Modules
 
 - [`blas`](blas.md)
+- [`progress`](progress.md)
 
 ## Installation
 
@@ -14,14 +15,52 @@
 pip install git+https://github.com/goessl/linalg.git
 ```
 
+## Dependencies
+
+- [`numpy`](https://numpy.org/)
+- [`tqdm`](https://tqdm.github.io/)
+
 ## Roadmap
 
 - [x] Deploy
-- [ ] Production
-- [x] Ballin
+- [x] Production
 - [ ] [`blas`](blas.md)
-  - [x] `numpy.ufunc`s with callback (same broadcasting, same promotion, ...)
-  - [ ] in-place
+    - [x] `numpy.ufunc`s with callback (same broadcasting, same promotion, ...)
+    - [ ] in-place operations
+    - [ ] `outer`
+    - [ ] `matmul`
+- [x] [`progress`](progress.md)
+    - [x] progress visualisation in context block
+    - [ ] complexity tracking for functions in development
+- [ ] `leibniz`
+    - [ ] `det_leibniz`
+- [ ] `laplace`
+    - [ ] `det_laplace`
+- [ ] `gauss`
+    - [ ] `det_gauss`
+    - [ ] `inv_gauss`
+    - [ ] `bareiss`
+- [ ] `adjugate`
+    - [ ] `minor`
+    - [ ] `cofactor`
+    - [ ] `adj`
+    - [ ] `cof`
+- [ ] `lu`
+    - [ ] `lu`
+    - [ ] `plu`
+    - [ ] `luq`
+    - [ ] `pluq`
+    - [ ] `banachiewicz`
+- [ ] `rank`
+    - [ ] `ref_gauss`
+    - [ ] `rank_decomp`
+    - [ ] `pinv`
+    - [ ] `lstsq`
+- [ ] `faddeev_leverrier`
+    - [ ] `det_faddeev_leverrier`
+    - [ ] `charp_faddeev_leverrier`
+    - [ ] `adj_faddeev_leverrier`
+- [x] Ballin
 
 ## License (MIT)
 
