@@ -2,291 +2,229 @@
 
 Usage:
 
-To visualise progress, just wrap the block that should be visualised into a
-[`visualise`][linalg.progress.visualise] context.
-All [`visualisable`][linalg.progress.visualisable] functions
-will get a section with progress bars.
-Nested visualisable functions increment the top most functions progress.
+To visualise the progress of a visualisable function, pass the keyword argument
+`progress:Iterable[str]` with the scalar operations you want to be visualised
+(`add`, `sub`, ...).
+The function will print its progress in the selected scalar operations as
+[`tqdm`](https://tqdm.github.io/) progress bars.
 
 Implementation:
 
-Decorate visualisable functions with
-[`visualisable`][linalg.progress.visualisable]. It should announce
-the number of scalar operations the function will perform.
+To make your own functions progress visualisable, add the keyword parameter
+`progress:Progress` to its signature and decorate it as
+[`visualisable`][linalg.progress.visualisable].
+[`visualisable`][linalg.progress.visualisable] needs a `Callable` that takes
+the same parameters as the decorated function itself (excluding
+`progress:Progress`) that at call time announces the total number of scalar
+operations that will take place during execution.
 
-[`notify`][linalg.progress.notify] when a scalar operation has happened
-inside a visualisable function to publish the progress step.
+The function then must either update its progress handler via
+`progress.update(op:str, n:int=1)` or use the scalar helpers
+`c = progress.add(a, b)`, and pass the handler down to subroutines.
 
-Scalar helpers that perform the operation, notify and return the result
-are provided for common Python operations.
+If the number of announced operations doesn't equal the number of updates at
+return a `UserWarning` is issued.
 
 For example:
 
 ```python
-from itertools import zip_longest
-from linalg.progress import visualisable, notify, visualise, mul
-from typing import Any
-from collections.abc import Sequence
-
-@visualisable(lambda x, y: {'add':max(len(x), len(y))}) #announce total operations
-def f(x:Sequence, y:Sequence) -> list:
-    #Return vectorial `x + y`
-    z = []
-    for xi, yi in zip_longest(x, y, fillvalue=0):
-        z.append(xi+yi)
-        notify('add') #notify the visualisation to increment the add bar
-    return z
-
-@visualisable(lambda a, x, y: {'add':max(len(x), len(y)), 'mul':len(x)})
-def g(a: Any, x: Sequence, y: Sequence) -> list:
-    #Return vectorial `a*x+y`
-    ax = []
-    for xi in x:
-        ax.append(mul(a, xi)) #operation and notification in one helper
-    return f(ax, y) #g calls f internally: nesting is supported
-
-x, y = [1, 2, 3], [4, 5, 6, 7]
-f(x, y) #silent calculation
-
-#visualise progress of additions and multiplications
-#first for f, then for g
-with visualise('add', 'mul'):
-    f(x, y)
-    g(2, x, y)
-```
-
-Will visualise:
-
-```console
-f
-add: 100%|███████████████████████████████████████| 4/4 [00:20<00:00,  5.00s/it]
-g
-add:  50%|███████████████████▌                   | 2/4 [00:10<00:10,  5.00s/it]
-mul:   0%|                                               | 0/3 [00:00<?, ?it/s]
+>>> from itertools import zip_longest
+... from time import sleep
+... from linalg.progress import visualisable, Progress
+... from typing import Any
+... from collections.abc import Sequence
+...
+... @visualisable(lambda v, w: {'add':max(len(v), len(w))})
+... def f(v:Sequence, w:Sequence, *, progress:Progress) -> list:
+...     #Return vectorial `v + w`
+...     r = []
+...     for vi, wi in zip_longest(v, w, fillvalue=0):
+...         r.append(vi + wi)
+...         sleep(0.5)
+...         progress.update('add')
+...     return r
+...
+... @visualisable(lambda a, v, w: {'add':max(len(v), len(w)), 'mul':len(v)})
+... def g(a: Any, v: Sequence, w: Sequence, *, progress:Progress) -> list:
+...     #Return vectorial `a * v + w`
+...     av = []
+...     for vi in v:
+...         sleep(0.5)
+...         av.append(progress.mul(a, vi))
+...     return f(av, w, progress=progress)
+...
+>>> v, w = [1, 2, 3], [4, 5, 6, 7]
+>>> _ = f(v, w)
+>>> _ = f(v, w, progress={'add'})
+add: 100%|███████████████████████████████████| 4/4 [00:02<00:00,  2.00it/s]
+>>> _ = g(2, v, w)
+>>> _ = g(2, v, w, progress={'add'})
+add: 100%|███████████████████████████████████| 4/4 [00:03<00:00,  1.14it/s]
+>>> _ = g(2, v, w, progress={'add', 'mul'})
+mul: 100%|███████████████████████████████████| 3/3 [00:03<00:00,  1.17s/it]
+add: 100%|███████████████████████████████████| 4/4 [00:03<00:00,  1.14it/s]
 ```
 
 Notes
 -----
-Mechanism.
+First a context & contextvars were used to trigger visualisation:
+```python
+with visualise('add', 'mul'):
+    f(v, w)
+    g(2, v, w)
+```
+but this led to surprising visualisations when the user called a custom
+non-visualisable function that uses a visualisable function internally.
 
-Two `contextvars.ContextVar`s hold the state:
-
-- `_requested_operations` - what the caller wants to see.
-  Set by `visualise`, read by `visualisable`.
-- `_active_progress_bars` - where notifications go.
-  Set by the outermost visualisable functions.
-
-| requested | active bars | meaning                            |
-|-----------|-------------|------------------------------------|
-| empty     | anything    | nothing requested to be visualised |
-| non-empty | `None`      | user requested, you are top level  |
-| non-empty | not `None`  | visualisation currently happening  |
+The implementation now is more verbose, but behaves more predictably.
 """
 
 
 
-from contextlib import contextmanager
-from contextvars import ContextVar
 from functools import wraps
+from warnings import warn
 from tqdm.auto import tqdm
-from typing import Any, ParamSpec, TypeVar
-from collections.abc import Callable, Generator
+from typing import Any
+from collections.abc import Iterable
 
 
 
-__all__ = ('visualise', 'visualisable', 'notify',
-           'pos', 'neg', 'add', 'sub', 'mul', 'truediv', 'floordiv', 'mod')
+__all__ = ('Progress', 'visualisable')
 
 
 
-#visualisation framework
-P = ParamSpec('P')
-R = TypeVar('R')
-
-_requested_operations: ContextVar[frozenset[str]] = ContextVar(
-    'requested_operations',
-    default=frozenset()
-)
-"""Operations that have been requested to be visualised."""
-
-_active_progress_bars: ContextVar[dict[str,tqdm]|None] = ContextVar(
-    'active_progress_bars',
-    default=None
-)
-"""Currently printing progress bars."""
-
-@contextmanager
-def visualise(*operations:str) -> Generator[None]:
-    """Request visualisation of functions within.
+class Progress:
+    """Progress visualisation handler.
     
-    Open as context (`with visualise(...):`) and all visualisable functions
-    in this block will visualise their progress. Specify the operations you
-    want to be visualised like `'add', 'mul', ...`.
+    Creates, updates and closes the progress bars.
     
-    See also
-    --------
-    - [`visualisable`][linalg.progress.visualisable]
-    - [`notify`][linalg.progress.notify]
+    Use [`update`][linalg.progress.Progress.update] to increment a progress bar.
+    
+    Optionally use the scalar helpers, that basically behave like Pythons
+    `operator` operators, but additionally increment the corresponding progress
+    bar.
     """
-    token = _requested_operations.set(frozenset(operations))
-    try:
-        yield None
-    finally:
-        _requested_operations.reset(token)
-
-def notify(operation:str, amount:int=1) -> None:
-    """Increment corresponding progress bar, if it exists.
     
-    Call in a [visualisable function][linalg.progress.visualisable]
-    to publish the progress step(s).
+    pbars: dict[str, tqdm]
     
-    See also
-    --------
-    - [`visualise`][linalg.progress.visualise]
-    - [`visualisable`][linalg.progress.visualisable]
-    """
-    pbars = _active_progress_bars.get()
-    if pbars is not None and operation in pbars:
-        pbars[operation].update(amount)
+    def __init__(self, ops:dict[str,int]):
+        self.pbars = {op:tqdm(total=n, desc=op) for op, n in ops.items()}
+    
+    def update(self, op:str, n:int=1) -> None:
+        """Increment progress bar for operation `op` by `n`, if it exists."""
+        if op in self.pbars:
+            self.pbars[op].update(n)
+    
+    def close(self) -> None:
+        """Close all progress bars."""
+        for pbar in self.pbars.values():
+            pbar.close()
+    
+    def _check(self) -> None:
+        """Issue a warning if any progress bar isn't exactly filled to total."""
+        for op, pbar in self.pbars.items():
+            if pbar.n != pbar.total:
+                warn(f'{op!r} announced {pbar.total} operations '
+                     f'but {pbar.n} happened',
+                     UserWarning, stacklevel=3)
+    
+    
+    #scalar helpers
+    def pos(self, a:Any) -> Any:
+        """Return `+a`, and increment progress bar `pos`."""
+        r = +a
+        self.update('pos')
+        return r
+    
+    def neg(self, a:Any) -> Any:
+        """Return `-a`, and increment progress bar `neg`."""
+        r = -a
+        self.update('neg')
+        return r
+    
+    def add(self, a:Any, b:Any) -> Any:
+        """Return `a+b`, and increment progress bar `add`."""
+        r = a + b
+        self.update('add')
+        return r
+    
+    def sub(self, a:Any, b:Any) -> Any:
+        """Return `a-b`, and increment progress bar `sub`."""
+        r = a - b
+        self.update('sub')
+        return r
+    
+    def mul(self, a:Any, b:Any) -> Any:
+        """Return `a*b`, and increment progress bar `mul`."""
+        r = a * b
+        self.update('mul')
+        return r
+    
+    def truediv(self, a:Any, b:Any) -> Any:
+        """Return `a/b`, and increment progress bar `truediv`."""
+        r = a / b
+        self.update('truediv')
+        return r
+    
+    def floordiv(self, a:Any, b:Any) -> Any:
+        """Return `a//b`, and increment progress bar `floordiv`."""
+        r = a // b
+        self.update('floordiv')
+        return r
+    
+    def mod(self, a:Any, b:Any) -> Any:
+        """Return `a%b`, and increment progress bar `mod`."""
+        r = a % b
+        self.update('mod')
+        return r
 
-def visualisable(
-    operations: Callable[P, dict[str, int]],
-) -> Callable[[Callable[P, R]], Callable[P, R]]:
+
+
+def visualisable(operations):
     """Make the function visualisable.
     
+    ```python
+    @visualisable(f_ops)
+    def f(a, b, *, progress:Progress):
+        ...
+        z = x + y
+        progress.update('add')
+        ...
+    ```
+    
     Decorate a function that should be made visualisable.
-    The decorator needs an additional function, that will receive the call
-    arguments and should announce the total number of operations the function
-    execution will [publish][linalg.progress.notify]
-    including within subroutines.
+    The decorator needs an additional function, that will receive the same
+    arguments and should announce the total number of operations at call time
+    the function will
+    [`update` the `progress` handler][linalg.progress.Progress.update] during
+    execution, including within subroutines.
     
     The number of operations that are announced
-    at call time must match the total of notifications during execution.
+    at call time must match the total of updates during execution.
     
-    See also
-    --------
-    - [`visualise`][linalg.progress.visualise]
-    - [`notify`][linalg.progress.notify]
+    Notes
+    -----
+    Typing not yet achieved perfectly without deviating from a clean logic
+    implementation. Therefore untyped.
     """
-    def decorate(function:Callable[P, R]) -> Callable[P, R]:
+    def decorate(function):
         @wraps(function)
-        def wrapper(*args:P.args, **kwargs:P.kwargs) -> R:
-            requested = _requested_operations.get()
-            #no progress requested
-            #or already a deeper nested call
-            # -> just run, no setup
-            if not requested or _active_progress_bars.get() is not None:
-                return function(*args, **kwargs)
+        def wrapper(*args, progress:Iterable[str]|Progress=(), **kwargs):
             
-            #non-empty requested & progress bars None -> setup bars
-            selected = {op:n for op, n in operations(*args, **kwargs).items()
-                             if op in requested}
-            if selected: #title function section only if there will be bars
-                tqdm.write(function.__name__)
-            bars = { #create progress bars
-                op: tqdm(total=n, desc=op, position=i)
-                for i, (op, n) in enumerate(selected.items())
-            } #even when no selected operations will happen
-            #and no bars will be printed. Signal top level spot claimed
+            if owner := not isinstance(progress, Progress):
+                ops = operations(*args, **kwargs)
+                ops = {op:ops[op] for op in progress if op in ops}
+                progress = Progress(ops)
             
-            token = _active_progress_bars.set(bars) #show them
             try:
-                return function(*args, **kwargs)
+                r = function(*args, progress=progress, **kwargs)
+                if owner:
+                    progress._check()
+                return r
+            
             finally:
-                _active_progress_bars.reset(token) #release top level spot
-                for bar in bars.values(): #close them
-                    bar.close()
+                if owner:
+                    progress.close()
         
         return wrapper
     return decorate
-
-
-
-#scalar helper
-def pos(a:Any) -> Any:
-    """Return `+a` and notify for `pos`.
-    
-    See also
-    --------
-    - [`notify`][linalg.progress.notify]
-    """
-    r = +a
-    notify('pos')
-    return r
-
-def neg(a:Any) -> Any:
-    """Return `-a` and notify for `neg`.
-    
-    See also
-    --------
-    - [`notify`][linalg.progress.notify]
-    """
-    r = -a
-    notify('neg')
-    return r
-
-def add(a:Any, b:Any) -> Any:
-    """Return `a+b` and notify for `add`.
-    
-    See also
-    --------
-    - [`notify`][linalg.progress.notify]
-    """
-    r = a + b
-    notify('add')
-    return r
-
-def sub(a:Any, b:Any) -> Any:
-    """Return `a-b` and notify for `sub`.
-    
-    See also
-    --------
-    - [`notify`][linalg.progress.notify]
-    """
-    r = a - b
-    notify('sub')
-    return r
-
-def mul(a:Any, b:Any) -> Any:
-    """Return `a*b` and notify for `mul`.
-    
-    See also
-    --------
-    - [`notify`][linalg.progress.notify]
-    """
-    r = a * b
-    notify('mul')
-    return r
-
-def truediv(a:Any, b:Any) -> Any:
-    """Return `a/b` and notify for `truediv`.
-    
-    See also
-    --------
-    - [`notify`][linalg.progress.notify]
-    """
-    r = a / b
-    notify('truediv')
-    return r
-
-def floordiv(a:Any, b:Any) -> Any:
-    """Return `a//b` and notify for `floordiv`.
-    
-    See also
-    --------
-    - [`notify`][linalg.progress.notify]
-    """
-    r = a // b
-    notify('floordiv')
-    return r
-
-def mod(a:Any, b:Any) -> Any:
-    """Return `a%b` and notify for `mod`.
-    
-    See also
-    --------
-    - [`notify`][linalg.progress.notify]
-    """
-    r = a % b
-    notify('mod')
-    return r

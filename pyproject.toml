@@ -2,6 +2,9 @@
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[tool.hatch.metadata]
+allow-direct-references = true
+
 [project]
 name = "linalg"
 version = "1.0"
@@ -15,7 +18,8 @@ authors = [
 ]
 dependencies = [
   "numpy",
-  "tqdm"
+  "tqdm",
+  "iteration @ git+https://github.com/goessl/iteration.git"
 ]
 
 [project.urls]

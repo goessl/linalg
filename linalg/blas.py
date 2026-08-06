@@ -23,7 +23,7 @@ Provides
 
 
 
-from .progress import visualisable, notify
+from .progress import Progress, visualisable
 import numpy as np
 import numpy.typing as npt
 from typing import Any
@@ -162,7 +162,7 @@ def ufunc_with_cb(
 
 
 @visualisable(lambda a: {'pos':np.broadcast(a).size})
-def vpos(a: npt.ArrayLike) -> npt.NDArray:
+def vpos(a: npt.ArrayLike, *, progress:Progress) -> npt.NDArray:
     """Return the elementwise affirmation.
     
     Exactly like [`numpy.positive`](https://numpy.org/doc/stable/reference/generated/numpy.positive.html).
@@ -182,10 +182,10 @@ def vpos(a: npt.ArrayLike) -> npt.NDArray:
     - [`numpy.positive`](https://numpy.org/doc/stable/reference/generated/numpy.positive.html)
     """
     return ufunc_with_cb(np.positive, a,
-            cb=lambda *_: notify('pos'))
+            cb=lambda *_: progress.update('pos'))
 
 @visualisable(lambda a: {'neg':np.broadcast(a).size})
-def vneg(a: npt.ArrayLike) -> npt.NDArray:
+def vneg(a: npt.ArrayLike, *, progress:Progress) -> npt.NDArray:
     """Return the elementwise negative.
     
     Exactly like [`numpy.negative`](https://numpy.org/doc/stable/reference/generated/numpy.negative.html).
@@ -205,10 +205,11 @@ def vneg(a: npt.ArrayLike) -> npt.NDArray:
     - [`numpy.negative`](https://numpy.org/doc/stable/reference/generated/numpy.negative.html)
     """
     return ufunc_with_cb(np.negative, a,
-            cb=lambda *_: notify('neg'))
+            cb=lambda *_: progress.update('neg'))
 
 @visualisable(lambda a, b: {'add': np.broadcast(a, b).size})
-def vadd(a: npt.ArrayLike, b: npt.ArrayLike) -> npt.NDArray:
+def vadd(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
+        -> npt.NDArray:
     """Return the elementwise sum.
     
     Exactly like [`numpy.add`](https://numpy.org/doc/stable/reference/generated/numpy.add.html).
@@ -228,10 +229,11 @@ def vadd(a: npt.ArrayLike, b: npt.ArrayLike) -> npt.NDArray:
     - [`numpy.add`](https://numpy.org/doc/stable/reference/generated/numpy.add.html)
     """
     return ufunc_with_cb(np.add, a, b,
-            cb=lambda *_: notify('add'))
+            cb=lambda *_: progress.update('add'))
 
 @visualisable(lambda a, b: {'sub': np.broadcast(a, b).size})
-def vsub(a: npt.ArrayLike, b: npt.ArrayLike) -> npt.NDArray:
+def vsub(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
+        -> npt.NDArray:
     """Return the elementwise difference.
     
     Exactly like [`numpy.subtract`](https://numpy.org/doc/stable/reference/generated/numpy.subtract.html).
@@ -251,10 +253,11 @@ def vsub(a: npt.ArrayLike, b: npt.ArrayLike) -> npt.NDArray:
     - [`numpy.subtract`](https://numpy.org/doc/stable/reference/generated/numpy.subtract.html)
     """
     return ufunc_with_cb(np.subtract, a, b,
-            cb=lambda *_: notify('sub'))
+            cb=lambda *_: progress.update('sub'))
 
 @visualisable(lambda a, b: {'mul': np.broadcast(a, b).size})
-def vmul(a: npt.ArrayLike, b: npt.ArrayLike) -> npt.NDArray:
+def vmul(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
+        -> npt.NDArray:
     """Return the elementwise product.
     
     Exactly like [`numpy.multiply`](https://numpy.org/doc/stable/reference/generated/numpy.multiply.html).
@@ -274,10 +277,11 @@ def vmul(a: npt.ArrayLike, b: npt.ArrayLike) -> npt.NDArray:
     - [`numpy.multiply`](https://numpy.org/doc/stable/reference/generated/numpy.multiply.html)
     """
     return ufunc_with_cb(np.multiply, a, b,
-            cb=lambda *_: notify('mul'))
+            cb=lambda *_: progress.update('mul'))
 
 @visualisable(lambda a, b: {'truediv': np.broadcast(a, b).size})
-def vtruediv(a: npt.ArrayLike, b: npt.ArrayLike) -> npt.NDArray:
+def vtruediv(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
+        -> npt.NDArray:
     """Return the elementwise true quotient.
     
     Exactly like [`numpy.divide`](https://numpy.org/doc/stable/reference/generated/numpy.divide.html).
@@ -297,10 +301,11 @@ def vtruediv(a: npt.ArrayLike, b: npt.ArrayLike) -> npt.NDArray:
     - [`numpy.divide`](https://numpy.org/doc/stable/reference/generated/numpy.divide.html)
     """
     return ufunc_with_cb(np.divide, a, b,
-            cb=lambda *_: notify('truediv'))
+            cb=lambda *_: progress.update('truediv'))
 
 @visualisable(lambda a, b: {'floordiv': np.broadcast(a, b).size})
-def vfloordiv(a: npt.ArrayLike, b: npt.ArrayLike) -> npt.NDArray:
+def vfloordiv(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
+        -> npt.NDArray:
     """Return the elementwise floored quotient.
     
     Exactly like [`numpy.floor_divide`](https://numpy.org/doc/stable/reference/generated/numpy.floor_divide.html).
@@ -320,10 +325,11 @@ def vfloordiv(a: npt.ArrayLike, b: npt.ArrayLike) -> npt.NDArray:
     - [`numpy.floor_divide`](https://numpy.org/doc/stable/reference/generated/numpy.floor_divide.html)
     """
     return ufunc_with_cb(np.floor_divide, a, b,
-            cb=lambda *_: notify('floordiv'))
+            cb=lambda *_: progress.update('floordiv'))
 
 @visualisable(lambda a, b: {'mod': np.broadcast(a, b).size})
-def vmod(a: npt.ArrayLike, b: npt.ArrayLike) -> npt.NDArray:
+def vmod(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
+        -> npt.NDArray:
     """Return the elementwise remainder.
     
     Exactly like [`numpy.mod`](https://numpy.org/doc/stable/reference/generated/numpy.mod.html).
@@ -343,4 +349,4 @@ def vmod(a: npt.ArrayLike, b: npt.ArrayLike) -> npt.NDArray:
     - [`numpy.mod`](https://numpy.org/doc/stable/reference/generated/numpy.mod.html)
     """
     return ufunc_with_cb(np.mod, a, b,
-            cb=lambda *_: notify('mod'))
+            cb=lambda *_: progress.update('mod'))

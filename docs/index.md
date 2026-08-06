@@ -7,6 +7,7 @@
 ## Modules
 
 - [`blas`](blas.md)
+- [`blas2`](blas2.md)
 - [`progress`](progress.md)
 
 ## Installation
@@ -24,13 +25,15 @@ pip install git+https://github.com/goessl/linalg.git
 
 - [x] Deploy
 - [x] Production
-- [ ] [`blas`](blas.md)
+- [ ] [`blas`](blas.md) & [`blas2`](blas2.md)
     - [x] `numpy.ufunc`s with callback (same broadcasting, same promotion, ...)
     - [ ] in-place operations
-    - [ ] `outer`
-    - [ ] `matmul`
+    - [x] `dot`
+    - [x] `outer`
+    - [x] `matmul`
+    - [ ] `mat vec mul`
 - [x] [`progress`](progress.md)
-    - [x] progress visualisation in context block
+    - [x] progress visualisation in ~~context block~~ decorator
     - [ ] complexity tracking for functions in development
 - [ ] `leibniz`
     - [ ] `det_leibniz`

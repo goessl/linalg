@@ -59,6 +59,7 @@ markdown_extensions:
   - pymdownx.superfences
   - pymdownx.tasklist:
       custom_checkbox: true
+  - pymdownx.tilde
 
 extra_css:
   - stylesheets/complexity.css
@@ -72,4 +73,5 @@ extra_javascript:
 nav:
   - Home: index.md
   - blas.md
+  - blas2.md
   - progress.md
