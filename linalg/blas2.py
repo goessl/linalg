@@ -9,22 +9,23 @@ Higher level functions that can not be directly implemented by
 from .progress import visualisable, Progress
 import numpy as np
 import numpy.typing as npt
-from iteration import reduce_default
 from typing import Any
 
 
 
 __all__ = (
-    'dot', 'outer', 'matmul'
+    'dot_ops', 'dot',
+    'outer_ops', 'outer',
+    'matmul_ops', 'matmul'
 )
 
 
 
-def _dot_ops(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str,int]:
+def dot_ops(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str,int]:
     size = np.size(a)
     return {'add': max(size-1, 0), 'mul':size}
 
-@visualisable(_dot_ops)
+@visualisable(dot_ops)
 def dot(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) -> Any:
     r"""Return the dot product of two vectors.
     
@@ -42,14 +43,15 @@ def dot(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) -> Any:
     a, b = np.asarray(a), np.asarray(b)
     if not (a.ndim==b.ndim==1 and a.size==b.size):
         raise ValueError('a & b must be one dimensional and of same length')
-    return reduce_default(progress.add, map(progress.mul, a, b),
+    
+    return progress.sumprod_default(a, b,
             default=np.zeros((), np.result_type(a, b)).item())
 
 
-def _outer_ops(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str,int]:
+def outer_ops(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str,int]:
     return {'mul': np.size(a)*np.size(b)}
 
-@visualisable(_outer_ops)
+@visualisable(outer_ops)
 def outer(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) -> Any:
     r"""Return the outer product of two vectors without conjugation.
     
@@ -66,20 +68,21 @@ def outer(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) -> Any:
     a, b = np.asarray(a), np.asarray(b)
     if not a.ndim == b.ndim == 1:
         raise ValueError('a & b must be one dimensional')
+    
     r = np.empty((a.size, b.size), np.result_type(a, b))
     for i, j in np.ndindex(r.shape):
         r[i, j] = progress.mul(a[i], b[j])
     return r
 
 
-def _matmul_ops(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str,int]:
+def matmul_ops(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str,int]:
     a, b = np.shape(a), np.shape(b)
     try:
         return {'add': a[0]*b[1]*max(a[1]-1, 0), 'mul':a[0]*a[1]*b[1]}
     except IndexError:
         return {}
 
-@visualisable(_matmul_ops)
+@visualisable(matmul_ops)
 def matmul(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) -> Any:
     r"""Return the product of two matrices.
     
@@ -99,9 +102,9 @@ def matmul(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) -> Any:
         raise ValueError('a & b must be two dimensional')
     if not a.shape[1] == b.shape[0]:
         raise ValueError('width of a must be height of b')
+    
     r = np.empty((a.shape[0], b.shape[1]), np.result_type(a, b))
     for i, j in np.ndindex(r.shape):
-        r[i, j] = reduce_default(progress.add,
-            map(progress.mul, a[i,:], b[:,j]),
+        r[i, j] = progress.sumprod_default(a[i,:], b[:,j],
             default=np.zeros((), np.result_type(a, b)).item())
     return r

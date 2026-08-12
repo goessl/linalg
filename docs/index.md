@@ -8,6 +8,7 @@
 
 - [`blas`](blas.md)
 - [`blas2`](blas2.md)
+- [`leibniz`](leibniz.md)
 - [`progress`](progress.md)
 
 ## Installation
@@ -35,8 +36,8 @@ pip install git+https://github.com/goessl/linalg.git
 - [x] [`progress`](progress.md)
     - [x] progress visualisation in ~~context block~~ decorator
     - [ ] complexity tracking for functions in development
-- [ ] `leibniz`
-    - [ ] `det_leibniz`
+- [x] `leibniz`
+    - [x] `det_leibniz`
 - [ ] `laplace`
     - [ ] `det_laplace`
 - [ ] `gauss`

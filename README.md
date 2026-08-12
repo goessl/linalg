@@ -7,7 +7,7 @@ Linear algebra with scalar object support & progress visualisation.
 >>> from linalg import *
 >>> a, b = np.random.rand(10000), np.random.rand(10000)
 >>> c = vadd(a, b)
->>> c = vadd(a, b, progress={'add'})
+>>> c = vadd(a, b, progress=True)
 add: 100%|████████████████████████████| 10000/10000 [00:00<00:00, 216824.89it/s]
 ```
 
@@ -41,8 +41,8 @@ pip install git+https://github.com/goessl/linalg.git
 - [x] [`progress`](linalg/progress.py)
     - [x] progress visualisation in ~~context block~~ decorator
     - [ ] complexity tracking for functions in development
-- [ ] `leibniz`
-    - [ ] `det_leibniz`
+- [x] `leibniz`
+    - [x] `det_leibniz`
 - [ ] `laplace`
     - [ ] `det_laplace`
 - [ ] `gauss`

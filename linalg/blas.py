@@ -33,9 +33,14 @@ from collections.abc import Callable
 
 __all__ = (
     'ufunc_with_cb',
-    'vpos', 'vneg',
-    'vadd', 'vsub',
-    'vmul', 'vtruediv', 'vfloordiv', 'vmod'
+    'vpos_ops', 'vpos',
+    'vneg_ops', 'vneg',
+    'vadd_ops', 'vadd',
+    'vsub_ops', 'vsub',
+    'vmul_ops', 'vmul',
+    'vtruediv_ops', 'vtruediv',
+    'vfloordiv_ops', 'vfloordiv',
+    'vmod_ops', 'vmod'
 )
 
 
@@ -161,7 +166,10 @@ def ufunc_with_cb(
 
 
 
-@visualisable(lambda a: {'pos':np.broadcast(a).size})
+def vpos_ops(a: npt.ArrayLike) -> dict[str, int]:
+    return {'pos': np.size(a)}
+
+@visualisable(vpos_ops)
 def vpos(a: npt.ArrayLike, *, progress:Progress) -> npt.NDArray:
     """Return the elementwise affirmation.
     
@@ -184,7 +192,10 @@ def vpos(a: npt.ArrayLike, *, progress:Progress) -> npt.NDArray:
     return ufunc_with_cb(np.positive, a,
             cb=lambda *_: progress.update('pos'))
 
-@visualisable(lambda a: {'neg':np.broadcast(a).size})
+def vneg_ops(a: npt.ArrayLike) -> dict[str, int]:
+    return {'neg': np.size(a)}
+
+@visualisable(vneg_ops)
 def vneg(a: npt.ArrayLike, *, progress:Progress) -> npt.NDArray:
     """Return the elementwise negative.
     
@@ -207,7 +218,10 @@ def vneg(a: npt.ArrayLike, *, progress:Progress) -> npt.NDArray:
     return ufunc_with_cb(np.negative, a,
             cb=lambda *_: progress.update('neg'))
 
-@visualisable(lambda a, b: {'add': np.broadcast(a, b).size})
+def vadd_ops(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str, int]:
+    return {'add': np.broadcast(a, b).size}
+
+@visualisable(vadd_ops)
 def vadd(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
         -> npt.NDArray:
     """Return the elementwise sum.
@@ -231,7 +245,10 @@ def vadd(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
     return ufunc_with_cb(np.add, a, b,
             cb=lambda *_: progress.update('add'))
 
-@visualisable(lambda a, b: {'sub': np.broadcast(a, b).size})
+def vsub_ops(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str, int]:
+    return {'sub': np.broadcast(a, b).size}
+
+@visualisable(vsub_ops)
 def vsub(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
         -> npt.NDArray:
     """Return the elementwise difference.
@@ -255,7 +272,10 @@ def vsub(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
     return ufunc_with_cb(np.subtract, a, b,
             cb=lambda *_: progress.update('sub'))
 
-@visualisable(lambda a, b: {'mul': np.broadcast(a, b).size})
+def vmul_ops(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str, int]:
+    return {'mul': np.broadcast(a, b).size}
+
+@visualisable(vmul_ops)
 def vmul(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
         -> npt.NDArray:
     """Return the elementwise product.
@@ -279,7 +299,10 @@ def vmul(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
     return ufunc_with_cb(np.multiply, a, b,
             cb=lambda *_: progress.update('mul'))
 
-@visualisable(lambda a, b: {'truediv': np.broadcast(a, b).size})
+def vtruediv_ops(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str, int]:
+    return {'truediv': np.broadcast(a, b).size}
+
+@visualisable(vtruediv_ops)
 def vtruediv(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
         -> npt.NDArray:
     """Return the elementwise true quotient.
@@ -303,7 +326,10 @@ def vtruediv(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
     return ufunc_with_cb(np.divide, a, b,
             cb=lambda *_: progress.update('truediv'))
 
-@visualisable(lambda a, b: {'floordiv': np.broadcast(a, b).size})
+def vfloordiv_ops(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str, int]:
+    return {'floordiv': np.broadcast(a, b).size}
+
+@visualisable(vfloordiv_ops)
 def vfloordiv(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
         -> npt.NDArray:
     """Return the elementwise floored quotient.
@@ -327,7 +353,10 @@ def vfloordiv(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
     return ufunc_with_cb(np.floor_divide, a, b,
             cb=lambda *_: progress.update('floordiv'))
 
-@visualisable(lambda a, b: {'mod': np.broadcast(a, b).size})
+def vmod_ops(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str, int]:
+    return {'mod': np.broadcast(a, b).size}
+
+@visualisable(vmod_ops)
 def vmod(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
         -> npt.NDArray:
     """Return the elementwise remainder.

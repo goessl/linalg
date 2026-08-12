@@ -1,0 +1,3 @@
+# leibniz
+
+::: linalg.leibniz

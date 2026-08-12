@@ -5,11 +5,12 @@
 >>> from linalg import *
 >>> a, b = np.random.rand(10000), np.random.rand(10000)
 >>> c = vadd(a, b)
->>> c = vadd(a, b, progress={'add'})
+>>> c = vadd(a, b, progress=True)
 add: 100%|████████████████████████████| 10000/10000 [00:00<00:00, 216824.89it/s]
 ```
 """
 
 from .blas import *
 from .blas2 import *
+from .leibniz import *
 from .progress import *

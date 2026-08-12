@@ -3,8 +3,8 @@
 Usage:
 
 To visualise the progress of a visualisable function, pass the keyword argument
-`progress:Iterable[str]` with the scalar operations you want to be visualised
-(`add`, `sub`, ...).
+`progress:Iterable[str]|bool` with the scalar operations you want to be
+visualised (`add`, `sub`, ...) or `True`/`False` for all/none.
 The function will print its progress in the selected scalar operations as
 [`tqdm`](https://tqdm.github.io/) progress bars.
 
@@ -84,6 +84,7 @@ The implementation now is more verbose, but behaves more predictably.
 from functools import wraps
 from warnings import warn
 from tqdm.auto import tqdm
+from iteration import reduce_default, MISSING
 from typing import Any
 from collections.abc import Iterable
 
@@ -177,6 +178,49 @@ class Progress:
         r = a % b
         self.update('mod')
         return r
+    
+    def posneg(self, x:Any, sign:bool) -> Any:
+        """Return `+x` if `bool(sign)==True` else `-x`."""
+        return self.pos(x) if sign else self.neg(x)
+    
+    def sum_default(self, iterable:Iterable[Any], *,
+            initial:Any=MISSING, default:Any=0) -> Any:
+        """Return the sum of `iterable`.
+        
+        Without an unnecessary initial addition `+0`.
+        
+        References
+        ----------
+        [`iteration.accumulators.sum_default`](https://goessl.github.io/iteration/accumulators/#iteration.accumulators.sum_default)
+        """
+        return reduce_default(self.add, iterable,
+                initial=initial, default=default)
+    
+    def prod_default(self, iterable:Iterable[Any], *,
+            initial:Any=MISSING, default:Any=1) -> Any:
+        """Return the product of `iterable`.
+        
+        Without an unnecessary initial multiplication `*1`.
+        
+        References
+        ----------
+        [`iteration.accumulators.prod_default`](https://goessl.github.io/iteration/accumulators/#iteration.accumulators.prod_default)
+        """
+        return reduce_default(self.mul, iterable,
+                initial=initial, default=default)
+    
+    def sumprod_default(self, a:Iterable[Any], b:Iterable[Any], *,
+            initial:Any=MISSING, default:Any=0) -> Any:
+        """Return the sum product of `a` & `b`.
+        
+        Without an unnecessary initial addition `+0`.
+        
+        References
+        ----------
+        [`iteration.accumulators.sumprod_default`](https://goessl.github.io/iteration/accumulators/#iteration.accumulators.sumprod_default)
+        """
+        return reduce_default(self.add, map(self.mul, a, b),
+                initial=initial, default=default)
 
 
 
@@ -209,11 +253,15 @@ def visualisable(operations):
     """
     def decorate(function):
         @wraps(function)
-        def wrapper(*args, progress:Iterable[str]|Progress=(), **kwargs):
+        def wrapper(*args, progress:Iterable[str]|bool|Progress=False,
+                **kwargs):
             
             if owner := not isinstance(progress, Progress):
                 ops = operations(*args, **kwargs)
-                ops = {op:ops[op] for op in progress if op in ops}
+                if isinstance(progress, bool):
+                    ops = ops if progress else {}
+                else:
+                    ops = {op:ops[op] for op in progress if op in ops}
                 progress = Progress(ops)
             
             try:

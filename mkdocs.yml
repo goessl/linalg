@@ -74,4 +74,5 @@ nav:
   - Home: index.md
   - blas.md
   - blas2.md
+  - leibniz.md
   - progress.md
