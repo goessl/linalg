@@ -1,9 +1,28 @@
 from linalg import progress
 import pytest
+import warnings
 
 
 
 #fully written by Claude
+
+
+
+@pytest.fixture(autouse=True)
+def announcements_must_be_right():
+    """Turn every announcement mismatch into a test failure.
+
+    `Progress` counts every key on every call, announced or not, so any
+    visualisable call in the suite verifies its own announcer. Promoting the
+    `UserWarning` here is what turns that from advice into a failure - kept
+    out of `pyproject.toml` so the strictness belongs to the suite, not to
+    anyone who happens to run `pytest` against an installed copy.
+    `pytest.warns` installs its own filter, so tests that expect a warning
+    are unaffected.
+    """
+    with warnings.catch_warnings():
+        warnings.simplefilter('error', UserWarning)
+        yield
 
 
 

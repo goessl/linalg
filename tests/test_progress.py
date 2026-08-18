@@ -40,37 +40,45 @@ def test_naked_creates_nothing(bars):
     vadd(np.arange(3), np.arange(3))
     assert bars.instances == []
 
-def test_one_bar_per_requested_operation(bars):
+def test_one_bar_per_requested_category(bars):
     #the total is the broadcast size, not the shape
     vadd(np.arange(6).reshape(2, 3), np.arange(3), progress=('add',))
     assert [(b.desc, b.total) for b in bars.instances] == [('add', 6)]
 
-def test_unrequested_operation_is_silent(bars):
-    vadd(np.arange(3), np.arange(3), progress=('mul',))
+def test_untracked_category_raises(bars):
+    #`vadd` announces only 'add', so 'mul' is a user mistake, not a silence
+    with pytest.raises(ValueError, match='untracked'):
+        vadd(np.arange(3), np.arange(3), progress=('mul',))
+
+def test_untracked_category_raises_before_drawing(bars):
+    with pytest.raises(ValueError):
+        vadd(np.arange(3), np.arange(3), progress=('mul',))
     assert bars.instances == []
 
-def test_unannounced_operation_is_silent(bars, counting):
-    #`counting` announces only 'add', so a 'mul' request draws nothing
-    counting(3, progress=('mul',))
-    assert bars.instances == []
+def test_one_untracked_category_rejects_the_whole_request(bars, counting):
+    #'add' alone would be fine, the 'mul' next to it is what fails
+    with pytest.raises(ValueError, match='untracked'):
+        counting(3, progress=('add', 'mul'))
+
+def test_progress_true_needs_no_category_names(bars, counting):
+    #the bool shortcut can not name an untracked category
+    counting(3, progress=True)
+    bar, = bars.instances
+    assert (bar.desc, bar.n, bar.total) == ('add', 3, 3)
 
 
 
 #counting
-def test_counts_reach_the_total(bars):
-    vadd(np.arange(6).reshape(2, 3), np.arange(3), progress=('add',))
-    bar, = bars.instances
-    assert bar.n == bar.total == 6
-
-def test_update_of_unknown_operation_is_ignored(bars):
+def test_update_of_unannounced_category_warns(bars):
+    #counting is always on, so a category the announcer never declared is caught
+    #even though it is not rendered
     @visualisable(lambda: {'add': 1})
     def f(*, progress:Progress):
         progress.update('add')
-        progress.update('mul')      #no bar for this one
+        progress.update('mul')      #never announced
 
-    f(progress=('add',))
-    bar, = bars.instances
-    assert bar.n == bar.total == 1
+    with pytest.warns(UserWarning, match="'mul' announced total 0 but 1"):
+        f(progress=('add',))
 
 
 
@@ -106,6 +114,43 @@ def test_handed_a_handler_creates_nothing(bars, counting):
 
 
 
+#sanitiser
+@pytest.fixture
+def sanitising():
+    """Return a visualisable function whose sanitiser doubles its argument."""
+    @visualisable(lambda n: {'add': n}, lambda n: ([2*n], {}))
+    def f(n, *, progress:Progress):
+        for _ in range(n):
+            progress.update('add')
+        return n
+
+    return f
+
+def test_sanitiser_normalises_the_arguments(bars, sanitising):
+    assert sanitising(3) == 6
+
+def test_sanitiser_runs_before_the_announcer(bars, sanitising):
+    #the announcer must see the sanitised argument, not the raw one
+    sanitising(3, progress=('add',))
+    bar, = bars.instances
+    assert bar.total == 6
+
+def test_sanitiser_runs_for_a_non_owner_too(bars, sanitising):
+    #a nested call arrives with a handler & skips the ownership branch,
+    #so the sanitiser must sit outside it or the callee gets raw arguments
+    assert sanitising(3, progress=Progress({})) == 6
+
+def test_sanitiser_rejects_before_any_bar_is_drawn(bars):
+    @visualisable(lambda n: {'add': n}, lambda n: 1/0)
+    def f(n, *, progress:Progress):
+        pass
+
+    with pytest.raises(ZeroDivisionError):
+        f(3, progress=('add',))
+    assert bars.instances == []
+
+
+
 #lifecycle
 def test_bars_are_closed(bars, counting):
     counting(3, progress=('add',))
@@ -124,30 +169,19 @@ def test_bars_are_closed_on_exception(bars):
 
 
 #announcement warnings
-def test_matching_announcement_warns_nothing(bars, counting):
-    with warnings.catch_warnings():
-        warnings.simplefilter('error')
-        counting(3, progress=('add',))
-
-def test_too_few_operations_warns(bars):
+def test_too_few_updates_warns(bars):
     with pytest.warns(UserWarning,
-                      match='announced 5 operations but 3'):
+                      match='announced total 5 but 3'):
         miscounting(5, 3)(progress=('add',))
 
-def test_too_many_operations_warns(bars):
+def test_too_many_updates_warns(bars):
     with pytest.warns(UserWarning,
-                      match='announced 3 operations but 5'):
+                      match='announced total 3 but 5'):
         miscounting(3, 5)(progress=('add',))
 
-def test_warning_names_the_operation(bars):
+def test_warning_names_the_category(bars):
     with pytest.warns(UserWarning, match="'add'"):
         miscounting(2, 1)(progress=('add',))
-
-def test_unrequested_operation_warns_nothing(bars):
-    #no bar means there is nothing to compare against
-    with warnings.catch_warnings():
-        warnings.simplefilter('error')
-        miscounting(5, 3)(progress=('mul',))
 
 def test_raising_call_warns_nothing(bars):
     #the bars are legitimately incomplete, the exception is the real message
@@ -199,6 +233,6 @@ def test_scalar_helper_returns_the_operation_result(op, args, expected):
     ('truediv', (3, 2)), ('floordiv', (3, 2)),  ('mod', (3, 2)),
 ])
 def test_scalar_helper_increments_its_own_bar(bars, op, args):
-    getattr(Progress({op: 1}), op)(*args)
+    getattr(Progress({op: 1}, True), op)(*args)
     bar, = bars.instances
     assert (bar.desc, bar.n) == (op, 1)

@@ -1,22 +1,36 @@
+"""Leibniz formula for determinants."""
+
+
+
 from math import factorial
 import numpy as np
 import numpy.typing as npt
 from .progress import Progress, visualisable
 from typing import Any
-from collections.abc import Iterable, Generator
+from collections.abc import Iterable, Generator, Sequence, Mapping
 
 
 
 __all__ = (
     'permutations',
-    'det_leibniz_ops', 'det_leibniz'
+    'det_leibniz_sanitise', 'det_leibniz_announce', 'det_leibniz'
 )
 
 
 
 def permutations[T](iterable:Iterable[T], r:int|None=None) \
         -> Generator[tuple[tuple[T,...], bool]]:
-    """`itertools.permutation`, but yields `permutation, parity`.
+    """`itertools.permutation` including parity.
+    
+    Parameters
+    ----------
+    iterable : Iterable[T]
+    r : int|None
+    
+    Yields
+    ------
+    tuple[tuple[T,...], bool]
+        Permutations and parity.
     
     References
     ----------
@@ -51,21 +65,36 @@ def permutations[T](iterable:Iterable[T], r:int|None=None) \
         else:
             return
 
-def det_leibniz_ops(A:npt.ArrayLike) -> dict[str,int]:
-    shape = np.shape(A)
-    try:
-        n = shape[0]
-        return {
-            'pos': (factorial(n)+1) // 2,
-            'neg': factorial(n) // 2,
-            'add': factorial(n) - 1,
-            'mul': max(n-1, 0) * factorial(n)
-        }
-    except IndexError:
-        return {}
 
-@visualisable(det_leibniz_ops)
-def det_leibniz(A:npt.ArrayLike, *, progress:Progress) -> Any:
+def det_leibniz_sanitise(A:npt.ArrayLike) -> tuple[Sequence, Mapping]:
+    """`det_leibniz` sanitiser.
+    
+    See also
+    --------
+    - [`det_leibniz`][linalg.leibniz.det_leibniz]
+    """
+    A = np.asarray(A)
+    if not (A.ndim==2 and A.shape[0]==A.shape[1]):
+        raise ValueError('A must be two dimensional and square')
+    return [A], {}
+
+def det_leibniz_announce(A:npt.NDArray) -> dict[str,int]:
+    """`det_leibniz` announcer.
+    
+    See also
+    --------
+    - [`det_leibniz`][linalg.leibniz.det_leibniz]
+    """
+    N:int = A.shape[0]
+    return {
+        'pos': (factorial(N)+1) // 2,
+        'neg': factorial(N) // 2,
+        'add': factorial(N) - 1,
+        'mul': max(N-1, 0) * factorial(N)
+    }
+
+@visualisable(det_leibniz_announce, det_leibniz_sanitise)
+def det_leibniz(A:npt.NDArray, *, progress:Progress) -> Any:
     r"""Return the determinant.
     
     $$
@@ -74,7 +103,17 @@ def det_leibniz(A:npt.ArrayLike, *, progress:Progress) -> Any:
     
     Uses the Leibniz formula.
     
-    TODO: Filter zero products.
+    Parameters
+    ----------
+    A : numpy.typing.ArrayLike
+        Square matrix.
+    progress : Iterable[str]|bool = False
+        Progress visualisation specification.
+    
+    Returns
+    -------
+    Any
+        Determinant.
     
     Complexity
     ----------
@@ -85,14 +124,17 @@ def det_leibniz(A:npt.ArrayLike, *, progress:Progress) -> Any:
     - $n!-1$ scalar additions (`add`) &
     - $(n-1)n!$ scalar multiplications (`mul`).
     
+    TODO: Filter zero products.
+    
+    See also
+    --------
+    - [`det_leibniz_sanitise`][linalg.leibniz.det_leibniz_sanitise]
+    - [`det_leibniz_announce`][linalg.leibniz.det_leibniz_announce]
+    
     References
     ----------
     [Wikipedia - Leibniz formula for determinants](https://en.wikipedia.org/wiki/Leibniz_formula_for_determinants)
     """
-    A = np.asarray(A)
-    if not (A.ndim==2 and A.shape[0]==A.shape[1]):
-        raise ValueError('A must be two dimensional and square')
-    
     i:tuple[int,...] = tuple(range(A.shape[0]))
     return progress.sum_default(
             progress.posneg(progress.prod_default(A[i, p]), s)

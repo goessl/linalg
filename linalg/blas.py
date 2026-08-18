@@ -33,14 +33,14 @@ from collections.abc import Callable
 
 __all__ = (
     'ufunc_with_cb',
-    'vpos_ops', 'vpos',
-    'vneg_ops', 'vneg',
-    'vadd_ops', 'vadd',
-    'vsub_ops', 'vsub',
-    'vmul_ops', 'vmul',
-    'vtruediv_ops', 'vtruediv',
-    'vfloordiv_ops', 'vfloordiv',
-    'vmod_ops', 'vmod'
+    'vpos_announce', 'vpos',
+    'vneg_announce', 'vneg',
+    'vadd_announce', 'vadd',
+    'vsub_announce', 'vsub',
+    'vmul_announce', 'vmul',
+    'vtruediv_announce', 'vtruediv',
+    'vfloordiv_announce', 'vfloordiv',
+    'vmod_announce', 'vmod'
 )
 
 
@@ -51,6 +51,14 @@ def _is_weak(x: Any) -> bool:
     - Python `int`, `float` or `complex` are weak.
     - All others (`bool`, `numpy.int64`, ...) are strong.
     
+    Parameters
+    ----------
+    x : Any
+    
+    Returns
+    -------
+    bool
+    
     References
     ----------
     - [NEP 50](https://numpy.org/neps/nep-0050-scalar-promotion.html)
@@ -60,6 +68,14 @@ def _is_weak(x: Any) -> bool:
 
 def _weak_dtype(x: npt.ArrayLike) -> Any:
     """Return the `type` (if weak) or `dtype` (if strong) of `x`.
+    
+    Parameters
+    ----------
+    x : numpy.typing.ArrayLike
+    
+    Returns
+    -------
+    type|dtype
     
     References
     ----------
@@ -101,6 +117,16 @@ def ufunc_with_cb(
     Improved code from the [`numpy.nditer`](https://numpy.org/doc/stable/reference/generated/numpy.nditer.html) examples.
     
     Obviously really slow.
+    
+    Parameters
+    ----------
+    op : numpy.ufunc
+    operands : numpy.typing.ArrayLike
+    cb : Callable[...,None]|None = None
+    
+    Returns
+    -------
+    Any
     
     Notes
     -----
@@ -166,14 +192,31 @@ def ufunc_with_cb(
 
 
 
-def vpos_ops(a: npt.ArrayLike) -> dict[str, int]:
+def vpos_announce(a: npt.ArrayLike) -> dict[str, int]:
+    """`vpos` announcer.
+    
+    See also
+    --------
+    - [`vpos`][linalg.blas.vpos]
+    """
     return {'pos': np.size(a)}
 
-@visualisable(vpos_ops)
-def vpos(a: npt.ArrayLike, *, progress:Progress) -> npt.NDArray:
+@visualisable(vpos_announce)
+def vpos(a: npt.ArrayLike, *, progress:Progress) -> Any:
     """Return the elementwise affirmation.
     
     Exactly like [`numpy.positive`](https://numpy.org/doc/stable/reference/generated/numpy.positive.html).
+    
+    Parameters
+    ----------
+    a : numpy.typing.ArrayLike
+    progress : Iterable[str]|bool = False
+        Progress visualisation specification.
+    
+    Returns
+    -------
+    Any
+        Affirmation. An array for array like operands, a scalar otherwise.
     
     Complexity
     ----------
@@ -184,6 +227,7 @@ def vpos(a: npt.ArrayLike, *, progress:Progress) -> npt.NDArray:
     See also
     --------
     - [`ufunc_with_cb`][linalg.blas.ufunc_with_cb]
+    - [`vpos_announce`][linalg.blas.vpos_announce]
     
     References
     ----------
@@ -192,14 +236,31 @@ def vpos(a: npt.ArrayLike, *, progress:Progress) -> npt.NDArray:
     return ufunc_with_cb(np.positive, a,
             cb=lambda *_: progress.update('pos'))
 
-def vneg_ops(a: npt.ArrayLike) -> dict[str, int]:
+def vneg_announce(a: npt.ArrayLike) -> dict[str, int]:
+    """`vneg` announcer.
+    
+    See also
+    --------
+    - [`vneg`][linalg.blas.vneg]
+    """
     return {'neg': np.size(a)}
 
-@visualisable(vneg_ops)
-def vneg(a: npt.ArrayLike, *, progress:Progress) -> npt.NDArray:
+@visualisable(vneg_announce)
+def vneg(a: npt.ArrayLike, *, progress:Progress) -> Any:
     """Return the elementwise negative.
     
     Exactly like [`numpy.negative`](https://numpy.org/doc/stable/reference/generated/numpy.negative.html).
+    
+    Parameters
+    ----------
+    a : numpy.typing.ArrayLike
+    progress : Iterable[str]|bool = False
+        Progress visualisation specification.
+    
+    Returns
+    -------
+    Any
+        Negation. An array for array like operands, a scalar otherwise.
     
     Complexity
     ----------
@@ -210,6 +271,7 @@ def vneg(a: npt.ArrayLike, *, progress:Progress) -> npt.NDArray:
     See also
     --------
     - [`ufunc_with_cb`][linalg.blas.ufunc_with_cb]
+    - [`vneg_announce`][linalg.blas.vneg_announce]
     
     References
     ----------
@@ -218,15 +280,31 @@ def vneg(a: npt.ArrayLike, *, progress:Progress) -> npt.NDArray:
     return ufunc_with_cb(np.negative, a,
             cb=lambda *_: progress.update('neg'))
 
-def vadd_ops(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str, int]:
+def vadd_announce(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str, int]:
+    """`vadd` announcer.
+    
+    See also
+    --------
+    - [`vadd`][linalg.blas.vadd]
+    """
     return {'add': np.broadcast(a, b).size}
 
-@visualisable(vadd_ops)
-def vadd(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
-        -> npt.NDArray:
+@visualisable(vadd_announce)
+def vadd(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) -> Any:
     """Return the elementwise sum.
     
     Exactly like [`numpy.add`](https://numpy.org/doc/stable/reference/generated/numpy.add.html).
+    
+    Parameters
+    ----------
+    a, b : numpy.typing.ArrayLike
+    progress : Iterable[str]|bool = False
+        Progress visualisation specification.
+    
+    Returns
+    -------
+    Any
+        Sum. An array for array like operands, a scalar otherwise.
     
     Complexity
     ----------
@@ -237,6 +315,7 @@ def vadd(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
     See also
     --------
     - [`ufunc_with_cb`][linalg.blas.ufunc_with_cb]
+    - [`vadd_announce`][linalg.blas.vadd_announce]
     
     References
     ----------
@@ -245,15 +324,31 @@ def vadd(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
     return ufunc_with_cb(np.add, a, b,
             cb=lambda *_: progress.update('add'))
 
-def vsub_ops(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str, int]:
+def vsub_announce(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str, int]:
+    """`vsub` announcer.
+    
+    See also
+    --------
+    - [`vsub`][linalg.blas.vsub]
+    """
     return {'sub': np.broadcast(a, b).size}
 
-@visualisable(vsub_ops)
-def vsub(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
-        -> npt.NDArray:
+@visualisable(vsub_announce)
+def vsub(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) -> Any:
     """Return the elementwise difference.
     
     Exactly like [`numpy.subtract`](https://numpy.org/doc/stable/reference/generated/numpy.subtract.html).
+    
+    Parameters
+    ----------
+    a, b : numpy.typing.ArrayLike
+    progress : Iterable[str]|bool = False
+        Progress visualisation specification.
+    
+    Returns
+    -------
+    Any
+        Difference. An array for array like operands, a scalar otherwise.
     
     Complexity
     ----------
@@ -264,6 +359,7 @@ def vsub(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
     See also
     --------
     - [`ufunc_with_cb`][linalg.blas.ufunc_with_cb]
+    - [`vsub_announce`][linalg.blas.vsub_announce]
     
     References
     ----------
@@ -272,15 +368,31 @@ def vsub(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
     return ufunc_with_cb(np.subtract, a, b,
             cb=lambda *_: progress.update('sub'))
 
-def vmul_ops(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str, int]:
+def vmul_announce(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str, int]:
+    """`vmul` announcer.
+    
+    See also
+    --------
+    - [`vmul`][linalg.blas.vmul]
+    """
     return {'mul': np.broadcast(a, b).size}
 
-@visualisable(vmul_ops)
-def vmul(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
-        -> npt.NDArray:
+@visualisable(vmul_announce)
+def vmul(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) -> Any:
     """Return the elementwise product.
     
     Exactly like [`numpy.multiply`](https://numpy.org/doc/stable/reference/generated/numpy.multiply.html).
+    
+    Parameters
+    ----------
+    a, b : numpy.typing.ArrayLike
+    progress : Iterable[str]|bool = False
+        Progress visualisation specification.
+    
+    Returns
+    -------
+    Any
+        Product. An array for array like operands, a scalar otherwise.
     
     Complexity
     ----------
@@ -291,6 +403,7 @@ def vmul(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
     See also
     --------
     - [`ufunc_with_cb`][linalg.blas.ufunc_with_cb]
+    - [`vmul_announce`][linalg.blas.vmul_announce]
     
     References
     ----------
@@ -299,15 +412,31 @@ def vmul(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
     return ufunc_with_cb(np.multiply, a, b,
             cb=lambda *_: progress.update('mul'))
 
-def vtruediv_ops(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str, int]:
+def vtruediv_announce(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str, int]:
+    """`vtruediv` announcer.
+    
+    See also
+    --------
+    - [`vtruediv`][linalg.blas.vtruediv]
+    """
     return {'truediv': np.broadcast(a, b).size}
 
-@visualisable(vtruediv_ops)
-def vtruediv(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
-        -> npt.NDArray:
+@visualisable(vtruediv_announce)
+def vtruediv(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) -> Any:
     """Return the elementwise true quotient.
     
     Exactly like [`numpy.divide`](https://numpy.org/doc/stable/reference/generated/numpy.divide.html).
+    
+    Parameters
+    ----------
+    a, b : numpy.typing.ArrayLike
+    progress : Iterable[str]|bool = False
+        Progress visualisation specification.
+    
+    Returns
+    -------
+    Any
+        Floor quotient. An array for array like operands, a scalar otherwise.
     
     Complexity
     ----------
@@ -318,6 +447,7 @@ def vtruediv(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
     See also
     --------
     - [`ufunc_with_cb`][linalg.blas.ufunc_with_cb]
+    - [`vtruediv_announce`][linalg.blas.vtruediv_announce]
     
     References
     ----------
@@ -326,15 +456,31 @@ def vtruediv(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
     return ufunc_with_cb(np.divide, a, b,
             cb=lambda *_: progress.update('truediv'))
 
-def vfloordiv_ops(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str, int]:
+def vfloordiv_announce(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str, int]:
+    """`vfloordiv` announcer.
+    
+    See also
+    --------
+    - [`vfloordiv`][linalg.blas.vfloordiv]
+    """
     return {'floordiv': np.broadcast(a, b).size}
 
-@visualisable(vfloordiv_ops)
-def vfloordiv(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
-        -> npt.NDArray:
+@visualisable(vfloordiv_announce)
+def vfloordiv(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) -> Any:
     """Return the elementwise floored quotient.
     
     Exactly like [`numpy.floor_divide`](https://numpy.org/doc/stable/reference/generated/numpy.floor_divide.html).
+    
+    Parameters
+    ----------
+    a, b : numpy.typing.ArrayLike
+    progress : Iterable[str]|bool = False
+        Progress visualisation specification.
+    
+    Returns
+    -------
+    Any
+        True quotient. An array for array like operands, a scalar otherwise.
     
     Complexity
     ----------
@@ -345,6 +491,7 @@ def vfloordiv(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
     See also
     --------
     - [`ufunc_with_cb`][linalg.blas.ufunc_with_cb]
+    - [`vfloordiv_announce`][linalg.blas.vfloordiv_announce]
     
     References
     ----------
@@ -353,15 +500,31 @@ def vfloordiv(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
     return ufunc_with_cb(np.floor_divide, a, b,
             cb=lambda *_: progress.update('floordiv'))
 
-def vmod_ops(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str, int]:
+def vmod_announce(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str, int]:
+    """`vmod` announcer.
+    
+    See also
+    --------
+    - [`vmod`][linalg.blas.vmod]
+    """
     return {'mod': np.broadcast(a, b).size}
 
-@visualisable(vmod_ops)
-def vmod(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
-        -> npt.NDArray:
+@visualisable(vmod_announce)
+def vmod(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) -> Any:
     """Return the elementwise remainder.
     
     Exactly like [`numpy.mod`](https://numpy.org/doc/stable/reference/generated/numpy.mod.html).
+    
+    Parameters
+    ----------
+    a, b : numpy.typing.ArrayLike
+    progress : Iterable[str]|bool = False
+        Progress visualisation specification.
+    
+    Returns
+    -------
+    Any
+        Remainder. An array for array like operands, a scalar otherwise.
     
     Complexity
     ----------
@@ -372,6 +535,7 @@ def vmod(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) \
     See also
     --------
     - [`ufunc_with_cb`][linalg.blas.ufunc_with_cb]
+    - [`vmod_announce`][linalg.blas.vmod_announce]
     
     References
     ----------

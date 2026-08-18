@@ -1,29 +1,21 @@
 """Progress visualisation.
 
-Usage:
-
-To visualise the progress of a visualisable function, pass the keyword argument
-`progress:Iterable[str]|bool` with the scalar operations you want to be
-visualised (`add`, `sub`, ...) or `True`/`False` for all/none.
-The function will print its progress in the selected scalar operations as
+[Visualisable][linalg.progress.visualisable] functions display their progress
+in different categories like scalar operations in the form of
 [`tqdm`](https://tqdm.github.io/) progress bars.
 
-Implementation:
+When calling a [visualisable][linalg.progress.visualisable] function pass the
+keyword argument `progress:Iterable[str]|bool` with the categories you want to
+be visualised or `True`/`False` for all/none. For example
 
-To make your own functions progress visualisable, add the keyword parameter
-`progress:Progress` to its signature and decorate it as
+- `foo(..., progress=False, ...)`: (default) executes silently
+- `foo(..., progress=True, ...)`: visualises all progresses
+tracked by the function
+- `foo(..., progress={'mul'}, ...)`: only visualises the progress of `mul`
+operations
+
+To make a function visualisable decorate it as
 [`visualisable`][linalg.progress.visualisable].
-[`visualisable`][linalg.progress.visualisable] needs a `Callable` that takes
-the same parameters as the decorated function itself (excluding
-`progress:Progress`) that at call time announces the total number of scalar
-operations that will take place during execution.
-
-The function then must either update its progress handler via
-`progress.update(op:str, n:int=1)` or use the scalar helpers
-`c = progress.add(a, b)`, and pass the handler down to subroutines.
-
-If the number of announced operations doesn't equal the number of updates at
-return a `UserWarning` is issued.
 
 For example:
 
@@ -76,17 +68,22 @@ with visualise('add', 'mul'):
 but this led to surprising visualisations when the user called a custom
 non-visualisable function that uses a visualisable function internally.
 
-The implementation now is more verbose, but behaves more predictably.
+The implementation now is more verbose, but behaves more predictably. This is
+because someone writing a [`visualisable`][linalg.progress.visualisable]
+function may not control where it gets hidden and called. Now it always knows
+exactly if it is the top level callee, but it therefore has to always pass
+progress downstream.
 """
 
 
 
 from functools import wraps
 from warnings import warn
+from collections import Counter
 from tqdm.auto import tqdm
 from iteration import reduce_default, MISSING
 from typing import Any
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable, Sequence, Mapping
 
 
 
@@ -99,22 +96,39 @@ class Progress:
     
     Creates, updates and closes the progress bars.
     
-    Use [`update`][linalg.progress.Progress.update] to increment a progress bar.
+    Use [`update`][linalg.progress.Progress.update] to increment the counts.
     
     Optionally use the scalar helpers, that basically behave like Pythons
-    `operator` operators, but additionally increment the corresponding progress
-    bar.
+    `operator` operators that also update.
     """
     
+    announced: dict[str, int]
+    counts: Counter
     pbars: dict[str, tqdm]
     
-    def __init__(self, ops:dict[str,int]):
-        self.pbars = {op:tqdm(total=n, desc=op) for op, n in ops.items()}
+    def __init__(self, announced: Mapping[str,int],
+                       selected: Iterable[str]|bool=False):
+        self.announced = dict(announced)
+        self.counts = Counter()
+        if isinstance(selected, bool):
+            selected = announced.keys() if selected else set()
+        else:
+            selected = set(selected)
+            if not selected <= announced.keys():
+                raise ValueError('untracked category requested')
+        self.pbars = {k:tqdm(total=announced[k], desc=k) for k in selected}
     
-    def update(self, op:str, n:int=1) -> None:
-        """Increment progress bar for operation `op` by `n`, if it exists."""
-        if op in self.pbars:
-            self.pbars[op].update(n)
+    def update(self, category:str, n:int=1) -> None:
+        """Increment progress bar for `category` by `n`, if it exists.
+        
+        Parameters
+        ----------
+        category : str
+        n : int = 1
+        """
+        self.counts[category] += n
+        if category in self.pbars:
+            self.pbars[category].update(n)
     
     def close(self) -> None:
         """Close all progress bars."""
@@ -122,12 +136,16 @@ class Progress:
             pbar.close()
     
     def _check(self) -> None:
-        """Issue a warning if any progress bar isn't exactly filled to total."""
-        for op, pbar in self.pbars.items():
-            if pbar.n != pbar.total:
-                warn(f'{op!r} announced {pbar.total} operations '
-                     f'but {pbar.n} happened',
-                     UserWarning, stacklevel=3)
+        """Warn if any category didn't exactly update the announced amount."""
+        mismatches = {
+            k: (self.announced.get(k, 0), self.counts[k])
+            for k in self.announced.keys() | self.counts.keys()
+            if self.announced.get(k, 0) != self.counts[k]
+        }
+        if mismatches:
+            warn(', '.join(f'{k!r} announced total {a} but {h} happened'
+                           for k, (a, h) in mismatches.items()),
+                 UserWarning, stacklevel=3)
     
     
     #scalar helpers
@@ -180,7 +198,15 @@ class Progress:
         return r
     
     def posneg(self, x:Any, sign:bool) -> Any:
-        """Return `+x` if `bool(sign)==True` else `-x`."""
+        r"""Return `+x` if `bool(sign)==True` else `-x`.
+        
+        $$
+            \begin{cases}
+                +x & \text{if `sign`} \\
+                -x & \text{otherwise}
+            \end{cases}
+        $$
+        """
         return self.pos(x) if sign else self.neg(x)
     
     def sum_default(self, iterable:Iterable[Any], *,
@@ -188,6 +214,17 @@ class Progress:
         """Return the sum of `iterable`.
         
         Without an unnecessary initial addition `+0`.
+        
+        Parameters
+        ----------
+        iterable : Iterable[Any]
+        initial : Any = iteration.MISSING
+        default: Any = 0
+        
+        Returns
+        -------
+        Any
+            The sum.
         
         References
         ----------
@@ -202,6 +239,17 @@ class Progress:
         
         Without an unnecessary initial multiplication `*1`.
         
+        Parameters
+        ----------
+        iterable : Iterable[Any]
+        initial : Any = iteration.MISSING
+        default : Any = 1
+        
+        Returns
+        -------
+        Any
+            The product.
+        
         References
         ----------
         [`iteration.accumulators.prod_default`](https://goessl.github.io/iteration/accumulators/#iteration.accumulators.prod_default)
@@ -215,6 +263,17 @@ class Progress:
         
         Without an unnecessary initial addition `+0`.
         
+        Parameters
+        ----------
+        a, b : Iterable[Any]
+        initial : Any = iteration.MISSING
+        default : Any = 0
+        
+        Returns
+        -------
+        Any
+            The sumproduct.
+        
         References
         ----------
         [`iteration.accumulators.sumprod_default`](https://goessl.github.io/iteration/accumulators/#iteration.accumulators.sumprod_default)
@@ -224,11 +283,13 @@ class Progress:
 
 
 
-def visualisable(operations):
+def visualisable(
+    announcer:Callable[...,Mapping[str,int]],
+    sanitiser:Callable[...,tuple[Sequence,Mapping]]|None=None):
     """Make the function visualisable.
     
     ```python
-    @visualisable(f_ops)
+    @visualisable(f_announce, f_sanitise)
     def f(a, b, *, progress:Progress):
         ...
         z = x + y
@@ -236,36 +297,84 @@ def visualisable(operations):
         ...
     ```
     
-    Decorate a function that should be made visualisable.
-    The decorator needs an additional function, that will receive the same
-    arguments and should announce the total number of operations at call time
-    the function will
-    [`update` the `progress` handler][linalg.progress.Progress.update] during
-    execution, including within subroutines.
+    where `f` is the executor, `f_announce` is the announcer
+    and `f_sanitise` is the sanitiser.
     
-    The number of operations that are announced
-    at call time must match the total of updates during execution.
+    The optional sanitiser gets called first with the arguments excluding
+    `progress:Iterable[str]|bool|Progress`. It shall do argument verification
+    and preparation and return the operands as `tuple[Sequence, Mapping]`.
+    For example you may want to accept [`numpy.typing.ArrayLike`](https://numpy.org/doc/stable/reference/typing.html#numpy.typing.ArrayLike)
+    operands, that the sanitiser wraps in [`numpy.typing.NDArray`](https://numpy.org/doc/stable/reference/typing.html#numpy.typing.NDArray)s
+    such that the announcer has access to shape information
+    and the executor to indexing.
     
-    Notes
+    The announcer receives the returnee of the sanitiser, or the raw arguments
+    without `progress:Iterable[str]|bool|Progress` if there is no sanitiser.
+    It shall return a `Mapping[str,int]` of tracked category names to their
+    total number that will happen.
+    
+    The executor is the main decorated function. It receives the returnee of
+    the sanitiser, or the raw arguments if there is no sanitiser, with an
+    additional [`progress:Progress`][linalg.progress.Progress] object that
+    handles the visualisation. It shall do the actual computation and update
+    the progress handler via
+    [`progress.update(category, n=1)`][linalg.progress.Progress.update].
+    
+    Parameters
+    ----------
+    announcer : Callable[...,Mapping[str,int]]
+    sanitiser : Callable[...,tuple[Sequence,Mapping]]|None = None
+    
+    Returns
+    -------
+    Callable[[Callable],Callable]
+        Decorator.
+    
+    Raises
+    ------
+    ValueError
+        If visualisation of an untracked category is requested.
+        This behaviour has been chosen to detect wrong usage.
+    
+    Warns
     -----
-    Typing not yet achieved perfectly without deviating from a clean logic
-    implementation. Therefore untyped.
+    UserWarning
+        If the announced totals don't match the updates.
+        Therefore always announce a hard upper limit and stuff the
+        progress bars full on early exit.
+        This behaviour has been chosen
+        to continuously verify announcer implementations.
+    
+    Warnings
+    --------
+    Typing/signature annotations are currently terribly broken.
+    
+    The final wrapped function should have
+    `(*args, progress:Iterable[str]|bool|Progress=False, **kwargs) -> ret`
+    with `*args`, `**kwargs` from sanitiser and `ret` from the executor.
+    The announcer and the executor should have the same receiving
+    signature as the sanitiser return type. If no sanitiser is provided the
+    resulting signature should be the one of the executor except
+    `progress:Iterable[str]|bool` instead of `progress:Progress`.
+    
+    Current fix is to
+    
+    - disable mkdocstrings annotation rendering
+    - document parameter types in docstring
     """
-    def decorate(function):
-        @wraps(function)
+    def decorate(executor):
+        @wraps(executor)
         def wrapper(*args, progress:Iterable[str]|bool|Progress=False,
                 **kwargs):
             
+            if sanitiser is not None:
+                args, kwargs = sanitiser(*args, **kwargs)
+            
             if owner := not isinstance(progress, Progress):
-                ops = operations(*args, **kwargs)
-                if isinstance(progress, bool):
-                    ops = ops if progress else {}
-                else:
-                    ops = {op:ops[op] for op in progress if op in ops}
-                progress = Progress(ops)
+                progress = Progress(announcer(*args, **kwargs), progress)
             
             try:
-                r = function(*args, progress=progress, **kwargs)
+                r = executor(*args, progress=progress, **kwargs)
                 if owner:
                     progress._check()
                 return r

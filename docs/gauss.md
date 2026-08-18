@@ -1,0 +1,3 @@
+# gauss
+
+::: linalg.gauss

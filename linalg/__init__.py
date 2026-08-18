@@ -13,4 +13,5 @@ add: 100%|███████████████████████�
 from .blas import *
 from .blas2 import *
 from .leibniz import *
+from .gauss import *
 from .progress import *

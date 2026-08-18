@@ -1,21 +1,25 @@
 from linalg.blas2 import *
 from random import randint
 import numpy as np
+import pytest
 
 
 
+@pytest.mark.filterwarnings('error')
 def test_dot():
     for _ in range(10):
         N = randint(0, 10)
         v, w = np.random.rand(N), np.random.rand(N)
         assert np.isclose(dot(v, w), v@w)
 
+@pytest.mark.filterwarnings('error')
 def test_outer():
     for _ in range(10):
         M, N = randint(0, 10), randint(0, 10)
         v, w = np.random.rand(M), np.random.rand(N)
         assert np.allclose(outer(v, w), np.outer(v, w))
 
+@pytest.mark.filterwarnings('error')
 def test_matmul():
     for _ in range(10):
         L, M, N = randint(0, 10), randint(0, 10), randint(0, 10)
@@ -25,42 +29,35 @@ def test_matmul():
 
 
 #############################################################################
-#appended by Claude - the announce functions only run when `progress` is
-#requested, so without these they are never executed by the suite at all.
+#appended by Claude - counting is always on, so any call here also checks
+#its announcer; these cover selection, exact totals & the sanitiser.
 #the `bars` fixture lives in conftest.py.
 #############################################################################
 
 from fractions import Fraction
 import pytest
 
-OPS = ('pos', 'neg', 'add', 'sub', 'mul', 'truediv', 'floordiv', 'mod')
+#every category `Progress` knows, for asserting that the untracked ones
+#are rejected rather than silently dropped
+CATEGORIES = ('pos', 'neg', 'add', 'sub', 'mul', 'truediv', 'floordiv', 'mod')
 
 
 
-#announcements match reality
-def test_dot_announcement_matches_reality(bars):
-    for _ in range(10):
-        N = randint(0, 10)
-        v, w = np.random.rand(N), np.random.rand(N)
-        bars.instances = []
-        dot(v, w, progress=OPS)
-        assert all(b.n == b.total for b in bars.instances)
+#announcements
+@pytest.mark.parametrize('f, v, w', [
+    (dot,    np.zeros(3),      np.zeros(3)),
+    (outer,  np.zeros(3),      np.zeros(3)),
+    (matmul, np.zeros((2, 2)), np.zeros((2, 2))),
+])
+def test_untracked_category_raises(f, v, w):
+    #none of these track 'mod', so naming it is a user mistake
+    with pytest.raises(ValueError, match='untracked'):
+        f(v, w, progress=CATEGORIES)
 
-def test_outer_announcement_matches_reality(bars):
-    for _ in range(10):
-        M, N = randint(0, 10), randint(0, 10)
-        v, w = np.random.rand(M), np.random.rand(N)
-        bars.instances = []
-        outer(v, w, progress=OPS)
-        assert all(b.n == b.total for b in bars.instances)
-
-def test_matmul_announcement_matches_reality(bars):
-    for _ in range(10):
-        L, M, N = randint(0, 10), randint(0, 10), randint(0, 10)
-        v, w = np.random.rand(L, M), np.random.rand(M, N)
-        bars.instances = []
-        matmul(v, w, progress=OPS)
-        assert all(b.n == b.total for b in bars.instances)
+def test_outer_does_not_track_add(bars):
+    #`outer` announces 'mul' only, so 'add' must be rejected too
+    with pytest.raises(ValueError, match='untracked'):
+        outer(np.zeros(3), np.zeros(3), progress=('mul', 'add'))
 
 def test_dot_needs_one_add_less_than_muls(bars):
     #`reduce_default` seeds with the first product instead of 0,
@@ -146,9 +143,9 @@ def test_matmul_rejects_bad_shapes(v, w):
     (outer,  np.zeros((2, 2)), np.zeros(2)),
 ])
 def test_errors_match_with_and_without_progress(bars, f, v, w):
-    #the announce function must not raise a different error first
+    #the sanitiser & announcer must not raise a different error first
     with pytest.raises(ValueError) as bare:
         f(v, w)
     with pytest.raises(ValueError) as shown:
-        f(v, w, progress=OPS)
+        f(v, w, progress=True)
     assert str(bare.value) == str(shown.value)

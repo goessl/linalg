@@ -40,7 +40,6 @@ plugins:
             members_order: source
             group_by_category: false
             docstring_style: numpy
-            show_signature_annotations: true
 
 extra:
   social:
@@ -56,6 +55,7 @@ markdown_extensions:
   - pymdownx.arithmatex:
       generic: true
   - pymdownx.highlight
+  - pymdownx.inlinehilite
   - pymdownx.superfences
   - pymdownx.tasklist:
       custom_checkbox: true
@@ -75,4 +75,5 @@ nav:
   - blas.md
   - blas2.md
   - leibniz.md
+  - gauss.md
   - progress.md

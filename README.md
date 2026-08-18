@@ -31,7 +31,7 @@ pip install git+https://github.com/goessl/linalg.git
 
 - [x] Deploy
 - [x] Production
-- [ ] [`blas`](linalg/blas.py) & [`blas2`](linalg/blas2.py)
+- [x] [`blas`](linalg/blas.py) & [`blas2`](linalg/blas2.py)
     - [x] `numpy.ufunc`s with callback (same broadcasting, same promotion, ...)
     - [ ] in-place operations
     - [x] `dot`
@@ -45,9 +45,9 @@ pip install git+https://github.com/goessl/linalg.git
     - [x] `det_leibniz`
 - [ ] `laplace`
     - [ ] `det_laplace`
-- [ ] `gauss`
-    - [ ] `det_gauss`
-    - [ ] `inv_gauss`
+- [x] `gauss`
+    - [x] `det_gauss`
+    - [x] `inv_gauss`
     - [ ] `bareiss`
 - [ ] `adjugate`
     - [ ] `minor`

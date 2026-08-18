@@ -1,8 +1,10 @@
 from linalg.leibniz import *
 import numpy as np
+import pytest
 
 
 
+@pytest.mark.filterwarnings('error')
 def test_det_leibniz():
     for N in range(8+1):
         A = np.random.rand(N, N)
@@ -11,19 +13,19 @@ def test_det_leibniz():
 
 
 #############################################################################
-#appended by Claude - the announce function only runs when `progress` is
-#requested, so without these it is never executed by the suite at all.
+#appended by Claude - counting is always on, so any call here also checks
+#its announcer; these cover selection, exact totals & the sanitiser.
 #the `bars` fixture lives in conftest.py.
 #############################################################################
 
 from linalg.leibniz import permutations as lperms
 from itertools import permutations as iperms
-from math import factorial
 from fractions import Fraction
 import pytest
-import warnings
 
-OPS = ('pos', 'neg', 'add', 'sub', 'mul', 'truediv', 'floordiv', 'mod')
+#every category `Progress` knows, for asserting that the untracked ones
+#are rejected rather than silently dropped
+CATEGORIES = ('pos', 'neg', 'add', 'sub', 'mul', 'truediv', 'floordiv', 'mod')
 
 
 def sign(p):
@@ -61,18 +63,15 @@ def test_permutations_starts_even():
 
 
 
-#announcements match reality
-@pytest.mark.parametrize('N', range(6+1))
-def test_det_leibniz_announcement_matches_reality(bars, N):
-    det_leibniz(np.random.rand(N, N), progress=OPS)
-    assert bars.instances
-    assert all(b.n == b.total for b in bars.instances)
+#announcements
+def test_untracked_category_raises():
+    #`det_leibniz` tracks pos/neg/add/mul, so 'mod' is a user mistake
+    with pytest.raises(ValueError, match='untracked'):
+        det_leibniz(np.zeros((3, 3)), progress=CATEGORIES)
 
-@pytest.mark.parametrize('N', range(6+1))
-def test_det_leibniz_warns_nothing(bars, N):
-    with warnings.catch_warnings():
-        warnings.simplefilter('error')
-        det_leibniz(np.random.rand(N, N), progress=True)
+def test_tracked_subset_is_accepted(bars):
+    det_leibniz(np.random.rand(3, 3), progress=('add', 'mul'))
+    assert {b.desc for b in bars.instances} == {'add', 'mul'}
 
 @pytest.mark.parametrize('N, expected', [
     (0, {('pos', 1), ('neg',  0), ('add',  0), ('mul',  0)}),
@@ -80,23 +79,12 @@ def test_det_leibniz_warns_nothing(bars, N):
     (2, {('pos', 1), ('neg',  1), ('add',  1), ('mul',  2)}),
     (3, {('pos', 3), ('neg',  3), ('add',  5), ('mul', 12)}),
     (4, {('pos',12), ('neg', 12), ('add', 23), ('mul', 72)}),
+    (5, {('pos',60), ('neg', 60), ('add',119), ('mul',480)}),
 ])
 def test_det_leibniz_announces_the_documented_complexity(bars, N, expected):
     #ceil(n!/2) pos, floor(n!/2) neg, n!-1 add & (n-1)n! mul
     det_leibniz(np.random.rand(N, N), progress=True)
     assert {(b.desc, b.total) for b in bars.instances} == expected
-
-def test_det_leibniz_signs_every_permutation(bars):
-    #the affirmations & negations together cover all n! terms
-    det_leibniz(np.random.rand(5, 5), progress=('pos', 'neg'))
-    assert sum(b.total for b in bars.instances) == factorial(5)
-
-def test_det_leibniz_needs_one_add_less_than_terms(bars):
-    #`sum_default` seeds with the first term instead of 0,
-    #so n! terms need only n!-1 additions
-    det_leibniz(np.random.rand(4, 4), progress=('add',))
-    bar, = bars.instances
-    assert bar.total == factorial(4) - 1
 
 def test_progress_true_draws_every_bar(bars):
     det_leibniz(np.random.rand(3, 3), progress=True)
@@ -155,7 +143,7 @@ def test_det_leibniz_rejects_bad_shapes(A):
     np.zeros((2, 3)),
 ])
 def test_errors_match_with_and_without_progress(bars, A):
-    #the announce function must not raise a different error first
+    #the sanitiser & announcer must not raise a different error first
     with pytest.raises(ValueError) as bare:
         det_leibniz(A)
     with pytest.raises(ValueError) as shown:
