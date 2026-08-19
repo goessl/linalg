@@ -18,7 +18,7 @@
         <link rel="prev" href="../leibniz/">
       
       
-        <link rel="next" href="../progress/">
+        <link rel="next" href="../rank/">
       
       
         
@@ -56,6 +56,8 @@
     
     
       <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../stylesheets/edge-cases.css">
     
       <link rel="stylesheet" href="../stylesheets/complexity.css">
     
@@ -546,10 +548,81 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#linalg.gauss.is_ref" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        is_ref
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#linalg.gauss.ref_gauss_sanitise" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ref_gauss_sanitise
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#linalg.gauss.ref_gauss_announce" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ref_gauss_announce
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#linalg.gauss.ref_gauss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ref_gauss
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rank/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    rank
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -700,6 +773,50 @@
     <span class="md-ellipsis">
       
         inv_gauss
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#linalg.gauss.is_ref" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        is_ref
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#linalg.gauss.ref_gauss_sanitise" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ref_gauss_sanitise
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#linalg.gauss.ref_gauss_announce" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ref_gauss_announce
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#linalg.gauss.ref_gauss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ref_gauss
       
     </span>
   </a>
@@ -859,10 +976,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>linalg\gauss.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">26</span>
 <span class="normal">27</span>
 <span class="normal">28</span>
 <span class="normal">29</span>
@@ -878,7 +992,10 @@
 <span class="normal">39</span>
 <span class="normal">40</span>
 <span class="normal">41</span>
-<span class="normal">42</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">swap_rows</span><span class="p">(</span><span class="n">A</span><span class="p">:</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span><span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">swap_rows</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Swap the `i`-th and `j`-th row of `A` in-place.</span>
 
 <span class="sd">    Parameters</span>
@@ -993,10 +1110,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>linalg\gauss.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">47</span>
 <span class="normal">48</span>
 <span class="normal">49</span>
 <span class="normal">50</span>
@@ -1012,7 +1126,10 @@
 <span class="normal">60</span>
 <span class="normal">61</span>
 <span class="normal">62</span>
-<span class="normal">63</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">swap_columns</span><span class="p">(</span><span class="n">A</span><span class="p">:</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span><span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">swap_columns</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Swap the `i`-th and `j`-th column of `A` in-place.</span>
 
 <span class="sd">    Parameters</span>
@@ -1143,10 +1260,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>linalg\gauss.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">65</span>
-<span class="normal">66</span>
-<span class="normal">67</span>
-<span class="normal">68</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">68</span>
 <span class="normal">69</span>
 <span class="normal">70</span>
 <span class="normal">71</span>
@@ -1163,7 +1277,10 @@
 <span class="normal">82</span>
 <span class="normal">83</span>
 <span class="normal">84</span>
-<span class="normal">85</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">swap_pivot</span><span class="p">(</span><span class="n">A</span><span class="p">:</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span><span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span>
+<span class="normal">88</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">swap_pivot</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Swap the `p`-&amp;`i`-th rows and `p`-&amp;`j`-th columns of `A` in-place.</span>
 
 <span class="sd">    Parameters</span>
@@ -1199,7 +1316,7 @@
 
 
 <h2 id="linalg.gauss.det_gauss_sanitise" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">det_gauss_sanitise</span><span class="p">(</span><span class="n">A</span><span class="p">)</span></code>
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">det_gauss_sanitise</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">one</span><span class="o">=</span><span class="n">MISSING</span><span class="p">)</span></code>
 
 </h2>
 
@@ -1212,23 +1329,30 @@
 <details class="see-also" open>
   <summary>See also</summary>
   <ul>
-<li><a class="autorefs autorefs-internal" title="            det_gauss(A, *, progress)" href="#linalg.gauss.det_gauss"><code>det_gauss</code></a></li>
+<li><a class="autorefs autorefs-internal" title="            det_gauss(A, *, one, progress)" href="#linalg.gauss.det_gauss"><code>det_gauss</code></a></li>
 </ul>
 </details>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>linalg\gauss.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">88</span>
-<span class="normal">89</span>
-<span class="normal">90</span>
-<span class="normal">91</span>
-<span class="normal">92</span>
-<span class="normal">93</span>
-<span class="normal">94</span>
-<span class="normal">95</span>
-<span class="normal">96</span>
-<span class="normal">97</span>
-<span class="normal">98</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">det_gauss_sanitise</span><span class="p">(</span><span class="n">A</span><span class="p">:</span><span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Sequence</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">]:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">det_gauss_sanitise</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">one</span><span class="p">:</span> <span class="n">Any</span><span class="o">=</span><span class="n">MISSING</span><span class="p">)</span> \
+        <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">],</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="n">Any</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;`det_gauss` sanitiser.</span>
 
 <span class="sd">    See also</span>
@@ -1238,7 +1362,12 @@
     <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">2</span> <span class="ow">and</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;A must be two dimensional and square&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">[</span><span class="n">A</span><span class="p">],</span> <span class="p">{}</span>
+
+    <span class="k">if</span> <span class="n">one</span> <span class="ow">is</span> <span class="n">MISSING</span><span class="p">:</span>
+        <span class="c1">#don&#39;t use .item(), would unpack the numpy type to a Python type</span>
+        <span class="n">one</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="p">)[()]</span>
+
+    <span class="k">return</span> <span class="p">[</span><span class="n">A</span><span class="p">],</span> <span class="p">{</span><span class="s1">&#39;one&#39;</span><span class="p">:</span><span class="n">one</span><span class="p">}</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1254,7 +1383,7 @@
 
 
 <h2 id="linalg.gauss.det_gauss_announce" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">det_gauss_announce</span><span class="p">(</span><span class="n">A</span><span class="p">)</span></code>
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">det_gauss_announce</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">one</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></code>
 
 </h2>
 
@@ -1267,34 +1396,34 @@
 <details class="see-also" open>
   <summary>See also</summary>
   <ul>
-<li><a class="autorefs autorefs-internal" title="            det_gauss(A, *, progress)" href="#linalg.gauss.det_gauss"><code>det_gauss</code></a></li>
+<li><a class="autorefs autorefs-internal" title="            det_gauss(A, *, one, progress)" href="#linalg.gauss.det_gauss"><code>det_gauss</code></a></li>
 </ul>
 </details>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>linalg\gauss.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">100</span>
-<span class="normal">101</span>
-<span class="normal">102</span>
-<span class="normal">103</span>
-<span class="normal">104</span>
-<span class="normal">105</span>
-<span class="normal">106</span>
-<span class="normal">107</span>
-<span class="normal">108</span>
-<span class="normal">109</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">109</span>
 <span class="normal">110</span>
 <span class="normal">111</span>
 <span class="normal">112</span>
 <span class="normal">113</span>
-<span class="normal">114</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">det_gauss_announce</span><span class="p">(</span><span class="n">A</span><span class="p">:</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="nb">int</span><span class="p">]:</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">det_gauss_announce</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">one</span><span class="p">:</span> <span class="n">Any</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;`det_gauss` announcer.</span>
 
 <span class="sd">    See also</span>
 <span class="sd">    --------</span>
 <span class="sd">    - [`det_gauss`][linalg.gauss.det_gauss]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">N</span><span class="p">:</span><span class="nb">int</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">return</span> <span class="p">{</span>
         <span class="s1">&#39;pos&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
         <span class="s1">&#39;neg&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
@@ -1317,7 +1446,7 @@
 
 
 <h2 id="linalg.gauss.det_gauss" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">det_gauss</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span></code>
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">det_gauss</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">one</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span></code>
 
 </h2>
 
@@ -1326,7 +1455,7 @@
 
         <p>Return the determinant.</p>
 <div class="arithmatex">\[
-    \det A \qquad \mathbb{K}^{N\times N}\to\mathbb{K}
+    \det A \qquad \mathbb{K}^{N\times N}\to\mathbb{K} \quad N\geq0
 \]</div>
 <p>Uses Gaussian elimination with complete pivoting.</p>
 <p>Don't use with data types that don't divide exactly.</p>
@@ -1353,6 +1482,22 @@
             <td>
               <div class="doc-md-description">
                 <p>Square matrix.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>one</code>
+            </td>
+            <td>
+                  <code>Any = MISSING</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>One element.</p>
               </div>
             </td>
             <td>
@@ -1394,13 +1539,19 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Determinant, possibly <code>int(1)</code> if <code>A</code> has shape <span class="arithmatex">\(0 \times 0\)</span>.</p>
+                <p>Determinant.</p>
               </div>
             </td>
           </tr>
       </tbody>
     </table>
 
+
+<details class="edge-cases" open>
+  <summary>Edge cases</summary>
+  <p>For a <span class="arithmatex">\(0 \times 0\)</span> object matrix provide a <code>one</code> argument
+to not get a type unspecific <code>int(1)</code> back.</p>
+</details>
 
 <details class="note" open>
   <summary>Notes</summary>
@@ -1411,7 +1562,7 @@ and transformed in-place into an upper triangular matrix
 
 <details class="complexity" open>
   <summary>Complexity</summary>
-  <p>For a matrix of size <span class="arithmatex">\(N \times N\)</span> there will be at most</p>
+  <p>There will be</p>
 <ul>
 <li><span class="arithmatex">\(1\)</span> scalar affirmation (<code>pos</code>) or negation (<code>neg</code>),</li>
 <li><span class="arithmatex">\(\frac{N(N^2-1)}{3}\)</span> scalar subtractions (<code>sub</code>),</li>
@@ -1424,8 +1575,8 @@ scalar multiplications (<code>mul</code>) &amp;</li>
 <details class="see-also" open>
   <summary>See also</summary>
   <ul>
-<li><a class="autorefs autorefs-internal" title="            det_gauss_sanitise(A)" href="#linalg.gauss.det_gauss_sanitise"><code>det_gauss_sanitise</code></a></li>
-<li><a class="autorefs autorefs-internal" title="            det_gauss_announce(A)" href="#linalg.gauss.det_gauss_announce"><code>det_gauss_announce</code></a></li>
+<li><a class="autorefs autorefs-internal" title="            det_gauss_sanitise(A, *, one=MISSING)" href="#linalg.gauss.det_gauss_sanitise"><code>det_gauss_sanitise</code></a></li>
+<li><a class="autorefs autorefs-internal" title="            det_gauss_announce(A, *, one=1)" href="#linalg.gauss.det_gauss_announce"><code>det_gauss_announce</code></a></li>
 </ul>
 </details>
 
@@ -1436,16 +1587,7 @@ scalar multiplications (<code>mul</code>) &amp;</li>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>linalg\gauss.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">116</span>
-<span class="normal">117</span>
-<span class="normal">118</span>
-<span class="normal">119</span>
-<span class="normal">120</span>
-<span class="normal">121</span>
-<span class="normal">122</span>
-<span class="normal">123</span>
-<span class="normal">124</span>
-<span class="normal">125</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">125</span>
 <span class="normal">126</span>
 <span class="normal">127</span>
 <span class="normal">128</span>
@@ -1507,12 +1649,28 @@ scalar multiplications (<code>mul</code>) &amp;</li>
 <span class="normal">184</span>
 <span class="normal">185</span>
 <span class="normal">186</span>
-<span class="normal">187</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@visualisable</span><span class="p">(</span><span class="n">det_gauss_announce</span><span class="p">,</span> <span class="n">det_gauss_sanitise</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">det_gauss</span><span class="p">(</span><span class="n">A</span><span class="p">:</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span><span class="n">Progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@visualisable</span><span class="p">(</span><span class="n">det_gauss_announce</span><span class="p">,</span> <span class="n">det_gauss_sanitise</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">det_gauss</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">one</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the determinant.</span>
 
 <span class="sd">    $$</span>
-<span class="sd">        \det A \qquad \mathbb{K}^{N\times N}\to\mathbb{K}</span>
+<span class="sd">        \det A \qquad \mathbb{K}^{N\times N}\to\mathbb{K} \quad N\geq0</span>
 <span class="sd">    $$</span>
 
 <span class="sd">    Uses Gaussian elimination with complete pivoting.</span>
@@ -1523,13 +1681,20 @@ scalar multiplications (<code>mul</code>) &amp;</li>
 <span class="sd">    ----------</span>
 <span class="sd">    A : numpy.typing.ArrayLike</span>
 <span class="sd">        Square matrix.</span>
+<span class="sd">    one : Any = MISSING</span>
+<span class="sd">        One element.</span>
 <span class="sd">    progress : Iterable[str]|bool = False</span>
 <span class="sd">        Progress visualisation specification.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    Any</span>
-<span class="sd">        Determinant, possibly `int(1)` if `A` has shape $0 \times 0$.</span>
+<span class="sd">        Determinant.</span>
+
+<span class="sd">    Edge cases</span>
+<span class="sd">    ----------</span>
+<span class="sd">    For a $0 \times 0$ object matrix provide a `one` argument</span>
+<span class="sd">    to not get a type unspecific `int(1)` back.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
@@ -1539,7 +1704,7 @@ scalar multiplications (<code>mul</code>) &amp;</li>
 
 <span class="sd">    Complexity</span>
 <span class="sd">    ----------</span>
-<span class="sd">    For a matrix of size $N \times N$ there will be at most</span>
+<span class="sd">    There will be</span>
 
 <span class="sd">    - $1$ scalar affirmation (`pos`) or negation (`neg`),</span>
 <span class="sd">    - $\frac{N(N^2-1)}{3}$ scalar subtractions (`sub`),</span>
@@ -1556,14 +1721,14 @@ scalar multiplications (<code>mul</code>) &amp;</li>
 <span class="sd">    ----------</span>
 <span class="sd">    [Wikipedia - Gaussian elimination - Computing determinants](https://en.wikipedia.org/wiki/Gaussian_elimination#Computing_determinants)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">N</span><span class="p">:</span><span class="nb">int</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">s</span><span class="p">:</span><span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
         <span class="c1">#pivot</span>
         <span class="n">i_max</span><span class="p">,</span> <span class="n">j_max</span> <span class="o">=</span> \
                 <span class="n">np</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">:,</span> <span class="n">i</span><span class="p">:])),</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">:,</span> <span class="n">i</span><span class="p">:]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">i_max</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="n">j_max</span><span class="p">]:</span> <span class="c1">#determinant zero, early exit</span>
-            <span class="n">M</span><span class="p">:</span><span class="nb">int</span> <span class="o">=</span> <span class="n">N</span> <span class="o">-</span> <span class="n">i</span>
+            <span class="n">M</span> <span class="o">=</span> <span class="n">N</span> <span class="o">-</span> <span class="n">i</span>
             <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s1">&#39;pos&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s1">&#39;neg&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s1">&#39;sub&#39;</span><span class="p">,</span> <span class="n">M</span><span class="o">*</span><span class="p">(</span><span class="n">M</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">//</span><span class="mi">3</span><span class="p">)</span>
@@ -1578,7 +1743,7 @@ scalar multiplications (<code>mul</code>) &amp;</li>
             <span class="n">outer</span><span class="p">(</span><span class="n">vtruediv</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">:,</span> <span class="n">i</span><span class="p">],</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">],</span> <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">),</span>
                 <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">:],</span> <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">),</span> <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">)</span>
     <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s1">&#39;neg&#39;</span> <span class="k">if</span> <span class="n">s</span> <span class="k">else</span> <span class="s1">&#39;pos&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">progress</span><span class="o">.</span><span class="n">posneg</span><span class="p">(</span><span class="n">progress</span><span class="o">.</span><span class="n">prod_default</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">A</span><span class="p">)),</span> <span class="n">s</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">progress</span><span class="o">.</span><span class="n">posneg</span><span class="p">(</span><span class="n">progress</span><span class="o">.</span><span class="n">prod_default</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">A</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="n">one</span><span class="p">),</span> <span class="n">s</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1613,17 +1778,19 @@ scalar multiplications (<code>mul</code>) &amp;</li>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>linalg\gauss.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">190</span>
-<span class="normal">191</span>
-<span class="normal">192</span>
-<span class="normal">193</span>
-<span class="normal">194</span>
-<span class="normal">195</span>
-<span class="normal">196</span>
-<span class="normal">197</span>
-<span class="normal">198</span>
-<span class="normal">199</span>
-<span class="normal">200</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">inv_gauss_sanitise</span><span class="p">(</span><span class="n">A</span><span class="p">:</span><span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Sequence</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">]:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">inv_gauss_sanitise</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> \
+        <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">],</span><span class="nb">dict</span><span class="p">[</span><span class="n">Never</span><span class="p">,</span><span class="n">Never</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;`inv_gauss` sanitiser.</span>
 
 <span class="sd">    See also</span>
@@ -1668,26 +1835,26 @@ scalar multiplications (<code>mul</code>) &amp;</li>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>linalg\gauss.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">202</span>
-<span class="normal">203</span>
-<span class="normal">204</span>
-<span class="normal">205</span>
-<span class="normal">206</span>
-<span class="normal">207</span>
-<span class="normal">208</span>
-<span class="normal">209</span>
-<span class="normal">210</span>
-<span class="normal">211</span>
-<span class="normal">212</span>
-<span class="normal">213</span>
-<span class="normal">214</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">inv_gauss_announce</span><span class="p">(</span><span class="n">A</span><span class="p">:</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="nb">int</span><span class="p">]:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">inv_gauss_announce</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;`inv_gauss` announcer.</span>
 
 <span class="sd">    See also</span>
 <span class="sd">    --------</span>
 <span class="sd">    - [`inv_gauss`][linalg.gauss.inv_gauss]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">N</span><span class="p">:</span><span class="nb">int</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">return</span> <span class="p">{</span>
         <span class="s1">&#39;sub&#39;</span><span class="p">:</span> <span class="n">N</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">),</span>
         <span class="s1">&#39;mul&#39;</span><span class="p">:</span> <span class="n">N</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">),</span>
@@ -1717,7 +1884,7 @@ scalar multiplications (<code>mul</code>) &amp;</li>
 
         <p>Return the inverse.</p>
 <div class="arithmatex">\[
-    A^{-1} \qquad \mathbb{K}^{N\times N}\to\mathbb{K}^{N\times N}
+    A^{-1} \qquad \mathbb{K}^{N\times N}\to\mathbb{K}^{N\times N} \quad N\geq0
 \]</div>
 <p>Uses Gaussian elimination with complete pivoting.</p>
 <p>Don't use with data types that don't divide exactly.</p>
@@ -1824,7 +1991,7 @@ and transformed in-place into the identity matrix.</p>
 
 <details class="complexity" open>
   <summary>Complexity</summary>
-  <p>For a matrix of size <span class="arithmatex">\(N \times N\)</span> there will be</p>
+  <p>There will be</p>
 <ul>
 <li><span class="arithmatex">\(2N^3-2N^2\)</span> scalar subtractions (<code>sub</code>),</li>
 <li><span class="arithmatex">\(2N^3-2N^2\)</span> scalar multiplications (<code>mul</code>) &amp;</li>
@@ -1848,24 +2015,7 @@ and transformed in-place into the identity matrix.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>linalg\gauss.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">216</span>
-<span class="normal">217</span>
-<span class="normal">218</span>
-<span class="normal">219</span>
-<span class="normal">220</span>
-<span class="normal">221</span>
-<span class="normal">222</span>
-<span class="normal">223</span>
-<span class="normal">224</span>
-<span class="normal">225</span>
-<span class="normal">226</span>
-<span class="normal">227</span>
-<span class="normal">228</span>
-<span class="normal">229</span>
-<span class="normal">230</span>
-<span class="normal">231</span>
-<span class="normal">232</span>
-<span class="normal">233</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">233</span>
 <span class="normal">234</span>
 <span class="normal">235</span>
 <span class="normal">236</span>
@@ -1945,12 +2095,29 @@ and transformed in-place into the identity matrix.</p>
 <span class="normal">310</span>
 <span class="normal">311</span>
 <span class="normal">312</span>
-<span class="normal">313</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@visualisable</span><span class="p">(</span><span class="n">inv_gauss_announce</span><span class="p">,</span> <span class="n">inv_gauss_sanitise</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">inv_gauss</span><span class="p">(</span><span class="n">A</span><span class="p">:</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span><span class="n">Progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">:</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span>
+<span class="normal">324</span>
+<span class="normal">325</span>
+<span class="normal">326</span>
+<span class="normal">327</span>
+<span class="normal">328</span>
+<span class="normal">329</span>
+<span class="normal">330</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@visualisable</span><span class="p">(</span><span class="n">inv_gauss_announce</span><span class="p">,</span> <span class="n">inv_gauss_sanitise</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">inv_gauss</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the inverse.</span>
 
 <span class="sd">    $$</span>
-<span class="sd">        A^{-1} \qquad \mathbb{K}^{N\times N}\to\mathbb{K}^{N\times N}</span>
+<span class="sd">        A^{-1} \qquad \mathbb{K}^{N\times N}\to\mathbb{K}^{N\times N} \quad N\geq0</span>
 <span class="sd">    $$</span>
 
 <span class="sd">    Uses Gaussian elimination with complete pivoting.</span>
@@ -1981,7 +2148,7 @@ and transformed in-place into the identity matrix.</p>
 
 <span class="sd">    Complexity</span>
 <span class="sd">    ----------</span>
-<span class="sd">    For a matrix of size $N \times N$ there will be</span>
+<span class="sd">    There will be</span>
 
 <span class="sd">    - $2N^3-2N^2$ scalar subtractions (`sub`),</span>
 <span class="sd">    - $2N^3-2N^2$ scalar multiplications (`mul`) &amp;</span>
@@ -2052,6 +2219,634 @@ and transformed in-place into the identity matrix.</p>
 
 
 
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="linalg.gauss.is_ref" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">is_ref</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">reduced</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Return if <code>A</code> is of (reduced) row echelon form.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>A</code>
+            </td>
+            <td>
+                  <code><span title="numpy.typing.ArrayLike">ArrayLike</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Matrix.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>reduced</code>
+            </td>
+            <td>
+                  <code>bool = True</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                
+              </div>
+            </td>
+            <td>
+                  <code>True</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Wether <code>A</code> is (reduced) row echelon form</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>linalg\gauss.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">333</span>
+<span class="normal">334</span>
+<span class="normal">335</span>
+<span class="normal">336</span>
+<span class="normal">337</span>
+<span class="normal">338</span>
+<span class="normal">339</span>
+<span class="normal">340</span>
+<span class="normal">341</span>
+<span class="normal">342</span>
+<span class="normal">343</span>
+<span class="normal">344</span>
+<span class="normal">345</span>
+<span class="normal">346</span>
+<span class="normal">347</span>
+<span class="normal">348</span>
+<span class="normal">349</span>
+<span class="normal">350</span>
+<span class="normal">351</span>
+<span class="normal">352</span>
+<span class="normal">353</span>
+<span class="normal">354</span>
+<span class="normal">355</span>
+<span class="normal">356</span>
+<span class="normal">357</span>
+<span class="normal">358</span>
+<span class="normal">359</span>
+<span class="normal">360</span>
+<span class="normal">361</span>
+<span class="normal">362</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_ref</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">reduced</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return if `A` is of (reduced) row echelon form.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    A : numpy.typing.ArrayLike</span>
+<span class="sd">        Matrix.</span>
+<span class="sd">    reduced : bool = True</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bool</span>
+<span class="sd">        Wether `A` is (reduced) row echelon form</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">A</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;A must be two dimensional&#39;</span><span class="p">)</span>
+
+    <span class="n">pivots</span> <span class="o">=</span> <span class="p">[</span><span class="nb">next</span><span class="p">((</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">if</span> <span class="n">a</span><span class="p">),</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">A</span><span class="p">]</span>
+    <span class="c1">#check all pivots ascend to the right</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">pi</span><span class="o">&lt;</span><span class="n">pj</span> <span class="ow">or</span> <span class="n">pj</span><span class="o">==</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">pi</span><span class="p">,</span> <span class="n">pj</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">(</span><span class="n">pivots</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">reduced</span><span class="p">:</span>
+        <span class="c1">#check if pivots one and zeros above</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pivots</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">p</span><span class="o">&lt;</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">p</span><span class="p">]</span><span class="o">!=</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">A</span><span class="p">[:</span><span class="n">i</span><span class="p">,</span> <span class="n">p</span><span class="p">]):</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="linalg.gauss.ref_gauss_sanitise" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">ref_gauss_sanitise</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">reduced</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p><code>ref_gauss</code> sanitiser.</p>
+
+
+<details class="see-also" open>
+  <summary>See also</summary>
+  <ul>
+<li><a class="autorefs autorefs-internal" title="            ref_gauss(A, reduced=True, *, progress)" href="#linalg.gauss.ref_gauss"><code>ref_gauss</code></a></li>
+</ul>
+</details>
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>linalg\gauss.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">365</span>
+<span class="normal">366</span>
+<span class="normal">367</span>
+<span class="normal">368</span>
+<span class="normal">369</span>
+<span class="normal">370</span>
+<span class="normal">371</span>
+<span class="normal">372</span>
+<span class="normal">373</span>
+<span class="normal">374</span>
+<span class="normal">375</span>
+<span class="normal">376</span>
+<span class="normal">377</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">ref_gauss_sanitise</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">reduced</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> \
+        <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">,</span><span class="nb">bool</span><span class="p">],</span><span class="nb">dict</span><span class="p">[</span><span class="n">Never</span><span class="p">,</span><span class="n">Never</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;`ref_gauss` sanitiser.</span>
+
+<span class="sd">    See also</span>
+<span class="sd">    --------</span>
+<span class="sd">    - [`ref_gauss`][linalg.gauss.ref_gauss]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;A must be a numpy.ndarray&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">A</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;A must be two dimensional&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">A</span><span class="p">,</span> <span class="n">reduced</span><span class="p">],</span> <span class="p">{}</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="linalg.gauss.ref_gauss_announce" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">ref_gauss_announce</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">reduced</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p><code>ref_gauss</code> announcer.</p>
+
+
+<details class="see-also" open>
+  <summary>See also</summary>
+  <ul>
+<li><a class="autorefs autorefs-internal" title="            ref_gauss(A, reduced=True, *, progress)" href="#linalg.gauss.ref_gauss"><code>ref_gauss</code></a></li>
+</ul>
+</details>
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>linalg\gauss.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">379</span>
+<span class="normal">380</span>
+<span class="normal">381</span>
+<span class="normal">382</span>
+<span class="normal">383</span>
+<span class="normal">384</span>
+<span class="normal">385</span>
+<span class="normal">386</span>
+<span class="normal">387</span>
+<span class="normal">388</span>
+<span class="normal">389</span>
+<span class="normal">390</span>
+<span class="normal">391</span>
+<span class="normal">392</span>
+<span class="normal">393</span>
+<span class="normal">394</span>
+<span class="normal">395</span>
+<span class="normal">396</span>
+<span class="normal">397</span>
+<span class="normal">398</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">ref_gauss_announce</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">reduced</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;`ref_gauss` announcer.</span>
+
+<span class="sd">    See also</span>
+<span class="sd">    --------</span>
+<span class="sd">    - [`ref_gauss`][linalg.gauss.ref_gauss]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="o">*</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">reduced</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;sub&#39;</span><span class="p">:</span> <span class="n">N</span><span class="o">*</span><span class="n">R</span><span class="o">*</span><span class="p">(</span><span class="n">M</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+            <span class="s1">&#39;mul&#39;</span><span class="p">:</span> <span class="n">N</span><span class="o">*</span><span class="n">R</span><span class="o">*</span><span class="p">(</span><span class="n">M</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+            <span class="s1">&#39;truediv&#39;</span><span class="p">:</span> <span class="n">N</span><span class="o">*</span><span class="n">R</span>
+        <span class="p">}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;sub&#39;</span><span class="p">:</span> <span class="n">N</span><span class="o">*</span><span class="n">R</span><span class="o">*</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">M</span><span class="o">-</span><span class="n">R</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="s1">&#39;mul&#39;</span><span class="p">:</span> <span class="n">N</span><span class="o">*</span><span class="n">R</span><span class="o">*</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">M</span><span class="o">-</span><span class="n">R</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="s1">&#39;truediv&#39;</span><span class="p">:</span> <span class="n">R</span><span class="o">*</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">M</span><span class="o">-</span><span class="n">R</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+        <span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="linalg.gauss.ref_gauss" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">ref_gauss</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">reduced</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Transform to (reduced) row echelon form.</p>
+<div class="arithmatex">\[
+    \mathbb{K}^{M\times N}\mapsto\mathbb{K}^{M\times N} \qquad \operatorname{rank}A=R
+\]</div>
+<p>Uses Gaussian elimination with pivoting.</p>
+<p>Transforms <code>A</code> in-place (therefore always pass a <code>numpy.typing.NDArray</code>).</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>A</code>
+            </td>
+            <td>
+                  <code><span title="numpy.typing.NDArray">NDArray</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>reduced</code>
+            </td>
+            <td>
+                  <code>bool = True</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                
+              </div>
+            </td>
+            <td>
+                  <code>True</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>progress</code>
+            </td>
+            <td>
+                  <code>Iterable[str]|bool = False</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Progress visualisation specification.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="list">list</span>[<span title="int">int</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Pivot indices.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<details class="complexity" open>
+  <summary>Complexity</summary>
+  <p>There will be (unreduced)</p>
+<ul>
+<li><span class="arithmatex">\(NR(2M-R-1)/2\)</span> scalar subtractions (<code>sub</code>),</li>
+<li><span class="arithmatex">\(NR(2M-R-1)/2\)</span> scalar multiplications (<code>mul</code>) &amp;</li>
+<li><span class="arithmatex">\(R(2M-R-1)/2\)</span> scalar true divisions (<code>truediv</code>).</li>
+</ul>
+<p>or (reduced)</p>
+<ul>
+<li><span class="arithmatex">\(NR(M-1)\)</span> scalar subtractions (<code>sub</code>),</li>
+<li><span class="arithmatex">\(NR(M-1)\)</span> scalar multiplications (<code>mul</code>) &amp;</li>
+<li><span class="arithmatex">\(NR\)</span> scalar true divisions (<code>truediv</code>).</li>
+</ul>
+</details>
+
+<details class="see-also" open>
+  <summary>See also</summary>
+  <ul>
+<li><a class="autorefs autorefs-internal" title="            ref_gauss_sanitise(A, reduced=True)" href="#linalg.gauss.ref_gauss_sanitise"><code>ref_gauss_sanitise</code></a></li>
+<li><a class="autorefs autorefs-internal" title="            ref_gauss_announce(A, reduced=True)" href="#linalg.gauss.ref_gauss_announce"><code>ref_gauss_announce</code></a></li>
+</ul>
+</details>
+
+<details class="references" open>
+  <summary>References</summary>
+  <p><a href="https://en.wikipedia.org/wiki/Gaussian_elimination#Pseudocode">Wikipedia - Gaussian elimination - Pseudocode</a></p>
+</details>
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>linalg\gauss.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">400</span>
+<span class="normal">401</span>
+<span class="normal">402</span>
+<span class="normal">403</span>
+<span class="normal">404</span>
+<span class="normal">405</span>
+<span class="normal">406</span>
+<span class="normal">407</span>
+<span class="normal">408</span>
+<span class="normal">409</span>
+<span class="normal">410</span>
+<span class="normal">411</span>
+<span class="normal">412</span>
+<span class="normal">413</span>
+<span class="normal">414</span>
+<span class="normal">415</span>
+<span class="normal">416</span>
+<span class="normal">417</span>
+<span class="normal">418</span>
+<span class="normal">419</span>
+<span class="normal">420</span>
+<span class="normal">421</span>
+<span class="normal">422</span>
+<span class="normal">423</span>
+<span class="normal">424</span>
+<span class="normal">425</span>
+<span class="normal">426</span>
+<span class="normal">427</span>
+<span class="normal">428</span>
+<span class="normal">429</span>
+<span class="normal">430</span>
+<span class="normal">431</span>
+<span class="normal">432</span>
+<span class="normal">433</span>
+<span class="normal">434</span>
+<span class="normal">435</span>
+<span class="normal">436</span>
+<span class="normal">437</span>
+<span class="normal">438</span>
+<span class="normal">439</span>
+<span class="normal">440</span>
+<span class="normal">441</span>
+<span class="normal">442</span>
+<span class="normal">443</span>
+<span class="normal">444</span>
+<span class="normal">445</span>
+<span class="normal">446</span>
+<span class="normal">447</span>
+<span class="normal">448</span>
+<span class="normal">449</span>
+<span class="normal">450</span>
+<span class="normal">451</span>
+<span class="normal">452</span>
+<span class="normal">453</span>
+<span class="normal">454</span>
+<span class="normal">455</span>
+<span class="normal">456</span>
+<span class="normal">457</span>
+<span class="normal">458</span>
+<span class="normal">459</span>
+<span class="normal">460</span>
+<span class="normal">461</span>
+<span class="normal">462</span>
+<span class="normal">463</span>
+<span class="normal">464</span>
+<span class="normal">465</span>
+<span class="normal">466</span>
+<span class="normal">467</span>
+<span class="normal">468</span>
+<span class="normal">469</span>
+<span class="normal">470</span>
+<span class="normal">471</span>
+<span class="normal">472</span>
+<span class="normal">473</span>
+<span class="normal">474</span>
+<span class="normal">475</span>
+<span class="normal">476</span>
+<span class="normal">477</span>
+<span class="normal">478</span>
+<span class="normal">479</span>
+<span class="normal">480</span>
+<span class="normal">481</span>
+<span class="normal">482</span>
+<span class="normal">483</span>
+<span class="normal">484</span>
+<span class="normal">485</span>
+<span class="normal">486</span>
+<span class="normal">487</span>
+<span class="normal">488</span>
+<span class="normal">489</span>
+<span class="normal">490</span>
+<span class="normal">491</span>
+<span class="normal">492</span>
+<span class="normal">493</span>
+<span class="normal">494</span>
+<span class="normal">495</span>
+<span class="normal">496</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@visualisable</span><span class="p">(</span><span class="n">ref_gauss_announce</span><span class="p">,</span> <span class="n">ref_gauss_sanitise</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ref_gauss</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">reduced</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span><span class="p">)</span> \
+        <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Transform to (reduced) row echelon form.</span>
+
+<span class="sd">    $$</span>
+<span class="sd">        \mathbb{K}^{M\times N}\mapsto\mathbb{K}^{M\times N} \qquad \operatorname{rank}A=R</span>
+<span class="sd">    $$</span>
+
+<span class="sd">    Uses Gaussian elimination with pivoting.</span>
+
+<span class="sd">    Transforms `A` in-place (therefore always pass a `numpy.typing.NDArray`).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    A : numpy.typing.NDArray</span>
+<span class="sd">    reduced : bool = True</span>
+<span class="sd">    progress : Iterable[str]|bool = False</span>
+<span class="sd">        Progress visualisation specification.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list[int]</span>
+<span class="sd">        Pivot indices.</span>
+
+<span class="sd">    Complexity</span>
+<span class="sd">    ----------</span>
+<span class="sd">    There will be (unreduced)</span>
+
+<span class="sd">    - $NR(2M-R-1)/2$ scalar subtractions (`sub`),</span>
+<span class="sd">    - $NR(2M-R-1)/2$ scalar multiplications (`mul`) &amp;</span>
+<span class="sd">    - $R(2M-R-1)/2$ scalar true divisions (`truediv`).</span>
+
+<span class="sd">    or (reduced)</span>
+
+<span class="sd">    - $NR(M-1)$ scalar subtractions (`sub`),</span>
+<span class="sd">    - $NR(M-1)$ scalar multiplications (`mul`) &amp;</span>
+<span class="sd">    - $NR$ scalar true divisions (`truediv`).</span>
+
+<span class="sd">    See also</span>
+<span class="sd">    --------</span>
+<span class="sd">    - [`ref_gauss_sanitise`][linalg.gauss.ref_gauss_sanitise]</span>
+<span class="sd">    - [`ref_gauss_announce`][linalg.gauss.ref_gauss_announce]</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    [Wikipedia - Gaussian elimination - Pseudocode](https://en.wikipedia.org/wiki/Gaussian_elimination#Pseudocode)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">M</span><span class="p">,</span> <span class="n">N</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+    <span class="n">R</span><span class="p">,</span> <span class="n">lost</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="mi">0</span>
+    <span class="n">pivots</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">while</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">M</span> <span class="ow">and</span> <span class="n">j</span><span class="o">&lt;</span><span class="n">N</span><span class="p">:</span>
+        <span class="c1">#find pivot</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">A</span><span class="p">[(</span><span class="n">p</span> <span class="o">:=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">:,</span> <span class="n">j</span><span class="p">]))</span> <span class="o">+</span> <span class="n">i</span><span class="p">),</span> <span class="n">j</span><span class="p">]:</span>
+            <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">N</span><span class="o">-</span><span class="n">j</span> <span class="o">&lt;</span> <span class="n">M</span><span class="o">-</span><span class="n">i</span><span class="p">:</span>
+                <span class="n">lost</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">reduced</span><span class="p">:</span>
+                    <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s1">&#39;sub&#39;</span><span class="p">,</span> <span class="n">N</span><span class="o">*</span><span class="p">(</span><span class="n">M</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+                    <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s1">&#39;mul&#39;</span><span class="p">,</span> <span class="n">N</span><span class="o">*</span><span class="p">(</span><span class="n">M</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+                    <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s1">&#39;truediv&#39;</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">k</span> <span class="o">=</span> <span class="n">R</span> <span class="o">-</span> <span class="n">lost</span>
+                    <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s1">&#39;sub&#39;</span><span class="p">,</span> <span class="n">N</span><span class="o">*</span><span class="p">(</span><span class="n">M</span><span class="o">-</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+                    <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s1">&#39;mul&#39;</span><span class="p">,</span> <span class="n">N</span><span class="o">*</span><span class="p">(</span><span class="n">M</span><span class="o">-</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+                    <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s1">&#39;truediv&#39;</span><span class="p">,</span> <span class="n">M</span><span class="o">-</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1">#pivot</span>
+            <span class="n">swap_rows</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">reduced</span><span class="p">:</span>
+                <span class="c1">#normalize pivot</span>
+                <span class="c1">#A[i, :] /= A[i, j]</span>
+                <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">vtruediv</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">],</span> <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">)</span>
+                <span class="c1">#zeros above and below</span>
+                <span class="c1">#A[:i, :] -= A[i, :] * A[:i, j][:, np.newaxis]</span>
+                <span class="c1">#A[i+1:, :] -= A[i, :] * A[i+1:, j][:, np.newaxis]</span>
+                <span class="n">A</span><span class="p">[:</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">vsub</span><span class="p">(</span><span class="n">A</span><span class="p">[:</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span>
+                                <span class="n">outer</span><span class="p">(</span><span class="n">A</span><span class="p">[:</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">],</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span> <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">),</span>
+                                <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">)</span>
+                <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">vsub</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">:,</span> <span class="p">:],</span>
+                                  <span class="n">outer</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">:,</span> <span class="n">j</span><span class="p">],</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span> <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">),</span>
+                                  <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1">#zeros below</span>
+                <span class="c1">#A[i+1:, :] -= A[i, :] * (A[i+1:, j] / A[i, j])[:, np.newaxis]</span>
+                <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">vsub</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">:,</span> <span class="p">:],</span>
+                                  <span class="n">outer</span><span class="p">(</span><span class="n">vtruediv</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">:,</span> <span class="n">j</span><span class="p">],</span>
+                                                 <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">],</span>
+                                                 <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">),</span>
+                                        <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span>
+                                        <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">),</span>
+                                  <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">)</span>
+            <span class="n">pivots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">pivots</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+
   </div>
 
     </div>
@@ -2103,13 +2898,13 @@ and transformed in-place into the identity matrix.</p>
         
         
           
-          <a href="../progress/" class="md-footer__link md-footer__link--next" aria-label="Next: progress">
+          <a href="../rank/" class="md-footer__link md-footer__link--next" aria-label="Next: rank">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                progress
+                rank
               </div>
             </div>
             <div class="md-footer__button md-icon">

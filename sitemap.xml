@@ -2,26 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://goessl.github.io/linalg/</loc>
-         <lastmod>2026-08-18</lastmod>
+         <lastmod>2026-08-19</lastmod>
     </url>
     <url>
          <loc>https://goessl.github.io/linalg/blas/</loc>
-         <lastmod>2026-08-18</lastmod>
+         <lastmod>2026-08-19</lastmod>
     </url>
     <url>
          <loc>https://goessl.github.io/linalg/blas2/</loc>
-         <lastmod>2026-08-18</lastmod>
+         <lastmod>2026-08-19</lastmod>
     </url>
     <url>
          <loc>https://goessl.github.io/linalg/gauss/</loc>
-         <lastmod>2026-08-18</lastmod>
+         <lastmod>2026-08-19</lastmod>
     </url>
     <url>
          <loc>https://goessl.github.io/linalg/leibniz/</loc>
-         <lastmod>2026-08-18</lastmod>
+         <lastmod>2026-08-19</lastmod>
     </url>
     <url>
          <loc>https://goessl.github.io/linalg/progress/</loc>
-         <lastmod>2026-08-18</lastmod>
+         <lastmod>2026-08-19</lastmod>
+    </url>
+    <url>
+         <loc>https://goessl.github.io/linalg/rank/</loc>
+         <lastmod>2026-08-19</lastmod>
     </url>
 </urlset>
