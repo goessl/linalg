@@ -14,4 +14,5 @@ from .blas import *
 from .blas2 import *
 from .leibniz import *
 from .gauss import *
+from .rank import *
 from .progress import *

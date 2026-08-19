@@ -48,6 +48,7 @@ pip install git+https://github.com/goessl/linalg.git
 - [x] `gauss`
     - [x] `det_gauss`
     - [x] `inv_gauss`
+    - [x] `ref_gauss` & `is_ref`
     - [ ] `bareiss`
 - [ ] `adjugate`
     - [ ] `minor`
@@ -60,15 +61,18 @@ pip install git+https://github.com/goessl/linalg.git
     - [ ] `luq`
     - [ ] `pluq`
     - [ ] `banachiewicz`
-- [ ] `rank`
-    - [ ] `ref_gauss`
-    - [ ] `rank_decomp`
+- [x] `rank`
+    - [x] `rank_decomp`
     - [ ] `pinv`
     - [ ] `lstsq`
 - [ ] `faddeev_leverrier`
     - [ ] `det_faddeev_leverrier`
     - [ ] `charp_faddeev_leverrier`
     - [ ] `adj_faddeev_leverrier`
+- [ ] decorator should also prepend sanitiser to announcer to be safely usable
+- [ ] better annotations
+    - [ ] `visualisable` wrapping
+- [ ] links from this list to the actual functions
 - [x] Ballin
 
 ## License (MIT)

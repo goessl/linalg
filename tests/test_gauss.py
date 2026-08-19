@@ -1,5 +1,5 @@
 from linalg.gauss import *
-from random import binomialvariate
+from random import randint, binomialvariate
 from fractions import Fraction
 import numpy as np
 import numpy.typing as npt
@@ -19,49 +19,67 @@ def _binomq(grade:int=1000) -> Fraction:
         raise ValueError('grade must be positive')
     return Fraction(_binomz(grade), grade)
 
-def _vrandz(shape:int|tuple[int,...]=1, sigma:int=1000) -> npt.NDArray[object]:
-    r = np.empty(shape, dtype=object)
-    for i in np.ndindex(r.shape):
-        r[i] = _binomz(sigma)
-    return r
-
 def _vrandq(shape:int|tuple[int,...]=1, grade:int=1000) -> npt.NDArray[object]:
     r = np.empty(shape, dtype=object)
     for i in np.ndindex(r.shape):
         r[i] = _binomq(grade)
     return r
 
+def _vrandqr(M:int, N:int, R:int, grade:int=1000) -> npt.NDArray[object]:
+    if not R: #an empty matmul would fill with int(0)
+        return np.full((M, N), Fraction(0), dtype=object)
+    return _vrandq((M, R), grade=grade) @ _vrandq((R, N), grade=grade)
+
 
 
 @pytest.mark.filterwarnings('error')
 def test_det_gauss():
-    for N in range(20):
+    for N in range(10):
         A = np.random.rand(N, N)
         assert np.isclose(np.linalg.det(A), det_gauss(A))
     
-    for N in range(20):
-        A = _vrandq((N, N))
-        actual = np.linalg.det(A.astype(float)) #actual before prediction
-        prediction = det_gauss(A)               #because A gets mutated
-        assert np.isclose(float(prediction), actual)
-        #N=0 has no element to take the ring from, the empty product is `int`
-        assert isinstance(prediction, Fraction) or N == 0
+    for N in range(10):
+        for R in range(N+1):
+            A = _vrandqr(N, N, R)
+            actual = np.linalg.det(A.astype(float)) #actual before prediction
+            prediction = det_gauss(A, one=Fraction(1)) #because A gets mutated
+            assert np.isclose(float(prediction), actual)
+            assert isinstance(prediction, Fraction)
 
 @pytest.mark.filterwarnings('error')
 def test_inv_gauss():
-    for N in range(20):
+    for N in range(10):
         A = np.random.rand(N, N)
         if not np.isclose(np.linalg.det(A), 0):
             assert np.allclose(np.linalg.inv(A), inv_gauss(A))
     
-    for N in range(20):
-        A = _vrandq((N, N))
-        if det_gauss(A.copy()) != 0:
-            assert np.allclose(np.linalg.inv(A.astype(float)),
-                    inv_gauss(A).astype(float))
-        else:
-            with pytest.raises(ZeroDivisionError):
-                inv_gauss(A)
+    for N in range(10):
+        for R in range(N+1):
+            A = _vrandqr(N, N, R)
+            if det_gauss(A.copy()) != 0:
+                actual = np.linalg.inv(A.astype(float))
+                prediction = inv_gauss(A)
+                assert np.allclose(prediction.astype(float), actual)
+            else:
+                with pytest.raises(ZeroDivisionError):
+                    inv_gauss(A)
+
+@pytest.mark.filterwarnings('error')
+@pytest.mark.parametrize('reduced', (False, True))
+def test_ref_gauss(reduced):
+    for M in range(1, 10):
+        for N in range(1, 10):
+            for R in range(min(M, N)+1):
+                A = _vrandqr(M, N, R)
+                ref_gauss(A, reduced=reduced)
+                assert is_ref(A, reduced=reduced)
+    
+    for _ in range(50):
+        M, N = randint(1, 10), randint(1, 10)
+        R = randint(0, min(M, N))
+        A = _vrandqr(M, N, R)
+        rank = np.linalg.matrix_rank(A.astype(float))
+        assert len(ref_gauss(A, reduced=reduced)) == rank
 
 
 
@@ -131,11 +149,30 @@ def test_swap_pivot_rejects_bad_shapes():
 
 
 #sanitiser
-@pytest.mark.parametrize('sanitiser', [det_gauss_sanitise, inv_gauss_sanitise])
-def test_sanitiser_returns_args_and_kwargs(sanitiser):
+@pytest.mark.parametrize('sanitiser, extra', [
+    (det_gauss_sanitise, ('one',)),
+    (inv_gauss_sanitise, ()),
+])
+def test_sanitiser_returns_args_and_kwargs(sanitiser, extra):
     args, kwargs = sanitiser([[1., 2.], [3., 4.]])
     A, = args
-    assert isinstance(A, np.ndarray) and kwargs == {}
+    assert isinstance(A, np.ndarray) and tuple(kwargs) == extra
+
+def test_det_gauss_sanitiser_resolves_the_ring():
+    #`MISSING` is resolved here rather than in the executor, so the announcer
+    #and the executor both receive a concrete element
+    _, kwargs = det_gauss_sanitise([[1., 2.], [3., 4.]])
+    assert kwargs['one'] == 1 and isinstance(kwargs['one'], np.float64)
+    _, kwargs = det_gauss_sanitise(np.array([[Fraction(1)]], dtype=object))
+    assert kwargs['one'] == 1 and isinstance(kwargs['one'], int)
+    _, kwargs = det_gauss_sanitise([[1., 2.]] * 2, one=Fraction(1))
+    assert kwargs['one'] == 1 and isinstance(kwargs['one'], Fraction)
+
+def test_det_gauss_sanitiser_does_not_re_resolve():
+    #it runs again on a nested call, so an already resolved `one` must survive
+    once, kwargs = det_gauss_sanitise([[1., 2.], [3., 4.]], one=Fraction(1))
+    _, again = det_gauss_sanitise(*once, **kwargs)
+    assert again['one'] is kwargs['one']
 
 @pytest.mark.parametrize('sanitiser', [det_gauss_sanitise, inv_gauss_sanitise])
 @pytest.mark.parametrize('A', [
@@ -149,10 +186,11 @@ def test_sanitiser_rejects_bad_shapes(sanitiser, A):
 
 @pytest.mark.parametrize('sanitiser', [det_gauss_sanitise, inv_gauss_sanitise])
 def test_sanitiser_is_idempotent(sanitiser):
-    #it may run again on a nested call, so re-applying must be safe
-    once, _ = sanitiser([[1., 2.], [3., 4.]])
-    twice, _ = sanitiser(*once)
-    assert np.array_equal(once[0], twice[0])
+    #it may run again on a nested call, so feeding it its own output - kwargs
+    #included, the way the decorator hands them on - must be safe
+    once, kwargs = sanitiser([[1., 2.], [3., 4.]])
+    twice, kwargs_again = sanitiser(*once, **kwargs)
+    assert np.array_equal(once[0], twice[0]) and kwargs == kwargs_again
 
 
 
@@ -325,3 +363,162 @@ def test_errors_match_with_and_without_progress(bars, f, A):
 def test_singular_inverse_raises():
     with pytest.raises(ZeroDivisionError, match='singular'):
         inv_gauss(np.array([[1., 2.], [2., 4.]]))
+
+
+
+#is_ref
+#no library computes an unreduced row echelon form (it isn't unique), so the
+#predicate is pinned by hand; the reduced half is cross checked below
+@pytest.mark.parametrize('A, unreduced, reduced', [
+    #                                          is_ref(A, False), is_ref(A, True)
+    ([[]],                                     True,  True),   #no columns
+    ([[0, 0], [0, 0]],                         True,  True),   #zero matrix
+    ([[1, 0], [0, 1]],                         True,  True),   #identity
+    ([[1, 5], [0, 0]],                         True,  True),   #free column right
+    ([[1, 0, 3], [0, 1, 4]],                   True,  True),   #two pivots
+    ([[0, 1, 0], [0, 0, 1]],                   True,  True),   #leading zero col
+    ([[2, 0], [0, 1]],                         True,  False),  #pivot != 1
+    ([[1, 0], [0, 2]],                         True,  False),  #pivot != 1
+    ([[1, 1], [0, 1]],                         True,  False),  #nonzero above
+    ([[1, 0], [1, 0]],                         False, False),  #pivots repeat
+    ([[0, 1], [1, 0]],                         False, False),  #pivots descend
+    ([[0, 0], [1, 0]],                         False, False),  #zero row first
+    ([[1, 0], [0, 0], [0, 1]],                 False, False),  #zero row between
+])
+def test_is_ref(A, unreduced, reduced):
+    A = np.array(A, dtype=object)
+    assert is_ref(A, reduced=False) is unreduced
+    assert is_ref(A, reduced=True) is reduced
+
+def test_is_ref_accepts_array_likes():
+    #unlike `ref_gauss` it only reads, so it may wrap with `asarray`
+    assert is_ref([[1, 0], [0, 1]]) and is_ref(((1, 0), (0, 1)))
+
+@pytest.mark.parametrize('A', [np.zeros(3), np.zeros((2, 2, 2))])
+def test_is_ref_rejects_bad_shapes(A):
+    with pytest.raises(ValueError):
+        is_ref(A)
+
+
+
+#ref_gauss against sympy
+#the reduced form is unique and so are the pivot columns - they are a property
+#of the matrix, not of the algorithm, which is why sympy pins the unreduced
+#branch too even though its matrix is not unique
+def _sympy(A):
+    """Exact `sympy.Matrix` of a `Fraction`/`int` object array."""
+    sympy = pytest.importorskip('sympy')
+    return sympy.Matrix(A.shape[0], A.shape[1],
+            [sympy.Rational(x.numerator, x.denominator) for x in A.flat])
+
+def _holey(M, N, r, grade=5):
+    """`_vrandqr` with some columns zeroed.
+
+    The holes matter: a plain rank `r` product is only deficient at the
+    trailing columns, so every skip happens after the last pivot. A zeroed
+    column in the middle makes `ref_gauss` skip and credit a lost pivot
+    while pivots are still being found.
+    """
+    A = _vrandqr(M, N, r, grade=grade)
+    for j in range(N):
+        if randint(0, 3) == 0:
+            A[:, j] = Fraction(0)
+    return A
+
+@pytest.mark.parametrize('reduced', (False, True))
+def test_ref_gauss_pivots_are_the_rref_pivots(reduced):
+    for _ in range(50):
+        M, N = randint(1, 6), randint(1, 6)
+        A = _holey(M, N, randint(0, min(M, N)))
+        expected = list(_sympy(A).rref()[1])
+        assert ref_gauss(A, reduced=reduced) == expected
+
+def test_ref_gauss_reduced_is_the_unique_rref():
+    for _ in range(50):
+        M, N = randint(1, 6), randint(1, 6)
+        A = _holey(M, N, randint(0, min(M, N)))
+        expected = _sympy(A).rref()[0]
+        ref_gauss(A, reduced=True)
+        assert _sympy(A) == expected
+
+
+
+#ref_gauss announcements
+@pytest.mark.parametrize('reduced', (False, True))
+@pytest.mark.parametrize('shape', [(0, 0), (0, 3), (3, 0)])
+def test_ref_gauss_of_an_empty_matrix(shape, reduced):
+    assert ref_gauss(np.empty(shape, dtype=object), reduced=reduced) == []
+
+@pytest.mark.parametrize('reduced', (False, True))
+def test_ref_gauss_fills_its_bars_on_a_rank_deficient_matrix(bars, reduced):
+    #the announcement assumes rank min(M,N); every pivot that turns out to be
+    #impossible has to be credited, or the bars stop short of their total
+    for _ in range(20):
+        M, N = randint(1, 7), randint(1, 7)
+        ref_gauss(_holey(M, N, randint(0, min(M, N))),
+                  reduced=reduced, progress=True)
+    assert bars.instances and all(b.n == b.total for b in bars.instances)
+
+@pytest.mark.parametrize('M, N, expected', [
+    (1, 1, {('sub',  0), ('mul',  0), ('truediv', 1)}),
+    (3, 3, {('sub', 18), ('mul', 18), ('truediv', 9)}),
+    (2, 5, {('sub', 10), ('mul', 10), ('truediv', 10)}),
+    (5, 2, {('sub', 16), ('mul', 16), ('truediv',  4)}),
+])
+def test_ref_gauss_reduced_announces_the_documented_complexity(
+        bars, M, N, expected):
+    #Nr(M-1) sub, Nr(M-1) mul & Nr truediv for r = min(M, N)
+    ref_gauss(np.random.rand(M, N), reduced=True, progress=True)
+    assert {(b.desc, b.total) for b in bars.instances} == expected
+
+@pytest.mark.parametrize('M, N, expected', [
+    (1, 1, {('sub',  0), ('mul',  0), ('truediv', 0)}),
+    (3, 3, {('sub',  9), ('mul',  9), ('truediv', 3)}),
+    (2, 5, {('sub',  5), ('mul',  5), ('truediv', 1)}),
+    (5, 2, {('sub', 14), ('mul', 14), ('truediv', 7)}),
+])
+def test_ref_gauss_unreduced_announces_the_documented_complexity(
+        bars, M, N, expected):
+    #Nr(2M-r-1)/2 sub, Nr(2M-r-1)/2 mul & r(2M-r-1)/2 truediv for r = min(M, N)
+    ref_gauss(np.random.rand(M, N), reduced=False, progress=True)
+    assert {(b.desc, b.total) for b in bars.instances} == expected
+
+def test_ref_gauss_untracked_category_raises():
+    with pytest.raises(ValueError, match='untracked'):
+        ref_gauss(np.random.rand(3, 3), progress=CATEGORIES)
+
+@pytest.mark.parametrize('reduced', (False, True))
+def test_ref_gauss_bars_are_closed(bars, reduced):
+    ref_gauss(np.random.rand(3, 3), reduced=reduced, progress=True)
+    assert all(b.closed for b in bars.instances)
+
+
+
+#ref_gauss sanitiser
+def test_ref_gauss_sanitiser_returns_args_and_kwargs():
+    A = np.array([[1., 2.], [3., 4.]])
+    args, kwargs = ref_gauss_sanitise(A, False)
+    assert args[0] is A and args[1] is False and kwargs == {}
+
+def test_ref_gauss_sanitiser_keeps_the_array_identity():
+    #`ref_gauss` writes through, so unlike the other sanitisers this one must
+    #not `asarray` - a copy would silently drop the whole result
+    A = np.array([[1., 2.], [3., 4.]])
+    assert ref_gauss_sanitise(A)[0][0] is A
+
+@pytest.mark.parametrize('A', [[[1., 2.]], ((1., 2.),), 5])
+def test_ref_gauss_sanitiser_rejects_non_arrays(A):
+    with pytest.raises(TypeError):
+        ref_gauss_sanitise(A)
+
+@pytest.mark.parametrize('A', [np.zeros(3), np.zeros((2, 2, 2))])
+def test_ref_gauss_sanitiser_rejects_bad_shapes(A):
+    with pytest.raises(ValueError):
+        ref_gauss_sanitise(A)
+
+def test_ref_gauss_errors_match_with_and_without_progress():
+    with pytest.raises(ValueError) as bare:
+        ref_gauss(np.zeros(3))
+    with pytest.raises(ValueError) as shown:
+        ref_gauss(np.zeros(3), progress=True)
+    assert str(bare.value) == str(shown.value)

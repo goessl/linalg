@@ -4,10 +4,11 @@
 
 from math import factorial
 import numpy as np
-import numpy.typing as npt
+from numpy.typing import ArrayLike, NDArray
+from iteration import MISSING
 from .progress import Progress, visualisable
 from typing import Any
-from collections.abc import Iterable, Generator, Sequence, Mapping
+from collections.abc import Iterable, Generator
 
 
 
@@ -18,8 +19,8 @@ __all__ = (
 
 
 
-def permutations[T](iterable:Iterable[T], r:int|None=None) \
-        -> Generator[tuple[tuple[T,...], bool]]:
+def permutations[T](iterable: Iterable[T], r: int|None=None) \
+        -> Generator[tuple[tuple[T,...],bool]]:
     """`itertools.permutation` including parity.
     
     Parameters
@@ -66,7 +67,8 @@ def permutations[T](iterable:Iterable[T], r:int|None=None) \
             return
 
 
-def det_leibniz_sanitise(A:npt.ArrayLike) -> tuple[Sequence, Mapping]:
+def det_leibniz_sanitise(A: ArrayLike, *, one: Any=MISSING) \
+        -> tuple[tuple[NDArray],dict[str,Any]]:
     """`det_leibniz` sanitiser.
     
     See also
@@ -76,16 +78,21 @@ def det_leibniz_sanitise(A:npt.ArrayLike) -> tuple[Sequence, Mapping]:
     A = np.asarray(A)
     if not (A.ndim==2 and A.shape[0]==A.shape[1]):
         raise ValueError('A must be two dimensional and square')
-    return [A], {}
+    
+    if one is MISSING:
+        #don't use .item(), would unpack the numpy type to a Python type
+        one = np.ones((), dtype=A.dtype)[()]
+    
+    return [A], {'one':one}
 
-def det_leibniz_announce(A:npt.NDArray) -> dict[str,int]:
+def det_leibniz_announce(A: NDArray, *, one: Any=1) -> dict[str,int]:
     """`det_leibniz` announcer.
     
     See also
     --------
     - [`det_leibniz`][linalg.leibniz.det_leibniz]
     """
-    N:int = A.shape[0]
+    N = A.shape[0]
     return {
         'pos': (factorial(N)+1) // 2,
         'neg': factorial(N) // 2,
@@ -94,11 +101,11 @@ def det_leibniz_announce(A:npt.NDArray) -> dict[str,int]:
     }
 
 @visualisable(det_leibniz_announce, det_leibniz_sanitise)
-def det_leibniz(A:npt.NDArray, *, progress:Progress) -> Any:
+def det_leibniz(A: NDArray, *, one: Any, progress: Progress) -> Any:
     r"""Return the determinant.
     
     $$
-        \det A \qquad \mathbb{K}^{n\times n}\to\mathbb{K}
+        \det A \qquad \mathbb{K}^{N\times N}\to\mathbb{K} \quad N\geq0
     $$
     
     Uses the Leibniz formula.
@@ -107,6 +114,8 @@ def det_leibniz(A:npt.NDArray, *, progress:Progress) -> Any:
     ----------
     A : numpy.typing.ArrayLike
         Square matrix.
+    one : Any = MISSING
+        One element.
     progress : Iterable[str]|bool = False
         Progress visualisation specification.
     
@@ -115,14 +124,19 @@ def det_leibniz(A:npt.NDArray, *, progress:Progress) -> Any:
     Any
         Determinant.
     
+    Edge cases
+    ----------
+    For a $0 \times 0$ object matrix provide a `one` argument
+    to not get a type unspecific `int(1)` back.
+    
     Complexity
     ----------
-    For a matrix of size $n \times n$ there will be
+    There will be
     
-    - $\lceil\frac{n!}{2}\rceil$ scalar affirmations (`pos`),
-    - $\lfloor\frac{n!}{2}\rfloor$ scalar negations (`neg`),
-    - $n!-1$ scalar additions (`add`) &
-    - $(n-1)n!$ scalar multiplications (`mul`).
+    - $\lceil\frac{N!}{2}\rceil$ scalar affirmations (`pos`),
+    - $\lfloor\frac{N!}{2}\rfloor$ scalar negations (`neg`),
+    - $N!-1$ scalar additions (`add`) &
+    - $(N-1)n!$ scalar multiplications (`mul`).
     
     TODO: Filter zero products.
     
@@ -135,8 +149,9 @@ def det_leibniz(A:npt.NDArray, *, progress:Progress) -> Any:
     ----------
     [Wikipedia - Leibniz formula for determinants](https://en.wikipedia.org/wiki/Leibniz_formula_for_determinants)
     """
-    i:tuple[int,...] = tuple(range(A.shape[0]))
+    i = tuple(range(A.shape[0]))
     return progress.sum_default(
-            progress.posneg(progress.prod_default(A[i, p]), s)
-            for p, s in permutations(range(A.shape[0]))
+            (progress.posneg(progress.prod_default(A[i, p]), s)
+            for p, s in permutations(range(A.shape[0]))),
+            default=one
     )

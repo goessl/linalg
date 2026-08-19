@@ -102,9 +102,9 @@ class Progress:
     `operator` operators that also update.
     """
     
-    announced: dict[str, int]
+    announced: dict[str,int]
     counts: Counter
-    pbars: dict[str, tqdm]
+    pbars: dict[str,tqdm]
     
     def __init__(self, announced: Mapping[str,int],
                        selected: Iterable[str]|bool=False):
@@ -118,7 +118,7 @@ class Progress:
                 raise ValueError('untracked category requested')
         self.pbars = {k:tqdm(total=announced[k], desc=k) for k in selected}
     
-    def update(self, category:str, n:int=1) -> None:
+    def update(self, category: str, n: int=1) -> None:
         """Increment progress bar for `category` by `n`, if it exists.
         
         Parameters
@@ -149,55 +149,55 @@ class Progress:
     
     
     #scalar helpers
-    def pos(self, a:Any) -> Any:
+    def pos(self, a: Any) -> Any:
         """Return `+a`, and increment progress bar `pos`."""
         r = +a
         self.update('pos')
         return r
     
-    def neg(self, a:Any) -> Any:
+    def neg(self, a: Any) -> Any:
         """Return `-a`, and increment progress bar `neg`."""
         r = -a
         self.update('neg')
         return r
     
-    def add(self, a:Any, b:Any) -> Any:
+    def add(self, a: Any, b: Any) -> Any:
         """Return `a+b`, and increment progress bar `add`."""
         r = a + b
         self.update('add')
         return r
     
-    def sub(self, a:Any, b:Any) -> Any:
+    def sub(self, a: Any, b: Any) -> Any:
         """Return `a-b`, and increment progress bar `sub`."""
         r = a - b
         self.update('sub')
         return r
     
-    def mul(self, a:Any, b:Any) -> Any:
+    def mul(self, a: Any, b: Any) -> Any:
         """Return `a*b`, and increment progress bar `mul`."""
         r = a * b
         self.update('mul')
         return r
     
-    def truediv(self, a:Any, b:Any) -> Any:
+    def truediv(self, a: Any, b: Any) -> Any:
         """Return `a/b`, and increment progress bar `truediv`."""
         r = a / b
         self.update('truediv')
         return r
     
-    def floordiv(self, a:Any, b:Any) -> Any:
+    def floordiv(self, a: Any, b: Any) -> Any:
         """Return `a//b`, and increment progress bar `floordiv`."""
         r = a // b
         self.update('floordiv')
         return r
     
-    def mod(self, a:Any, b:Any) -> Any:
+    def mod(self, a: Any, b: Any) -> Any:
         """Return `a%b`, and increment progress bar `mod`."""
         r = a % b
         self.update('mod')
         return r
     
-    def posneg(self, x:Any, sign:bool) -> Any:
+    def posneg(self, x: Any, sign: bool) -> Any:
         r"""Return `+x` if `bool(sign)==True` else `-x`.
         
         $$
@@ -209,8 +209,8 @@ class Progress:
         """
         return self.pos(x) if sign else self.neg(x)
     
-    def sum_default(self, iterable:Iterable[Any], *,
-            initial:Any=MISSING, default:Any=0) -> Any:
+    def sum_default(self, iterable: Iterable[Any], *,
+            initial: Any=MISSING, default: Any=0) -> Any:
         """Return the sum of `iterable`.
         
         Without an unnecessary initial addition `+0`.
@@ -233,8 +233,8 @@ class Progress:
         return reduce_default(self.add, iterable,
                 initial=initial, default=default)
     
-    def prod_default(self, iterable:Iterable[Any], *,
-            initial:Any=MISSING, default:Any=1) -> Any:
+    def prod_default(self, iterable: Iterable[Any], *,
+            initial: Any=MISSING, default: Any=1) -> Any:
         """Return the product of `iterable`.
         
         Without an unnecessary initial multiplication `*1`.
@@ -257,8 +257,8 @@ class Progress:
         return reduce_default(self.mul, iterable,
                 initial=initial, default=default)
     
-    def sumprod_default(self, a:Iterable[Any], b:Iterable[Any], *,
-            initial:Any=MISSING, default:Any=0) -> Any:
+    def sumprod_default(self, a: Iterable[Any], b: Iterable[Any], *,
+            initial: Any=MISSING, default: Any=0) -> Any:
         """Return the sum product of `a` & `b`.
         
         Without an unnecessary initial addition `+0`.
@@ -284,8 +284,8 @@ class Progress:
 
 
 def visualisable(
-    announcer:Callable[...,Mapping[str,int]],
-    sanitiser:Callable[...,tuple[Sequence,Mapping]]|None=None):
+    announcer: Callable[...,Mapping[str,int]],
+    sanitiser: Callable[...,tuple[Sequence,Mapping]]|None=None):
     """Make the function visualisable.
     
     ```python
@@ -364,7 +364,7 @@ def visualisable(
     """
     def decorate(executor):
         @wraps(executor)
-        def wrapper(*args, progress:Iterable[str]|bool|Progress=False,
+        def wrapper(*args, progress: Iterable[str]|bool|Progress=False,
                 **kwargs):
             
             if sanitiser is not None:

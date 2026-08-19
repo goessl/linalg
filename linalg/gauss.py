@@ -2,25 +2,28 @@
 
 
 
+from itertools import pairwise
 import numpy as np
-import numpy.typing as npt
+from numpy.typing import ArrayLike, NDArray
+from iteration import MISSING
 from .blas import vsub, vtruediv
 from .blas2 import outer
 from .progress import Progress, visualisable
-from typing import Any
-from collections.abc import Sequence, Mapping
+from typing import Any, Never
 
 
 
 __all__ = (
     'swap_rows', 'swap_columns', 'swap_pivot',
     'det_gauss_sanitise', 'det_gauss_announce', 'det_gauss',
-    'inv_gauss_sanitise', 'inv_gauss_announce', 'inv_gauss'
+    'inv_gauss_sanitise', 'inv_gauss_announce', 'inv_gauss',
+    'is_ref',
+    'ref_gauss_sanitise', 'ref_gauss_announce', 'ref_gauss'
 )
 
 
 
-def swap_rows(A:npt.NDArray, i:int, j:int) -> None:
+def swap_rows(A: NDArray, i: int, j: int) -> None:
     """Swap the `i`-th and `j`-th row of `A` in-place.
     
     Parameters
@@ -41,7 +44,7 @@ def swap_rows(A:npt.NDArray, i:int, j:int) -> None:
     
     A[[i, j], :] = A[[j, i], :]
 
-def swap_columns(A:npt.NDArray, i:int, j:int) -> None:
+def swap_columns(A: NDArray, i: int, j: int) -> None:
     """Swap the `i`-th and `j`-th column of `A` in-place.
     
     Parameters
@@ -62,7 +65,7 @@ def swap_columns(A:npt.NDArray, i:int, j:int) -> None:
     
     A[:, [i, j]] = A[:, [j, i]]
 
-def swap_pivot(A:npt.NDArray, p:int, i:int, j:int) -> None:
+def swap_pivot(A: NDArray, p: int, i: int, j: int) -> None:
     """Swap the `p`-&`i`-th rows and `p`-&`j`-th columns of `A` in-place.
     
     Parameters
@@ -85,7 +88,8 @@ def swap_pivot(A:npt.NDArray, p:int, i:int, j:int) -> None:
     swap_columns(A, p, j)
 
 
-def det_gauss_sanitise(A:npt.ArrayLike) -> tuple[Sequence, Mapping]:
+def det_gauss_sanitise(A: ArrayLike, *, one: Any=MISSING) \
+        -> tuple[tuple[NDArray],dict[str,Any]]:
     """`det_gauss` sanitiser.
     
     See also
@@ -95,16 +99,21 @@ def det_gauss_sanitise(A:npt.ArrayLike) -> tuple[Sequence, Mapping]:
     A = np.asarray(A)
     if not (A.ndim==2 and A.shape[0]==A.shape[1]):
         raise ValueError('A must be two dimensional and square')
-    return [A], {}
+    
+    if one is MISSING:
+        #don't use .item(), would unpack the numpy type to a Python type
+        one = np.ones((), dtype=A.dtype)[()]
+    
+    return [A], {'one':one}
 
-def det_gauss_announce(A:npt.NDArray) -> dict[str,int]:
+def det_gauss_announce(A: NDArray, *, one: Any=1) -> dict[str,int]:
     """`det_gauss` announcer.
     
     See also
     --------
     - [`det_gauss`][linalg.gauss.det_gauss]
     """
-    N:int = A.shape[0]
+    N = A.shape[0]
     return {
         'pos': 1,
         'neg': 1,
@@ -114,11 +123,11 @@ def det_gauss_announce(A:npt.NDArray) -> dict[str,int]:
     }
 
 @visualisable(det_gauss_announce, det_gauss_sanitise)
-def det_gauss(A:npt.NDArray, *, progress:Progress) -> Any:
+def det_gauss(A: NDArray, *, one: Any, progress: Progress) -> Any:
     r"""Return the determinant.
     
     $$
-        \det A \qquad \mathbb{K}^{N\times N}\to\mathbb{K}
+        \det A \qquad \mathbb{K}^{N\times N}\to\mathbb{K} \quad N\geq0
     $$
     
     Uses Gaussian elimination with complete pivoting.
@@ -129,13 +138,20 @@ def det_gauss(A:npt.NDArray, *, progress:Progress) -> Any:
     ----------
     A : numpy.typing.ArrayLike
         Square matrix.
+    one : Any = MISSING
+        One element.
     progress : Iterable[str]|bool = False
         Progress visualisation specification.
     
     Returns
     -------
     Any
-        Determinant, possibly `int(1)` if `A` has shape $0 \times 0$.
+        Determinant.
+    
+    Edge cases
+    ----------
+    For a $0 \times 0$ object matrix provide a `one` argument
+    to not get a type unspecific `int(1)` back.
     
     Notes
     -----
@@ -145,7 +161,7 @@ def det_gauss(A:npt.NDArray, *, progress:Progress) -> Any:
     
     Complexity
     ----------
-    For a matrix of size $N \times N$ there will be at most
+    There will be
     
     - $1$ scalar affirmation (`pos`) or negation (`neg`),
     - $\frac{N(N^2-1)}{3}$ scalar subtractions (`sub`),
@@ -162,14 +178,14 @@ def det_gauss(A:npt.NDArray, *, progress:Progress) -> Any:
     ----------
     [Wikipedia - Gaussian elimination - Computing determinants](https://en.wikipedia.org/wiki/Gaussian_elimination#Computing_determinants)
     """
-    N:int = A.shape[0]
-    s:bool = True
+    N = A.shape[0]
+    s = True
     for i in range(N):
         #pivot
         i_max, j_max = \
                 np.unravel_index(np.argmax(np.abs(A[i:, i:])), A[i:, i:].shape)
         if not A[i+i_max, i+j_max]: #determinant zero, early exit
-            M:int = N - i
+            M = N - i
             progress.update('pos', 1)
             progress.update('neg', 1)
             progress.update('sub', M*(M**2-1)//3)
@@ -184,10 +200,11 @@ def det_gauss(A:npt.NDArray, *, progress:Progress) -> Any:
             outer(vtruediv(A[i+1:, i], A[i, i], progress=progress),
                 A[i, i:], progress=progress), progress=progress)
     progress.update('neg' if s else 'pos')
-    return progress.posneg(progress.prod_default(np.diag(A)), s)
+    return progress.posneg(progress.prod_default(np.diag(A), default=one), s)
 
 
-def inv_gauss_sanitise(A:npt.ArrayLike) -> tuple[Sequence, Mapping]:
+def inv_gauss_sanitise(A: ArrayLike) \
+        -> tuple[tuple[NDArray],dict[Never,Never]]:
     """`inv_gauss` sanitiser.
     
     See also
@@ -199,14 +216,14 @@ def inv_gauss_sanitise(A:npt.ArrayLike) -> tuple[Sequence, Mapping]:
         raise ValueError('A must be two dimensional and square')
     return [A], {}
 
-def inv_gauss_announce(A:npt.NDArray) -> dict[str,int]:
+def inv_gauss_announce(A: NDArray) -> dict[str,int]:
     """`inv_gauss` announcer.
     
     See also
     --------
     - [`inv_gauss`][linalg.gauss.inv_gauss]
     """
-    N:int = A.shape[0]
+    N = A.shape[0]
     return {
         'sub': N**2 * (2*N-2),
         'mul': N**2 * (2*N-2),
@@ -214,11 +231,11 @@ def inv_gauss_announce(A:npt.NDArray) -> dict[str,int]:
     }
 
 @visualisable(inv_gauss_announce, inv_gauss_sanitise)
-def inv_gauss(A:npt.NDArray, *, progress:Progress) -> npt.NDArray:
+def inv_gauss(A: NDArray, *, progress: Progress) -> NDArray:
     r"""Return the inverse.
     
     $$
-        A^{-1} \qquad \mathbb{K}^{N\times N}\to\mathbb{K}^{N\times N}
+        A^{-1} \qquad \mathbb{K}^{N\times N}\to\mathbb{K}^{N\times N} \quad N\geq0
     $$
     
     Uses Gaussian elimination with complete pivoting.
@@ -249,7 +266,7 @@ def inv_gauss(A:npt.NDArray, *, progress:Progress) -> npt.NDArray:
     
     Complexity
     ----------
-    For a matrix of size $N \times N$ there will be
+    There will be
     
     - $2N^3-2N^2$ scalar subtractions (`sub`),
     - $2N^3-2N^2$ scalar multiplications (`mul`) &
@@ -311,3 +328,169 @@ def inv_gauss(A:npt.NDArray, *, progress:Progress) -> npt.NDArray:
     
     #return matmul(Q, P, progress)
     return P[np.argsort(Q),:]
+
+
+def is_ref(A: ArrayLike, reduced: bool=True) -> bool:
+    """Return if `A` is of (reduced) row echelon form.
+    
+    Parameters
+    ----------
+    A : numpy.typing.ArrayLike
+        Matrix.
+    reduced : bool = True
+    
+    Returns
+    -------
+    bool
+        Wether `A` is (reduced) row echelon form
+    """
+    A = np.asarray(A)
+    if A.ndim != 2:
+        raise ValueError('A must be two dimensional')
+    
+    pivots = [next((i for i, a in enumerate(r) if a), A.shape[1]) for r in A]
+    #check all pivots ascend to the right
+    if not all(pi<pj or pj==A.shape[1] for pi, pj in pairwise(pivots)):
+        return False
+    
+    if reduced:
+        #check if pivots one and zeros above
+        for i, p in enumerate(pivots):
+            if p<A.shape[1]:
+                if A[i, p]!=1 or np.any(A[:i, p]):
+                    return False
+    return True
+
+
+def ref_gauss_sanitise(A: NDArray, reduced: bool=True) \
+        -> tuple[tuple[NDArray,bool],dict[Never,Never]]:
+    """`ref_gauss` sanitiser.
+    
+    See also
+    --------
+    - [`ref_gauss`][linalg.gauss.ref_gauss]
+    """
+    if not isinstance(A, np.ndarray):
+        raise TypeError('A must be a numpy.ndarray')
+    if A.ndim != 2:
+        raise ValueError('A must be two dimensional')
+    return [A, reduced], {}
+
+def ref_gauss_announce(A: NDArray, reduced: bool=True) -> dict[str,int]:
+    """`ref_gauss` announcer.
+    
+    See also
+    --------
+    - [`ref_gauss`][linalg.gauss.ref_gauss]
+    """
+    M, N, R = *A.shape, min(A.shape)
+    if reduced:
+        return {
+            'sub': N*R*(M-1),
+            'mul': N*R*(M-1),
+            'truediv': N*R
+        }
+    else:
+        return {
+            'sub': N*R*(2*M-R-1) // 2,
+            'mul': N*R*(2*M-R-1) // 2,
+            'truediv': R*(2*M-R-1) // 2
+        }
+
+@visualisable(ref_gauss_announce, ref_gauss_sanitise)
+def ref_gauss(A: NDArray, reduced: bool=True, *, progress: Progress) \
+        -> list[int]:
+    r"""Transform to (reduced) row echelon form.
+    
+    $$
+        \mathbb{K}^{M\times N}\mapsto\mathbb{K}^{M\times N} \qquad \operatorname{rank}A=R
+    $$
+    
+    Uses Gaussian elimination with pivoting.
+    
+    Transforms `A` in-place (therefore always pass a `numpy.typing.NDArray`).
+    
+    Parameters
+    ----------
+    A : numpy.typing.NDArray
+    reduced : bool = True
+    progress : Iterable[str]|bool = False
+        Progress visualisation specification.
+    
+    Returns
+    -------
+    list[int]
+        Pivot indices.
+    
+    Complexity
+    ----------
+    There will be (unreduced)
+    
+    - $NR(2M-R-1)/2$ scalar subtractions (`sub`),
+    - $NR(2M-R-1)/2$ scalar multiplications (`mul`) &
+    - $R(2M-R-1)/2$ scalar true divisions (`truediv`).
+    
+    or (reduced)
+    
+    - $NR(M-1)$ scalar subtractions (`sub`),
+    - $NR(M-1)$ scalar multiplications (`mul`) &
+    - $NR$ scalar true divisions (`truediv`).
+    
+    See also
+    --------
+    - [`ref_gauss_sanitise`][linalg.gauss.ref_gauss_sanitise]
+    - [`ref_gauss_announce`][linalg.gauss.ref_gauss_announce]
+    
+    References
+    ----------
+    [Wikipedia - Gaussian elimination - Pseudocode](https://en.wikipedia.org/wiki/Gaussian_elimination#Pseudocode)
+    """
+    M, N = A.shape
+    i, j = 0, 0
+    R, lost = min(M, N), 0
+    pivots = []
+    while i<M and j<N:
+        #find pivot
+        if not A[(p := np.argmax(np.abs(A[i:, j])) + i), j]:
+            j += 1
+            if N-j < M-i:
+                lost += 1
+                if reduced:
+                    progress.update('sub', N*(M-1))
+                    progress.update('mul', N*(M-1))
+                    progress.update('truediv', N)
+                else:
+                    k = R - lost
+                    progress.update('sub', N*(M-k-1))
+                    progress.update('mul', N*(M-k-1))
+                    progress.update('truediv', M-k-1)
+        else:
+            #pivot
+            swap_rows(A, i, p)
+            if reduced:
+                #normalize pivot
+                #A[i, :] /= A[i, j]
+                A[i, :] = vtruediv(A[i, :], A[i, j], progress=progress)
+                #zeros above and below
+                #A[:i, :] -= A[i, :] * A[:i, j][:, np.newaxis]
+                #A[i+1:, :] -= A[i, :] * A[i+1:, j][:, np.newaxis]
+                A[:i, :] = vsub(A[:i, :],
+                                outer(A[:i, j], A[i, :], progress=progress),
+                                progress=progress)
+                A[i+1:, :] = vsub(A[i+1:, :],
+                                  outer(A[i+1:, j], A[i, :], progress=progress),
+                                  progress=progress)
+            else:
+                #zeros below
+                #A[i+1:, :] -= A[i, :] * (A[i+1:, j] / A[i, j])[:, np.newaxis]
+                A[i+1:, :] = vsub(A[i+1:, :],
+                                  outer(vtruediv(A[i+1:, j],
+                                                 A[i, j],
+                                                 progress=progress),
+                                        A[i, :],
+                                        progress=progress),
+                                  progress=progress)
+            pivots.append(j)
+            i += 1
+            j += 1
+    return pivots

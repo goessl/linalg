@@ -1,0 +1,3 @@
+# rank
+
+::: linalg.rank

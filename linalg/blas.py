@@ -18,14 +18,15 @@ Provides
 [`vmul`][linalg.blas.vmul], [`vtruediv`][linalg.blas.vtruediv],
 [`vfloordiv`][linalg.blas.vfloordiv], [`vmod`][linalg.blas.vmod]
 
-    vectorised operations on `npt.ArrayLike`s with visualisation support
+    vectorised operations on `numpy.typing.ArrayLike`s
+    with visualisation support
 """
 
 
 
 from .progress import Progress, visualisable
 import numpy as np
-import numpy.typing as npt
+from numpy.typing import ArrayLike
 from typing import Any
 from collections.abc import Callable
 
@@ -66,7 +67,7 @@ def _is_weak(x: Any) -> bool:
     return (isinstance(x, (int, float, complex))
             and not isinstance(x, (bool, np.generic)))
 
-def _weak_dtype(x: npt.ArrayLike) -> Any:
+def _weak_dtype(x: ArrayLike) -> Any:
     """Return the `type` (if weak) or `dtype` (if strong) of `x`.
     
     Parameters
@@ -83,11 +84,8 @@ def _weak_dtype(x: npt.ArrayLike) -> Any:
     """
     return type(x) if _is_weak(x) else np.asarray(x).dtype
 
-def ufunc_with_cb(
-    op:        np.ufunc,
-    *operands: npt.ArrayLike,
-    cb:        Callable[..., None] | None = None
-) -> Any:
+def ufunc_with_cb(op: np.ufunc, *operands: ArrayLike,
+        cb: Callable[...,None]|None=None) -> Any:
     """Apply a [`numpy.ufunc`](https://numpy.org/doc/stable/reference/ufuncs.html) element-wise, with an optional callback.
     
     Same as calling `op` directly, but with an additional callback parameter.
@@ -132,8 +130,8 @@ def ufunc_with_cb(
     -----
     Naive versions that not perfectly imitate ufunc promotion:
     ```python
-    def unary(op:Callable[[Any], Any], a:npt.NDArray)
-            -> npt.NDArray:
+    def unary(op:Callable[[Any], Any], a:NDArray)
+            -> NDArray:
         a = np.asarray(a)
         r = np.empty(a.shape, a.dtype)
         for ai, ri in np.nditer(
@@ -144,8 +142,8 @@ def ufunc_with_cb(
             ri[...] = op(ai.item())
         return r
     
-    def binary(op:Callable[[Any, Any], Any], a:npt.NDArray, b:npt.NDArray)
-            -> npt.NDArray:
+    def binary(op:Callable[[Any, Any], Any], a:NDArray, b:NDArray)
+            -> NDArray:
         a, b = np.asarray(a), np.asarray(b)
         r = np.empty(np.broadcast_shapes(a.shape, b.shape),
                      np.result_type(a.dtype, b.dtype))
@@ -192,7 +190,7 @@ def ufunc_with_cb(
 
 
 
-def vpos_announce(a: npt.ArrayLike) -> dict[str, int]:
+def vpos_announce(a: ArrayLike) -> dict[str, int]:
     """`vpos` announcer.
     
     See also
@@ -202,7 +200,7 @@ def vpos_announce(a: npt.ArrayLike) -> dict[str, int]:
     return {'pos': np.size(a)}
 
 @visualisable(vpos_announce)
-def vpos(a: npt.ArrayLike, *, progress:Progress) -> Any:
+def vpos(a: ArrayLike, *, progress: Progress) -> Any:
     """Return the elementwise affirmation.
     
     Exactly like [`numpy.positive`](https://numpy.org/doc/stable/reference/generated/numpy.positive.html).
@@ -236,7 +234,7 @@ def vpos(a: npt.ArrayLike, *, progress:Progress) -> Any:
     return ufunc_with_cb(np.positive, a,
             cb=lambda *_: progress.update('pos'))
 
-def vneg_announce(a: npt.ArrayLike) -> dict[str, int]:
+def vneg_announce(a: ArrayLike) -> dict[str, int]:
     """`vneg` announcer.
     
     See also
@@ -246,7 +244,7 @@ def vneg_announce(a: npt.ArrayLike) -> dict[str, int]:
     return {'neg': np.size(a)}
 
 @visualisable(vneg_announce)
-def vneg(a: npt.ArrayLike, *, progress:Progress) -> Any:
+def vneg(a: ArrayLike, *, progress: Progress) -> Any:
     """Return the elementwise negative.
     
     Exactly like [`numpy.negative`](https://numpy.org/doc/stable/reference/generated/numpy.negative.html).
@@ -280,7 +278,7 @@ def vneg(a: npt.ArrayLike, *, progress:Progress) -> Any:
     return ufunc_with_cb(np.negative, a,
             cb=lambda *_: progress.update('neg'))
 
-def vadd_announce(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str, int]:
+def vadd_announce(a: ArrayLike, b: ArrayLike) -> dict[str, int]:
     """`vadd` announcer.
     
     See also
@@ -290,7 +288,7 @@ def vadd_announce(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str, int]:
     return {'add': np.broadcast(a, b).size}
 
 @visualisable(vadd_announce)
-def vadd(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) -> Any:
+def vadd(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     """Return the elementwise sum.
     
     Exactly like [`numpy.add`](https://numpy.org/doc/stable/reference/generated/numpy.add.html).
@@ -324,7 +322,7 @@ def vadd(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) -> Any:
     return ufunc_with_cb(np.add, a, b,
             cb=lambda *_: progress.update('add'))
 
-def vsub_announce(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str, int]:
+def vsub_announce(a: ArrayLike, b: ArrayLike) -> dict[str, int]:
     """`vsub` announcer.
     
     See also
@@ -334,7 +332,7 @@ def vsub_announce(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str, int]:
     return {'sub': np.broadcast(a, b).size}
 
 @visualisable(vsub_announce)
-def vsub(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) -> Any:
+def vsub(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     """Return the elementwise difference.
     
     Exactly like [`numpy.subtract`](https://numpy.org/doc/stable/reference/generated/numpy.subtract.html).
@@ -368,7 +366,7 @@ def vsub(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) -> Any:
     return ufunc_with_cb(np.subtract, a, b,
             cb=lambda *_: progress.update('sub'))
 
-def vmul_announce(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str, int]:
+def vmul_announce(a: ArrayLike, b: ArrayLike) -> dict[str, int]:
     """`vmul` announcer.
     
     See also
@@ -378,7 +376,7 @@ def vmul_announce(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str, int]:
     return {'mul': np.broadcast(a, b).size}
 
 @visualisable(vmul_announce)
-def vmul(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) -> Any:
+def vmul(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     """Return the elementwise product.
     
     Exactly like [`numpy.multiply`](https://numpy.org/doc/stable/reference/generated/numpy.multiply.html).
@@ -412,7 +410,7 @@ def vmul(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) -> Any:
     return ufunc_with_cb(np.multiply, a, b,
             cb=lambda *_: progress.update('mul'))
 
-def vtruediv_announce(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str, int]:
+def vtruediv_announce(a: ArrayLike, b: ArrayLike) -> dict[str, int]:
     """`vtruediv` announcer.
     
     See also
@@ -422,7 +420,7 @@ def vtruediv_announce(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str, int]:
     return {'truediv': np.broadcast(a, b).size}
 
 @visualisable(vtruediv_announce)
-def vtruediv(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) -> Any:
+def vtruediv(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     """Return the elementwise true quotient.
     
     Exactly like [`numpy.divide`](https://numpy.org/doc/stable/reference/generated/numpy.divide.html).
@@ -456,7 +454,7 @@ def vtruediv(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) -> Any:
     return ufunc_with_cb(np.divide, a, b,
             cb=lambda *_: progress.update('truediv'))
 
-def vfloordiv_announce(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str, int]:
+def vfloordiv_announce(a: ArrayLike, b: ArrayLike) -> dict[str, int]:
     """`vfloordiv` announcer.
     
     See also
@@ -466,7 +464,7 @@ def vfloordiv_announce(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str, int]:
     return {'floordiv': np.broadcast(a, b).size}
 
 @visualisable(vfloordiv_announce)
-def vfloordiv(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) -> Any:
+def vfloordiv(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     """Return the elementwise floored quotient.
     
     Exactly like [`numpy.floor_divide`](https://numpy.org/doc/stable/reference/generated/numpy.floor_divide.html).
@@ -500,7 +498,7 @@ def vfloordiv(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) -> Any:
     return ufunc_with_cb(np.floor_divide, a, b,
             cb=lambda *_: progress.update('floordiv'))
 
-def vmod_announce(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str, int]:
+def vmod_announce(a: ArrayLike, b: ArrayLike) -> dict[str, int]:
     """`vmod` announcer.
     
     See also
@@ -510,7 +508,7 @@ def vmod_announce(a: npt.ArrayLike, b: npt.ArrayLike) -> dict[str, int]:
     return {'mod': np.broadcast(a, b).size}
 
 @visualisable(vmod_announce)
-def vmod(a: npt.ArrayLike, b: npt.ArrayLike, *, progress:Progress) -> Any:
+def vmod(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     """Return the elementwise remainder.
     
     Exactly like [`numpy.mod`](https://numpy.org/doc/stable/reference/generated/numpy.mod.html).

@@ -1,5 +1,5 @@
 from linalg.blas2 import *
-from random import randint
+from fractions import Fraction
 import numpy as np
 import pytest
 
@@ -7,24 +7,65 @@ import pytest
 
 @pytest.mark.filterwarnings('error')
 def test_dot():
-    for _ in range(10):
-        N = randint(0, 10)
+    for N in range(10):
         v, w = np.random.rand(N), np.random.rand(N)
         assert np.isclose(dot(v, w), v@w)
 
 @pytest.mark.filterwarnings('error')
+def test_dot_empty():
+    #numpy types
+    v, w = np.empty((0,), np.int64), np.empty((0,), np.float64)
+    vw = dot(v, w)
+    assert vw==0 and isinstance(vw, np.float64)
+    
+    #objects
+    v, w = np.empty((0,), object), np.empty((0,), object)
+    vw = dot(v, w)
+    assert vw==0 and isinstance(vw, int)
+    
+    v, w = np.empty((0,), object), np.empty((0,), object)
+    vw = dot(v, w, zero=Fraction())
+    assert vw==0 and isinstance(vw, Fraction)
+
+@pytest.mark.filterwarnings('error')
 def test_outer():
-    for _ in range(10):
-        M, N = randint(0, 10), randint(0, 10)
-        v, w = np.random.rand(M), np.random.rand(N)
-        assert np.allclose(outer(v, w), np.outer(v, w))
+    for M in range(10):
+        for N in range(10):
+            v, w = np.random.rand(M), np.random.rand(N)
+            assert np.allclose(outer(v, w), np.outer(v, w))
 
 @pytest.mark.filterwarnings('error')
 def test_matmul():
-    for _ in range(10):
-        L, M, N = randint(0, 10), randint(0, 10), randint(0, 10)
-        v, w = np.random.rand(L, M), np.random.rand(M, N)
-        assert np.allclose(matmul(v, w), v@w)
+    for L in range(10):
+        for M in range(10):
+            for N in range(10):
+                v, w = np.random.rand(L, M), np.random.rand(M, N)
+                assert np.allclose(matmul(v, w), v@w)
+
+@pytest.mark.filterwarnings('error')
+def test_matmul_empty():
+    #L, M, N zero combinations already tested in test_matmul
+    #only test empty sums and non empty result array here
+    
+    #numpy types
+    A, B = np.empty((10, 0), np.int64), np.empty((0, 20), np.float64)
+    AB = matmul(A, B)
+    assert np.array_equal(AB, np.zeros((10, 20))) and AB.dtype==np.float64
+    
+    A, B = np.empty((0, 0), np.int64), np.empty((0, 0), np.float64)
+    AB = matmul(A, B)
+    assert np.array_equal(AB, np.zeros((0, 0))) and AB.dtype==np.float64
+    
+    #objects
+    A, B = np.empty((10, 0), object), np.empty((0, 20), object)
+    AB = matmul(A, B)
+    assert all(AB[i,j]==0 and isinstance(AB[i,j], int)
+               for i, j in np.ndindex(AB.shape))
+    
+    A, B = np.empty((10, 0), object), np.empty((0, 20), object)
+    AB = matmul(A, B, zero=Fraction())
+    assert all(AB[i,j]==0 and isinstance(AB[i,j], Fraction)
+               for i, j in np.ndindex(AB.shape))
 
 
 
@@ -33,9 +74,6 @@ def test_matmul():
 #its announcer; these cover selection, exact totals & the sanitiser.
 #the `bars` fixture lives in conftest.py.
 #############################################################################
-
-from fractions import Fraction
-import pytest
 
 #every category `Progress` knows, for asserting that the untracked ones
 #are rejected rather than silently dropped

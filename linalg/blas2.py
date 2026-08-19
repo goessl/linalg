@@ -8,9 +8,9 @@ Higher level functions that can not be directly implemented by
 
 from .progress import visualisable, Progress
 import numpy as np
-import numpy.typing as npt
-from typing import Any
-from collections.abc import Sequence, Mapping
+from numpy.typing import ArrayLike, NDArray
+from iteration import MISSING
+from typing import Any, Never
 
 
 
@@ -22,8 +22,8 @@ __all__ = (
 
 
 
-def dot_sanitise(a: npt.ArrayLike, b: npt.ArrayLike) \
-        -> tuple[Sequence, Mapping]:
+def dot_sanitise(a: ArrayLike, b: ArrayLike, *, zero: Any=MISSING) \
+        -> tuple[tuple[NDArray,NDArray],dict[str,Any]]:
     """`dot` sanitiser.
     
     See also
@@ -33,9 +33,15 @@ def dot_sanitise(a: npt.ArrayLike, b: npt.ArrayLike) \
     a, b = np.asarray(a), np.asarray(b)
     if not (a.ndim==b.ndim==1 and a.size==b.size):
         raise ValueError('a & b must be one dimensional and of same length')
-    return [a, b], {}
+    
+    if zero is MISSING:
+        #don't use .item(), would unpack the numpy type to a Python type
+        zero = np.zeros((), dtype=np.result_type(a, b))[()]
+    
+    return [a, b], {'zero':zero}
 
-def dot_announce(a: npt.NDArray, b: npt.NDArray) -> dict[str,int]:
+def dot_announce(a: NDArray, b: NDArray, *, zero: Any=0) \
+        -> dict[str,int]:
     """`dot` announcer.
     
     See also
@@ -48,17 +54,19 @@ def dot_announce(a: npt.NDArray, b: npt.NDArray) -> dict[str,int]:
     }
 
 @visualisable(dot_announce, dot_sanitise)
-def dot(a: npt.NDArray, b: npt.NDArray, *, progress:Progress) -> Any:
+def dot(a: NDArray, b: NDArray, *, zero: Any, progress: Progress) -> Any:
     r"""Return the dot product of two vectors.
     
     $$
-        \vec{v}\cdot\vec{w} \qquad \mathbb{K}^n\times\mathbb{K}^n\to\mathbb{K}
+        \vec{v}\cdot\vec{w} \qquad \mathbb{K}^N\times\mathbb{K}^N\to\mathbb{K} \quad N\geq0
     $$
     
     Parameters
     ----------
     a, b : numpy.typing.ArrayLike
         One dimensional arrays of same length.
+    zero : Any = iteration.MISSING
+        Zero element.
     progress : Iterable[str]|bool = False
         Progress visualisation specification.
     
@@ -67,24 +75,28 @@ def dot(a: npt.NDArray, b: npt.NDArray, *, progress:Progress) -> Any:
     Any
         Dot product.
     
+    Edge cases
+    ----------
+    For an empty dot product ($N=0$) on object arrays provide a `zero` argument
+    to not get an type unspecific `int(0)` back.
+    
     Complexity
     ----------
-    For two vectors of length $n$ there will be
+    There will be
     
-    - $\max\{n-1,0\}$ scalar additions (`add`) &
-    - $n$ scalar multiplications (`mul`).
+    - $\max\{N-1,0\}$ scalar additions (`add`) &
+    - $N$ scalar multiplications (`mul`).
     
     See also
     --------
     - [`dot_sanitise`][linalg.blas2.dot_sanitise]
     - [`dot_announce`][linalg.blas2.dot_announce]
     """
-    return progress.sumprod_default(a, b,
-            default=np.zeros((), np.result_type(a, b)).item())
+    return progress.sumprod_default(a, b, default=zero)
 
 
-def outer_sanitise(a: npt.ArrayLike, b: npt.ArrayLike) \
-        -> tuple[Sequence, Mapping]:
+def outer_sanitise(a: ArrayLike, b: ArrayLike) \
+        -> tuple[tuple[NDArray,NDArray],dict[Never,Never]]:
     """`outer` sanitiser.
     
     See also
@@ -96,7 +108,7 @@ def outer_sanitise(a: npt.ArrayLike, b: npt.ArrayLike) \
         raise ValueError('a & b must be one dimensional')
     return [a, b], {}
 
-def outer_announce(a: npt.NDArray, b: npt.NDArray) -> dict[str,int]:
+def outer_announce(a: NDArray, b: NDArray) -> dict[str,int]:
     """`outer` announcer.
     
     See also
@@ -106,11 +118,11 @@ def outer_announce(a: npt.NDArray, b: npt.NDArray) -> dict[str,int]:
     return {'mul': a.size * b.size}
 
 @visualisable(outer_announce, outer_sanitise)
-def outer(a: npt.NDArray, b: npt.NDArray, *, progress:Progress) -> npt.NDArray:
+def outer(a: NDArray, b: NDArray, *, progress: Progress) -> NDArray:
     r"""Return the outer product of two vectors without conjugation.
     
     $$
-        \vec{v}\vec{w}^T \qquad \mathbb{K}^m\times\mathbb{K}^n\to\mathbb{K}^{m\times n}
+        \vec{v}\vec{w}^T \qquad \mathbb{K}^M\times\mathbb{K}^N\to\mathbb{K}^{M\times N} \quad M,N\geq0
     $$
     
     Parameters
@@ -127,9 +139,9 @@ def outer(a: npt.NDArray, b: npt.NDArray, *, progress:Progress) -> npt.NDArray:
     
     Complexity
     ----------
-    For two vectors of length $m$ & $n$ there will be
+    There will be
     
-    - $mn$ scalar multiplications (`mul`).
+    - $MN$ scalar multiplications (`mul`).
     
     See also
     --------
@@ -142,8 +154,8 @@ def outer(a: npt.NDArray, b: npt.NDArray, *, progress:Progress) -> npt.NDArray:
     return r
 
 
-def matmul_sanitise(A: npt.ArrayLike, B: npt.ArrayLike) \
-        -> tuple[Sequence, Mapping]:
+def matmul_sanitise(A: ArrayLike, B: ArrayLike, *, zero: Any=0) \
+        -> tuple[tuple[NDArray,NDArray],dict[str,Any]]:
     """`matmul` sanitiser.
     
     See also
@@ -155,9 +167,10 @@ def matmul_sanitise(A: npt.ArrayLike, B: npt.ArrayLike) \
         raise ValueError('A & B must be two dimensional')
     if not A.shape[1] == B.shape[0]:
         raise ValueError('width of A must be height of B')
-    return [A, B], {}
+    return [A, B], {'zero':zero}
 
-def matmul_announce(A: npt.NDArray, B: npt.NDArray) -> dict[str,int]:
+def matmul_announce(A: NDArray, B: NDArray, *, zero: Any=0) \
+        -> dict[str,int]:
     """`matmul` announcer.
     
     See also
@@ -171,18 +184,20 @@ def matmul_announce(A: npt.NDArray, B: npt.NDArray) -> dict[str,int]:
     }
 
 @visualisable(matmul_announce, matmul_sanitise)
-def matmul(A: npt.NDArray, B: npt.NDArray, *, progress:Progress) \
-        -> npt.NDArray:
+def matmul(A: NDArray, B: NDArray, *, zero: Any, progress: Progress) \
+        -> NDArray:
     r"""Return the product of two matrices.
     
     $$
-        AB \qquad \mathbb{K}^{l \times m}\times\mathbb{K}^{m \times n}\to\mathbb{K}^{l\times n}
+        AB \qquad \mathbb{K}^{L \times M}\times\mathbb{K}^{M \times N}\to\mathbb{K}^{L\times N} \quad L,M,N\geq0
     $$
     
     Parameters
     ----------
     A, B : numpy.typing.ArrayLike
         Two matrices with conforming shapes.
+    zero : Any = 0
+        Zero element.
     progress : Iterable[str]|bool = False
         Progress visualisation specification.
     
@@ -191,12 +206,17 @@ def matmul(A: npt.NDArray, B: npt.NDArray, *, progress:Progress) \
     numpy.typing.NDArray
         Matrix product.
     
+    Edge cases
+    ----------
+    For an empty matrix product ($M=0$) on object arrays provide a `zero`
+    argument to not get type unspecific `int(0)` elements.
+    
     Complexity
     ----------
-    For two matrices of sizes $l \times m$ & $m \times n$ there will be
+    There will be
     
-    - $l\max\{m-1,0\}n$ scalar additions (`add`) &
-    - $lmn$ scalar multiplications (`mul`).
+    - $L\max\{M-1,0\}N$ scalar additions (`add`) &
+    - $LMN$ scalar multiplications (`mul`).
     
     See also
     --------
@@ -204,7 +224,6 @@ def matmul(A: npt.NDArray, B: npt.NDArray, *, progress:Progress) \
     - [`matmul_announce`][linalg.blas2.matmul_announce]
     """
     r = np.empty((A.shape[0], B.shape[1]), np.result_type(A, B))
-    zero = np.zeros((), np.result_type(A, B)).item()
     for i, j in np.ndindex(r.shape):
         r[i, j] = progress.sumprod_default(A[i,:], B[:,j], default=zero)
     return r
