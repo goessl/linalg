@@ -590,6 +590,60 @@
   
   
     <li class="md-nav__item">
+      <a href="../triangular/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    triangular
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../random/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    random
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../progress/" class="md-nav__link">
         
   
@@ -936,105 +990,52 @@
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Default</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                <code>a</code>
-            </td>
-            <td>
-                  <code><span title="numpy.typing.ArrayLike">ArrayLike</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>One dimensional arrays of same length.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>b</code>
-            </td>
-            <td>
-                  <code><span title="numpy.typing.ArrayLike">ArrayLike</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>One dimensional arrays of same length.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>zero</code>
-            </td>
-            <td>
-                  <code>Any = iteration.MISSING</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Zero element.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>progress</code>
-            </td>
-            <td>
-                  <code>Iterable[str]|bool = False</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Progress visualisation specification.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-      </tbody>
-    </table>
+    <ul>
+        <li class="doc-section-item field-body">
+            <b><code>a</code></b>
+              (<code><span title="numpy.typing.ArrayLike">ArrayLike</span></code>)
+          –
+          <div class="doc-md-description">
+            <p>One dimensional arrays of same length.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+            <b><code>b</code></b>
+              (<code><span title="numpy.typing.ArrayLike">ArrayLike</span></code>)
+          –
+          <div class="doc-md-description">
+            <p>One dimensional arrays of same length.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+            <b><code>zero</code></b>
+              (<code>Any = iteration.MISSING</code>)
+          –
+          <div class="doc-md-description">
+            <p>Zero element.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+            <b><code>progress</code></b>
+              (<code>Iterable[str]|bool = False</code>)
+          –
+          <div class="doc-md-description">
+            <p>Progress visualisation specification.</p>
+          </div>
+        </li>
+    </ul>
 
 
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                  <code><span title="typing.Any">Any</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Dot product.</p>
-              </div>
-            </td>
-          </tr>
-      </tbody>
-    </table>
+<p><span class="doc-section-title">Returns:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><span title="typing.Any">Any</span></code>
+          –
+          <div class="doc-md-description">
+            <p>Dot product.</p>
+          </div>
+        </li>
+    </ul>
 
 
 <details class="edge-cases" open>
@@ -1276,89 +1277,44 @@ to not get an type unspecific <code>int(0)</code> back.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Default</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                <code>a</code>
-            </td>
-            <td>
-                  <code><span title="numpy.typing.ArrayLike">ArrayLike</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>One dimensional arrays of same length.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>b</code>
-            </td>
-            <td>
-                  <code><span title="numpy.typing.ArrayLike">ArrayLike</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>One dimensional arrays of same length.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>progress</code>
-            </td>
-            <td>
-                  <code>Iterable[str]|bool = False</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Progress visualisation specification.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-      </tbody>
-    </table>
+    <ul>
+        <li class="doc-section-item field-body">
+            <b><code>a</code></b>
+              (<code><span title="numpy.typing.ArrayLike">ArrayLike</span></code>)
+          –
+          <div class="doc-md-description">
+            <p>One dimensional arrays of same length.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+            <b><code>b</code></b>
+              (<code><span title="numpy.typing.ArrayLike">ArrayLike</span></code>)
+          –
+          <div class="doc-md-description">
+            <p>One dimensional arrays of same length.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+            <b><code>progress</code></b>
+              (<code>Iterable[str]|bool = False</code>)
+          –
+          <div class="doc-md-description">
+            <p>Progress visualisation specification.</p>
+          </div>
+        </li>
+    </ul>
 
 
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                  <code><span title="numpy.typing.NDArray">NDArray</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Outer product.</p>
-              </div>
-            </td>
-          </tr>
-      </tbody>
-    </table>
+<p><span class="doc-section-title">Returns:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><span title="numpy.typing.NDArray">NDArray</span></code>
+          –
+          <div class="doc-md-description">
+            <p>Outer product.</p>
+          </div>
+        </li>
+    </ul>
 
 
 <details class="complexity" open>
@@ -1597,105 +1553,52 @@ to not get an type unspecific <code>int(0)</code> back.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Default</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                <code>A</code>
-            </td>
-            <td>
-                  <code><span title="numpy.typing.ArrayLike">ArrayLike</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Two matrices with conforming shapes.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>B</code>
-            </td>
-            <td>
-                  <code><span title="numpy.typing.ArrayLike">ArrayLike</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Two matrices with conforming shapes.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>zero</code>
-            </td>
-            <td>
-                  <code>Any = 0</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Zero element.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>progress</code>
-            </td>
-            <td>
-                  <code>Iterable[str]|bool = False</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Progress visualisation specification.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-      </tbody>
-    </table>
+    <ul>
+        <li class="doc-section-item field-body">
+            <b><code>A</code></b>
+              (<code><span title="numpy.typing.ArrayLike">ArrayLike</span></code>)
+          –
+          <div class="doc-md-description">
+            <p>Matrices with conforming shapes.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+            <b><code>B</code></b>
+              (<code><span title="numpy.typing.ArrayLike">ArrayLike</span></code>)
+          –
+          <div class="doc-md-description">
+            <p>Matrices with conforming shapes.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+            <b><code>zero</code></b>
+              (<code>Any = 0</code>)
+          –
+          <div class="doc-md-description">
+            <p>Zero element.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+            <b><code>progress</code></b>
+              (<code>Iterable[str]|bool = False</code>)
+          –
+          <div class="doc-md-description">
+            <p>Progress visualisation specification.</p>
+          </div>
+        </li>
+    </ul>
 
 
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                  <code><span title="numpy.typing.NDArray">NDArray</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Matrix product.</p>
-              </div>
-            </td>
-          </tr>
-      </tbody>
-    </table>
+<p><span class="doc-section-title">Returns:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><span title="numpy.typing.NDArray">NDArray</span></code>
+          –
+          <div class="doc-md-description">
+            <p>Matrix product.</p>
+          </div>
+        </li>
+    </ul>
 
 
 <details class="edge-cases" open>
@@ -1778,7 +1681,7 @@ argument to not get type unspecific <code>int(0)</code> elements.</p>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    A, B : numpy.typing.ArrayLike</span>
-<span class="sd">        Two matrices with conforming shapes.</span>
+<span class="sd">        Matrices with conforming shapes.</span>
 <span class="sd">    zero : Any = 0</span>
 <span class="sd">        Zero element.</span>
 <span class="sd">    progress : Iterable[str]|bool = False</span>
