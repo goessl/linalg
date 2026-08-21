@@ -338,11 +338,12 @@ def is_ref(A: ArrayLike, reduced: bool=True) -> bool:
     A : numpy.typing.ArrayLike
         Matrix.
     reduced : bool = True
+        Whether the reduced row echelon form should be tested.
     
     Returns
     -------
     bool
-        Wether `A` is (reduced) row echelon form
+        Whether `A` is (reduced) row echelon form
     """
     A = np.asarray(A)
     if A.ndim != 2:
@@ -413,7 +414,9 @@ def ref_gauss(A: NDArray, reduced: bool=True, *, progress: Progress) \
     Parameters
     ----------
     A : numpy.typing.NDArray
+        Matrix.
     reduced : bool = True
+        Whether should be transformed into reduced row echelon form.
     progress : Iterable[str]|bool = False
         Progress visualisation specification.
     

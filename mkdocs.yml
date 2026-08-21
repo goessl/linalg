@@ -40,6 +40,7 @@ plugins:
             members_order: source
             group_by_category: false
             docstring_style: numpy
+            docstring_section_style: list
 
 extra:
   social:
@@ -78,4 +79,6 @@ nav:
   - leibniz.md
   - gauss.md
   - rank.md
+  - triangular.md
+  - random.md
   - progress.md

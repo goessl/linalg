@@ -124,6 +124,13 @@ class Progress:
         Parameters
         ----------
         category : str
+            Category to increment.
+        n : int = 1
+            Amount to increment.
+        
+        Parameters
+        ----------
+        category : str
         n : int = 1
         """
         self.counts[category] += n
@@ -218,8 +225,11 @@ class Progress:
         Parameters
         ----------
         iterable : Iterable[Any]
+            Summands.
         initial : Any = iteration.MISSING
+            Aggregate start value.
         default: Any = 0
+            Default for empty sum.
         
         Returns
         -------
@@ -228,7 +238,8 @@ class Progress:
         
         References
         ----------
-        [`iteration.accumulators.sum_default`](https://goessl.github.io/iteration/accumulators/#iteration.accumulators.sum_default)
+        - [`iteration.accumulators.sum_default`](https://goessl.github.io/iteration/accumulators/#iteration.accumulators.sum_default)
+        - [`sum`](https://docs.python.org/3/library/functions.html#sum)
         """
         return reduce_default(self.add, iterable,
                 initial=initial, default=default)
@@ -242,8 +253,11 @@ class Progress:
         Parameters
         ----------
         iterable : Iterable[Any]
+            Factors.
         initial : Any = iteration.MISSING
+            Aggregate start value.
         default : Any = 1
+            Default for empty product.
         
         Returns
         -------
@@ -252,7 +266,8 @@ class Progress:
         
         References
         ----------
-        [`iteration.accumulators.prod_default`](https://goessl.github.io/iteration/accumulators/#iteration.accumulators.prod_default)
+        - [`iteration.accumulators.prod_default`](https://goessl.github.io/iteration/accumulators/#iteration.accumulators.prod_default)
+        - [`math.prod`](https://docs.python.org/3/library/math.html#math.prod)
         """
         return reduce_default(self.mul, iterable,
                 initial=initial, default=default)
@@ -266,17 +281,21 @@ class Progress:
         Parameters
         ----------
         a, b : Iterable[Any]
+            Factors.
         initial : Any = iteration.MISSING
+            Aggregate start value.
         default : Any = 0
+            Default for empty sum product.
         
         Returns
         -------
         Any
-            The sumproduct.
+            The sum product.
         
         References
         ----------
-        [`iteration.accumulators.sumprod_default`](https://goessl.github.io/iteration/accumulators/#iteration.accumulators.sumprod_default)
+        - [`iteration.accumulators.sumprod_default`](https://goessl.github.io/iteration/accumulators/#iteration.accumulators.sumprod_default)
+        - [`math.sumprod`](https://docs.python.org/3/library/math.html#math.sumprod)
         """
         return reduce_default(self.add, map(self.mul, a, b),
                 initial=initial, default=default)
@@ -323,7 +342,9 @@ def visualisable(
     Parameters
     ----------
     announcer : Callable[...,Mapping[str,int]]
+        Announcer function.
     sanitiser : Callable[...,tuple[Sequence,Mapping]]|None = None
+        Sanitiser function.
     
     Returns
     -------

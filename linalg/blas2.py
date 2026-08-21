@@ -195,7 +195,7 @@ def matmul(A: NDArray, B: NDArray, *, zero: Any, progress: Progress) \
     Parameters
     ----------
     A, B : numpy.typing.ArrayLike
-        Two matrices with conforming shapes.
+        Matrices with conforming shapes.
     zero : Any = 0
         Zero element.
     progress : Iterable[str]|bool = False

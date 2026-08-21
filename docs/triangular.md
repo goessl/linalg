@@ -1,0 +1,3 @@
+# triangular
+
+::: linalg.triangular

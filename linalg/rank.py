@@ -41,7 +41,7 @@ def rank_decomp_announce(A: NDArray) -> dict[str,int]:
 
 @visualisable(rank_decomp_announce, rank_decomp_sanitise)
 def rank_decomp(A: ArrayLike, *, progress: Progress) -> tuple[NDArray,NDArray]:
-    r"""Return a rank decomposition $B, C$ of $A$ such that $A=BC$.
+    r"""Return the rank decomposition $B, C$ of $A$ such that $A=BC$.
     
     $$
         B, C \qquad \mathbb{K}^{M\times N}\to\mathbb{K}^{M\times R}\times\mathbb{K}^{R\times N} \quad \operatorname{rank}A=R
@@ -50,12 +50,16 @@ def rank_decomp(A: ArrayLike, *, progress: Progress) -> tuple[NDArray,NDArray]:
     Parameters
     ----------
     A : numpy.typing.ArrayLike
+        Matrix.
     progress : Iterable[str]|bool = False
         Progress visualisation specification.
     
     Returns
     -------
-    B, C : numpy.typing.NDArray
+    B : numpy.typing.NDArray
+        First factor.
+    C : numpy.typing.NDArray
+        Second factor.
     
     Complexity
     ----------

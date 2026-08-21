@@ -1,34 +1,9 @@
 from linalg.rank import *
-from random import randint, binomialvariate
+from linalg.random import *
+from random import randint
 from fractions import Fraction
 import numpy as np
-import numpy.typing as npt
 import pytest
-
-
-
-def _binomz(sigma:int=1000) -> int:
-    """Return a random binomial distributed integer with mean 0 and std sigma."""
-    if sigma < 0:
-        raise ValueError('sigma must be non-negative')
-    return binomialvariate(4*sigma**2) - 2*sigma**2
-
-def _binomq(grade:int=1000) -> Fraction:
-    """Random centered binomial with variance one on a lattice of spacing grade."""
-    if grade <= 0:
-        raise ValueError('grade must be positive')
-    return Fraction(_binomz(grade), grade)
-
-def _vrandq(shape:int|tuple[int,...]=1, grade:int=1000) -> npt.NDArray[object]:
-    r = np.empty(shape, dtype=object)
-    for i in np.ndindex(r.shape):
-        r[i] = _binomq(grade)
-    return r
-
-def _vrandqr(M:int, N:int, R:int, grade:int=1000) -> npt.NDArray[object]:
-    if not R: #an empty matmul would fill with int(0)
-        return np.full((M, N), Fraction(0), dtype=object)
-    return _vrandq((M, R), grade=grade) @ _vrandq((R, N), grade=grade)
 
 
 
@@ -37,7 +12,7 @@ def test_rank_decomp():
     for M in range(1, 10):
         for N in range(1, 10):
             for R in range(min(M, N)+1):
-                A = _vrandqr(M, N, R)
+                A = mrandqr(M, N, R)
                 B, C = rank_decomp(A)
                 assert B.shape==(A.shape[0], R) and C.shape==(R, A.shape[1])
                 assert np.all(A == B@C)
@@ -62,15 +37,14 @@ CATEGORIES = ('pos', 'neg', 'add', 'sub', 'mul', 'truediv', 'floordiv', 'mod')
 
 
 def _holey(M, N, R, grade=5):
-    """A rank `R` matrix with some columns zeroed.
+    """[`mrandqr`][linalg.random.mrandqr] with some columns zeroed.
 
     The holes matter: a plain rank `R` product is only deficient in its
     trailing columns, so `ref_gauss` only ever skips after the last pivot.
     A zeroed column in the middle makes it skip - and credit a pivot that
     never happens - while pivots are still being found.
     """
-    A = _vrandqr(M, N, R, grade=grade) if R \
-            else np.full((M, N), Fraction(0), dtype=object)
+    A = mrandqr(M, N, R, grade=grade)
     for j in range(N):
         if randint(0, 3) == 0:
             A[:, j] = Fraction(0)
@@ -118,7 +92,7 @@ def test_rank_decomp_reconstructs_holey_matrices_exactly():
 def test_rank_decomp_does_not_consume_its_argument():
     #unlike `ref_gauss` it reduces a copy, which is why its signature is
     #written with `\to` and not `\mapsto`
-    A = _vrandqr(4, 3, 2)
+    A = mrandqr(4, 3, 2)
     before = A.copy()
     rank_decomp(A)
     assert np.all(A == before)

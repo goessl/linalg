@@ -11,12 +11,20 @@
 - [`leibniz`](leibniz.md)
 - [`gauss`](gauss.md)
 - [`rank`](rank.md)
+- [`triangular`](triangular.md)
+- [`random`](random.md)
 - [`progress`](progress.md)
 
 ## Installation
 
 ```console
 pip install git+https://github.com/goessl/linalg.git
+```
+
+### Building the documentation
+
+```console
+mkdocs build --clean --strict
 ```
 
 ## Dependencies
@@ -35,6 +43,10 @@ pip install git+https://github.com/goessl/linalg.git
     - [x] `outer`
     - [x] `matmul`
     - [ ] `mat vec mul`
+- [ ] `blas3`
+    - [ ] `matmulchain`
+    - [ ] `strassen`
+    - [ ] `fft`
 - [x] [`progress`](progress.md)
     - [x] progress visualisation in ~~context block~~ decorator
     - [ ] complexity tracking for functions in development
@@ -52,23 +64,31 @@ pip install git+https://github.com/goessl/linalg.git
     - [ ] `cofactor`
     - [ ] `adj`
     - [ ] `cof`
-- [ ] `lu`
-    - [ ] `lu`
-    - [ ] `plu`
-    - [ ] `luq`
-    - [ ] `pluq`
+- [x] `triangular`
+    - [x] `lu`
+    - [x] `plu`
+    - [x] `luq`
+    - [x] `pluq`
     - [ ] `banachiewicz`
 - [x] `rank`
     - [x] `rank_decomp`
     - [ ] `pinv`
     - [ ] `lstsq`
+- [x] `random`
+    - [x] `randz`, `randq`, `vrandz`, `vrandq`
+    - [x] `mrandqr`
 - [ ] `faddeev_leverrier`
     - [ ] `det_faddeev_leverrier`
     - [ ] `charp_faddeev_leverrier`
     - [ ] `adj_faddeev_leverrier`
+- [x] zero and one parameters for type safety
+- [ ] no unnecessary `a_ij/a_ij` divisions like in `det_gauss`
+- [ ] complete edge case testing (mainly array side lengths 0)
 - [ ] decorator should also prepend sanitiser to announcer to be safely usable
 - [ ] better annotations
     - [ ] `visualisable` wrapping
+    - [ ] `mkdocstrings` annotations still wrong default rendering despite
+    overwrite from docstring
 - [ ] links from this list to the actual functions
 - [x] Ballin
 

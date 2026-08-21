@@ -26,7 +26,9 @@ def permutations[T](iterable: Iterable[T], r: int|None=None) \
     Parameters
     ----------
     iterable : Iterable[T]
+        Elements.
     r : int|None
+        Permutation length.
     
     Yields
     ------
@@ -151,7 +153,6 @@ def det_leibniz(A: NDArray, *, one: Any, progress: Progress) -> Any:
     """
     i = tuple(range(A.shape[0]))
     return progress.sum_default(
-            (progress.posneg(progress.prod_default(A[i, p]), s)
-            for p, s in permutations(range(A.shape[0]))),
-            default=one
+            progress.posneg(progress.prod_default(A[i, p], default=one), s)
+            for p, s in permutations(range(A.shape[0]))
     )

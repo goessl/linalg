@@ -1,4 +1,5 @@
 from linalg.leibniz import *
+from fractions import Fraction
 import numpy as np
 import pytest
 
@@ -9,6 +10,22 @@ def test_det_leibniz():
     for N in range(8+1):
         A = np.random.rand(N, N)
         assert np.isclose(np.linalg.det(A), det_leibniz(A))
+
+@pytest.mark.filterwarnings('error')
+def test_det_leibniz_empty():
+    #numpy typed
+    D = det_leibniz(np.array([[2]], dtype=np.int8))
+    assert D==2 and isinstance(D, np.int8)
+    
+    D = det_leibniz(np.empty((0,0), dtype=np.int8))
+    assert D==1 and isinstance(D, np.int8)
+    
+    #objects
+    D = det_leibniz([[Fraction(2)]])
+    assert D==2 and isinstance(D, Fraction)
+    
+    D = det_leibniz(np.empty((0,0), dtype=object), one=Fraction(1))
+    assert D==1 and isinstance(D, Fraction)
 
 
 

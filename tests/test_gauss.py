@@ -1,34 +1,9 @@
 from linalg.gauss import *
-from random import randint, binomialvariate
+from linalg.random import *
+from random import randint
 from fractions import Fraction
 import numpy as np
-import numpy.typing as npt
 import pytest
-
-
-
-def _binomz(sigma:int=1000) -> int:
-    """Return a random binomial distributed integer with mean 0 and std sigma."""
-    if sigma < 0:
-        raise ValueError('sigma must be non-negative')
-    return binomialvariate(4*sigma**2) - 2*sigma**2
-
-def _binomq(grade:int=1000) -> Fraction:
-    """Random centered binomial with variance one on a lattice of spacing grade."""
-    if grade <= 0:
-        raise ValueError('grade must be positive')
-    return Fraction(_binomz(grade), grade)
-
-def _vrandq(shape:int|tuple[int,...]=1, grade:int=1000) -> npt.NDArray[object]:
-    r = np.empty(shape, dtype=object)
-    for i in np.ndindex(r.shape):
-        r[i] = _binomq(grade)
-    return r
-
-def _vrandqr(M:int, N:int, R:int, grade:int=1000) -> npt.NDArray[object]:
-    if not R: #an empty matmul would fill with int(0)
-        return np.full((M, N), Fraction(0), dtype=object)
-    return _vrandq((M, R), grade=grade) @ _vrandq((R, N), grade=grade)
 
 
 
@@ -40,7 +15,7 @@ def test_det_gauss():
     
     for N in range(10):
         for R in range(N+1):
-            A = _vrandqr(N, N, R)
+            A = mrandqr(N, N, R)
             actual = np.linalg.det(A.astype(float)) #actual before prediction
             prediction = det_gauss(A, one=Fraction(1)) #because A gets mutated
             assert np.isclose(float(prediction), actual)
@@ -55,7 +30,7 @@ def test_inv_gauss():
     
     for N in range(10):
         for R in range(N+1):
-            A = _vrandqr(N, N, R)
+            A = mrandqr(N, N, R)
             if det_gauss(A.copy()) != 0:
                 actual = np.linalg.inv(A.astype(float))
                 prediction = inv_gauss(A)
@@ -70,14 +45,14 @@ def test_ref_gauss(reduced):
     for M in range(1, 10):
         for N in range(1, 10):
             for R in range(min(M, N)+1):
-                A = _vrandqr(M, N, R)
+                A = mrandqr(M, N, R)
                 ref_gauss(A, reduced=reduced)
                 assert is_ref(A, reduced=reduced)
     
     for _ in range(50):
         M, N = randint(1, 10), randint(1, 10)
         R = randint(0, min(M, N))
-        A = _vrandqr(M, N, R)
+        A = mrandqr(M, N, R)
         rank = np.linalg.matrix_rank(A.astype(float))
         assert len(ref_gauss(A, reduced=reduced)) == rank
 
@@ -289,7 +264,7 @@ def test_inv_gauss_is_exact_for_fractions():
 
 def test_det_gauss_agrees_with_det_leibniz_exactly():
     #two unrelated algorithms over the same exact ring
-    A = _vrandq((5, 5))
+    A = vrandq((5, 5))
     assert det_gauss(A.copy()) == det_leibniz(A.copy())
 
 
@@ -412,14 +387,14 @@ def _sympy(A):
             [sympy.Rational(x.numerator, x.denominator) for x in A.flat])
 
 def _holey(M, N, r, grade=5):
-    """`_vrandqr` with some columns zeroed.
+    """[`mrandqr`][linalg.random.mrandqr] with some columns zeroed.
 
     The holes matter: a plain rank `r` product is only deficient at the
     trailing columns, so every skip happens after the last pivot. A zeroed
     column in the middle makes `ref_gauss` skip and credit a lost pivot
     while pivots are still being found.
     """
-    A = _vrandqr(M, N, r, grade=grade)
+    A = mrandqr(M, N, r, grade=grade)
     for j in range(N):
         if randint(0, 3) == 0:
             A[:, j] = Fraction(0)

@@ -15,4 +15,6 @@ from .blas2 import *
 from .leibniz import *
 from .gauss import *
 from .rank import *
+from .triangular import *
+from .random import *
 from .progress import *

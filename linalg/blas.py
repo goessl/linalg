@@ -55,10 +55,13 @@ def _is_weak(x: Any) -> bool:
     Parameters
     ----------
     x : Any
+        Test object.
     
     Returns
     -------
     bool
+        Whether `x` is a [NEP 50](https://numpy.org/neps/nep-0050-scalar-promotion.html)
+        weak scalar.
     
     References
     ----------
@@ -73,10 +76,12 @@ def _weak_dtype(x: ArrayLike) -> Any:
     Parameters
     ----------
     x : numpy.typing.ArrayLike
+        Test object.
     
     Returns
     -------
     type|dtype
+        `type` or `dtype` of `x`.
     
     References
     ----------
@@ -119,12 +124,16 @@ def ufunc_with_cb(op: np.ufunc, *operands: ArrayLike,
     Parameters
     ----------
     op : numpy.ufunc
+        Operation.
     operands : numpy.typing.ArrayLike
+        Operands.
     cb : Callable[...,None]|None = None
+        Callback.
     
     Returns
     -------
     Any
+        Result.
     
     Notes
     -----
@@ -208,6 +217,7 @@ def vpos(a: ArrayLike, *, progress: Progress) -> Any:
     Parameters
     ----------
     a : numpy.typing.ArrayLike
+        Input.
     progress : Iterable[str]|bool = False
         Progress visualisation specification.
     
@@ -252,6 +262,7 @@ def vneg(a: ArrayLike, *, progress: Progress) -> Any:
     Parameters
     ----------
     a : numpy.typing.ArrayLike
+        Input.
     progress : Iterable[str]|bool = False
         Progress visualisation specification.
     
@@ -296,6 +307,7 @@ def vadd(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     Parameters
     ----------
     a, b : numpy.typing.ArrayLike
+        Inputs.
     progress : Iterable[str]|bool = False
         Progress visualisation specification.
     
@@ -340,6 +352,7 @@ def vsub(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     Parameters
     ----------
     a, b : numpy.typing.ArrayLike
+        Inputs.
     progress : Iterable[str]|bool = False
         Progress visualisation specification.
     
@@ -384,6 +397,7 @@ def vmul(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     Parameters
     ----------
     a, b : numpy.typing.ArrayLike
+        Inputs.
     progress : Iterable[str]|bool = False
         Progress visualisation specification.
     
@@ -428,6 +442,7 @@ def vtruediv(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     Parameters
     ----------
     a, b : numpy.typing.ArrayLike
+        Inputs.
     progress : Iterable[str]|bool = False
         Progress visualisation specification.
     
@@ -472,6 +487,7 @@ def vfloordiv(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     Parameters
     ----------
     a, b : numpy.typing.ArrayLike
+        Inputs.
     progress : Iterable[str]|bool = False
         Progress visualisation specification.
     
@@ -516,6 +532,7 @@ def vmod(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     Parameters
     ----------
     a, b : numpy.typing.ArrayLike
+        Inputs.
     progress : Iterable[str]|bool = False
         Progress visualisation specification.
     
