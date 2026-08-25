@@ -21,6 +21,26 @@ def test_rank_decomp():
                 assert all(isinstance(C[i,j], Fraction)
                            for i, j in np.ndindex(C.shape))
 
+@pytest.mark.filterwarnings('error')
+def test_pinv():
+    for M in range(1, 10):
+        for N in range(1, 10):
+            for R in range(min(M, N)+1):
+                A = mrandqr(M, N, R)
+                prediction = pinv(A)
+                actual = np.linalg.pinv(A.astype(float))
+                assert np.allclose(prediction.astype(float), actual)
+
+@pytest.mark.filterwarnings('error')
+def test_lstsq():
+    for M in range(1, 10):
+        for N in range(1, 10):
+            for R in range(min(M, N)+1):
+                X, y = mrandqr(M, N, R), vrandq((M,))
+                prediction = lstsq(X, y)
+                actual = np.linalg.lstsq(X.astype(float), y.astype(float))[0]
+                assert np.allclose(prediction.astype(float), actual)
+
 
 
 #############################################################################

@@ -34,20 +34,19 @@ mkdocs build --clean --strict
 
 ## Roadmap
 
-- [x] Deploy
-- [x] Production
-- [x] [`blas`](linalg/blas.py) & [`blas2`](linalg/blas2.py)
+### Modules
+
+- [x] `blas`
     - [x] `numpy.ufunc`s with callback (same broadcasting, same promotion, ...)
     - [ ] in-place operations
-    - [x] `dot`
-    - [x] `outer`
+- [x] `blas2`
     - [x] `matmul`
-    - [ ] `mat vec mul`
+    - [x] `outer`
+    - [x] `matmulchain`
 - [ ] `blas3`
-    - [ ] `matmulchain`
     - [ ] `strassen`
     - [ ] `fft`
-- [x] [`progress`](linalg/progress.py)
+- [x] `progress`
     - [x] progress visualisation in ~~context block~~ decorator
     - [ ] complexity tracking for functions in development
 - [x] `leibniz`
@@ -72,8 +71,8 @@ mkdocs build --clean --strict
     - [ ] `banachiewicz`
 - [x] `rank`
     - [x] `rank_decomp`
-    - [ ] `pinv`
-    - [ ] `lstsq`
+    - [x] `pinv`
+    - [x] `lstsq`
 - [x] `random`
     - [x] `randz`, `randq`, `vrandz`, `vrandq`
     - [x] `mrandqr`
@@ -81,6 +80,16 @@ mkdocs build --clean --strict
     - [ ] `det_faddeev_leverrier`
     - [ ] `charp_faddeev_leverrier`
     - [ ] `adj_faddeev_leverrier`
+- [x] `util`
+- [ ] `order`
+    Sorting algorithms
+
+### Package
+
+- [x] deploy
+- [x] production
+- [x] ballin
+- [ ] coding conventions
 - [x] zero and one parameters for type safety
 - [ ] no unnecessary `a_ij/a_ij` divisions like in `det_gauss`
 - [ ] complete edge case testing (mainly array side lengths 0)
@@ -90,7 +99,6 @@ mkdocs build --clean --strict
     - [ ] `mkdocstrings` annotations still wrong default rendering despite
     overwrite from docstring
 - [ ] links from this list to the actual functions
-- [x] Ballin
 
 ## License (MIT)
 

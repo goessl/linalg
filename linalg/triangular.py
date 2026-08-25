@@ -5,88 +5,19 @@
 import numpy as np
 from numpy.typing import ArrayLike, NDArray
 from .blas import vsub, vmul, vtruediv
-from .gauss import swap_rows, swap_columns, swap_pivot
+from .util import swap_rows, swap_columns, swap_pivot
 from .progress import visualisable, Progress
 from typing import Never
 
 
 
 __all__ = (
-    'is_perm', 'is_tril', 'is_triu',
-    'lu_sanitise', 'lu_announce', 'lu',
-    'plu_sanitise', 'plu_announce', 'plu',
-    'luq_sanitise', 'luq_announce', 'luq',
-    'pluq_sanitise', 'pluq_announce', 'pluq'
+    'lu_sanitise', 'lu_announce', 'lu_cost', 'lu',
+    'plu_sanitise', 'plu_announce', 'plu_cost', 'plu',
+    'luq_sanitise', 'luq_announce', 'luq_cost', 'luq',
+    'pluq_sanitise', 'pluq_announce', 'pluq_cost', 'pluq'
 )
 
-
-
-def is_perm(P: ArrayLike) -> bool:
-    """Return if `P` is a permutation matrix.
-    
-    Parameters
-    ----------
-    P : numpy.typing.ArrayLike
-        Matrix.
-    
-    Returns
-    -------
-    bool
-        Whether `P` is a permutation matrix.
-    """
-    P = np.asarray(P)
-    if not (P.ndim==2 and P.shape[0]==P.shape[1]):
-        raise ValueError('P must be two dimensional and square')
-    
-    #https://stackoverflow.com/a/28896366
-    return np.all(P.sum(axis=0) == 1) and np.all(P.sum(axis=1) == 1) \
-            and np.all((P == 1) | (P == 0))
-
-def is_tril(L: ArrayLike) -> bool:
-    """Return if `L` is lower triangular.
-    
-    Parameters
-    ----------
-    L : numpy.typing.ArrayLike
-        Matrix.
-    
-    Returns
-    -------
-    bool
-        Whether `L` is lower triangular.
-    
-    References
-    ----------
-    [`numpy.triu_indices_from`](https://numpy.org/doc/stable/reference/generated/numpy.triu_indices_from.html)
-    """
-    L = np.asarray(L)
-    if L.ndim != 2:
-        raise ValueError('L must be two dimensional')
-    
-    return not np.any(L[np.triu_indices_from(L, k=+1)])
-
-def is_triu(U: ArrayLike) -> bool:
-    """Return if `U` is upper triangular.
-    
-    Parameters
-    ----------
-    U : numpy.typing.ArrayLike
-        Matrix.
-    
-    Returns
-    -------
-    bool
-        Whether `U` is upper triangular.
-    
-    References
-    ----------
-    [`numpy.tril_indices_from`](https://numpy.org/doc/stable/reference/generated/numpy.tril_indices_from.html)
-    """
-    U = np.asarray(U)
-    if U.ndim != 2:
-        raise ValueError('U must be two dimensional')
-    
-    return not np.any(U[np.tril_indices_from(U, k=-1)])
 
 
 def lu_sanitise(A: ArrayLike) -> tuple[tuple[NDArray],dict[Never,Never]]:
@@ -99,7 +30,21 @@ def lu_sanitise(A: ArrayLike) -> tuple[tuple[NDArray],dict[Never,Never]]:
     A = np.asarray(A)
     if A.ndim != 2:
         raise ValueError('A must be two dimensional')
-    return [A], {}
+    return (A,), {}
+
+def lu_cost(M: int, N: int) -> dict[str,int]:
+    """`lu` operation cost calculation.
+    
+    See also
+    --------
+    - [`lu`][linalg.triangular.lu]
+    """
+    M, N = sorted((M, N))
+    return {
+        'sub': M*(M-1)*N//2,
+        'mul': M*(M-1)*N//2,
+        'truediv': M*(M-1)//2
+    }
 
 def lu_announce(A: NDArray) -> dict[str,int]:
     """`lu` announcer.
@@ -108,12 +53,7 @@ def lu_announce(A: NDArray) -> dict[str,int]:
     --------
     - [`lu`][linalg.triangular.lu]
     """
-    M, N = sorted(A.shape)
-    return {
-        'sub': M*(M-1)*N//2,
-        'mul': M*(M-1)*N//2,
-        'truediv': M*(M-1)//2
-    }
+    return lu_cost(*A.shape)
 
 @visualisable(lu_announce, lu_sanitise)
 def lu[T](A: NDArray[T], *, progress: Progress) \
@@ -148,7 +88,7 @@ def lu[T](A: NDArray[T], *, progress: Progress) \
     ----------
     A : numpy.typing.ArrayLike
         Matrix.
-    progress : Iterable[str]|bool = False
+    progress : Iterable[str]|bool|Progress = False
         Progress visualisation specification.
     
     Returns
@@ -175,6 +115,7 @@ def lu[T](A: NDArray[T], *, progress: Progress) \
     --------
     - [`lu_sanitise`][linalg.triangular.lu_sanitise]
     - [`lu_announce`][linalg.triangular.lu_announce]
+    - [`lu_cost`][linalg.triangular.lu_cost]
     
     References
     ----------
@@ -208,7 +149,21 @@ def plu_sanitise(A: ArrayLike) -> tuple[tuple[NDArray],dict[Never,Never]]:
     A = np.asarray(A)
     if A.ndim != 2:
         raise ValueError('A must be two dimensional')
-    return [A], {}
+    return (A,), {}
+
+def plu_cost(M: int, N: int) -> dict[str,int]:
+    """`plu` operation cost calculation.
+    
+    See also
+    --------
+    - [`plu`][linalg.triangular.plu]
+    """
+    O = min(M-1, N)
+    return {
+        'sub': N*O*(2*M-O-1)//2,
+        'mul': N*O*(2*M-O-1)//2,
+        'truediv': O*(2*M-O-1)//2
+    }
 
 def plu_announce(A: NDArray) -> dict[str,int]:
     """`plu` announcer.
@@ -217,13 +172,7 @@ def plu_announce(A: NDArray) -> dict[str,int]:
     --------
     - [`plu`][linalg.triangular.plu]
     """
-    M, N = A.shape
-    O = min(M-1, N)
-    return {
-        'sub': N*O*(2*M-O-1)//2,
-        'mul': N*O*(2*M-O-1)//2,
-        'truediv': O*(2*M-O-1)//2
-    }
+    return plu_cost(*A.shape)
 
 @visualisable(plu_announce, plu_sanitise)
 def plu[T](A: NDArray[T], *, progress:Progress) \
@@ -249,7 +198,7 @@ def plu[T](A: NDArray[T], *, progress:Progress) \
     ----------
     A : numpy.typing.ArrayLike
         Matrix.
-    progress : Iterable[str]|bool = False
+    progress : Iterable[str]|bool|Progress = False
         Progress visualisation specification.
     
     Returns
@@ -278,6 +227,7 @@ def plu[T](A: NDArray[T], *, progress:Progress) \
     --------
     - [`plu_sanitise`][linalg.triangular.plu_sanitise]
     - [`plu_announce`][linalg.triangular.plu_announce]
+    - [`plu_cost`][linalg.triangular.plu_cost]
     
     References
     ----------
@@ -316,7 +266,21 @@ def luq_sanitise(A: ArrayLike) -> tuple[tuple[NDArray],dict[Never,Never]]:
     A = np.asarray(A)
     if A.ndim != 2:
         raise ValueError('A must be two dimensional')
-    return [A], {}
+    return (A,), {}
+
+def luq_cost(M: int, N: int) -> dict[str,int]:
+    """`luq` operation cost calculation.
+    
+    See also
+    --------
+    - [`luq`][linalg.triangular.luq]
+    """
+    O = min(M, N-1)
+    return {
+        'sub': M*O*(2*N-O-1)//2,
+        'mul': M*O*(2*N-O-1)//2,
+        'truediv': O*(2*N-O-1)//2
+    }
 
 def luq_announce(A: NDArray) -> dict[str,int]:
     """`luq` announcer.
@@ -325,13 +289,7 @@ def luq_announce(A: NDArray) -> dict[str,int]:
     --------
     - [`luq`][linalg.triangular.luq]
     """
-    M, N = A.shape
-    O = min(M, N-1)
-    return {
-        'sub': M*O*(2*N-O-1)//2,
-        'mul': M*O*(2*N-O-1)//2,
-        'truediv': O*(2*N-O-1)//2
-    }
+    return luq_cost(*A.shape)
 
 @visualisable(luq_announce, luq_sanitise)
 def luq[T](A: NDArray[T], *, progress:Progress) \
@@ -357,7 +315,7 @@ def luq[T](A: NDArray[T], *, progress:Progress) \
     ----------
     A : numpy.typing.ArrayLike
         Matrix.
-    progress : Iterable[str]|bool = False
+    progress : Iterable[str]|bool|Progress = False
         Progress visualisation specification.
     
     Returns
@@ -386,6 +344,7 @@ def luq[T](A: NDArray[T], *, progress:Progress) \
     --------
     - [`luq_sanitise`][linalg.triangular.luq_sanitise]
     - [`luq_announce`][linalg.triangular.luq_announce]
+    - [`luq_cost`][linalg.triangular.luq_cost]
     
     References
     ----------
@@ -424,7 +383,21 @@ def pluq_sanitise(A: ArrayLike) -> tuple[tuple[NDArray],dict[Never,Never]]:
     A = np.asarray(A)
     if A.ndim != 2:
         raise ValueError('A must be two dimensional')
-    return [A], {}
+    return (A,), {}
+
+def pluq_cost(M: int, N: int) -> dict[str,int]:
+    """`pluq` operation cost calculation.
+    
+    See also
+    --------
+    - [`pluq`][linalg.triangular.pluq]
+    """
+    M, N = sorted((M, N))
+    return {
+        'sub': M*(M-1)*N//2,
+        'mul': M*(M-1)*N//2,
+        'truediv': M*(M-1)//2
+    }
 
 def pluq_announce(A: NDArray) -> dict[str,int]:
     """`pluq` announcer.
@@ -433,12 +406,7 @@ def pluq_announce(A: NDArray) -> dict[str,int]:
     --------
     - [`pluq`][linalg.triangular.pluq]
     """
-    M, N = sorted(A.shape)
-    return {
-        'sub': M*(M-1)*N//2,
-        'mul': M*(M-1)*N//2,
-        'truediv': M*(M-1)//2
-    }
+    return pluq_cost(*A.shape)
 
 @visualisable(pluq_announce, pluq_sanitise)
 def pluq[T](A: NDArray[T], *, progress: Progress) \
@@ -473,7 +441,7 @@ def pluq[T](A: NDArray[T], *, progress: Progress) \
     ----------
     A : numpy.typing.ArrayLike
         Matrix.
-    progress : Iterable[str]|bool = False
+    progress : Iterable[str]|bool|Progress = False
         Progress visualisation specification.
     
     Returns
@@ -499,6 +467,7 @@ def pluq[T](A: NDArray[T], *, progress: Progress) \
     --------
     - [`pluq_sanitise`][linalg.triangular.pluq_sanitise]
     - [`pluq_announce`][linalg.triangular.pluq_announce]
+    - [`pluq_cost`][linalg.triangular.pluq_cost]
     
     References
     ----------

@@ -8,84 +8,19 @@ from numpy.typing import ArrayLike, NDArray
 from iteration import MISSING
 from .blas import vsub, vtruediv
 from .blas2 import outer
+from .util import swap_rows, swap_pivot
 from .progress import Progress, visualisable
 from typing import Any, Never
 
 
 
 __all__ = (
-    'swap_rows', 'swap_columns', 'swap_pivot',
-    'det_gauss_sanitise', 'det_gauss_announce', 'det_gauss',
-    'inv_gauss_sanitise', 'inv_gauss_announce', 'inv_gauss',
+    'det_gauss_sanitise', 'det_gauss_announce', 'det_gauss_cost', 'det_gauss',
+    'inv_gauss_sanitise', 'inv_gauss_announce', 'inv_gauss_cost', 'inv_gauss',
     'is_ref',
-    'ref_gauss_sanitise', 'ref_gauss_announce', 'ref_gauss'
+    'ref_gauss_sanitise', 'ref_gauss_announce', 'ref_gauss_cost', 'ref_gauss'
 )
 
-
-
-def swap_rows(A: NDArray, i: int, j: int) -> None:
-    """Swap the `i`-th and `j`-th row of `A` in-place.
-    
-    Parameters
-    ----------
-    A : numpy.typing.NDArray
-        Two dimensional array.
-    i, j : int
-        Row indices.
-    
-    References
-    ----------
-    [stackoverflow - Swap two rows in a numpy array in python](https://stackoverflow.com/a/54069951)
-    """
-    if not isinstance(A, np.ndarray):
-        raise TypeError('A must be a numpy.ndarray')
-    if not A.ndim == 2:
-        raise ValueError('A must be two dimensional')
-    
-    A[[i, j], :] = A[[j, i], :]
-
-def swap_columns(A: NDArray, i: int, j: int) -> None:
-    """Swap the `i`-th and `j`-th column of `A` in-place.
-    
-    Parameters
-    ----------
-    A : numpy.typing.NDArray
-        Two dimensional array.
-    i, j : int
-        Column indices.
-    
-    References
-    ----------
-    [stackoverflow - Swap two rows in a numpy array in python](https://stackoverflow.com/a/54069951)
-    """
-    if not isinstance(A, np.ndarray):
-        raise TypeError('A must be a numpy.ndarray')
-    if not A.ndim == 2:
-        raise ValueError('A must be two dimensional')
-    
-    A[:, [i, j]] = A[:, [j, i]]
-
-def swap_pivot(A: NDArray, p: int, i: int, j: int) -> None:
-    """Swap the `p`-&`i`-th rows and `p`-&`j`-th columns of `A` in-place.
-    
-    Parameters
-    ----------
-    A : numpy.typing.NDArray
-        Two dimensional array.
-    p, i, j : int
-        Column and row indices.
-    
-    References
-    ----------
-    [stackoverflow - Swap two rows in a numpy array in python](https://stackoverflow.com/a/54069951)
-    """
-    if not isinstance(A, np.ndarray):
-        raise TypeError('A must be a numpy.ndarray')
-    if not A.ndim == 2:
-        raise ValueError('A must be two dimensional')
-    
-    swap_rows(A, p, i)
-    swap_columns(A, p, j)
 
 
 def det_gauss_sanitise(A: ArrayLike, *, one: Any=MISSING) \
@@ -104,16 +39,15 @@ def det_gauss_sanitise(A: ArrayLike, *, one: Any=MISSING) \
         #don't use .item(), would unpack the numpy type to a Python type
         one = np.ones((), dtype=A.dtype)[()]
     
-    return [A], {'one':one}
+    return (A,), {'one':one}
 
-def det_gauss_announce(A: NDArray, *, one: Any=1) -> dict[str,int]:
-    """`det_gauss` announcer.
+def det_gauss_cost(N: int) -> dict[str,int]:
+    """`det_gauss` operation cost calculation.
     
     See also
     --------
     - [`det_gauss`][linalg.gauss.det_gauss]
     """
-    N = A.shape[0]
     return {
         'pos': 1,
         'neg': 1,
@@ -122,8 +56,17 @@ def det_gauss_announce(A: NDArray, *, one: Any=1) -> dict[str,int]:
         'truediv': N*(N-1) // 2
     }
 
+def det_gauss_announce(A: NDArray, *, one: Any=1) -> dict[str,int]:
+    """`det_gauss` announcer.
+    
+    See also
+    --------
+    - [`det_gauss`][linalg.gauss.det_gauss]
+    """
+    return det_gauss_cost(A.shape[0])
+
 @visualisable(det_gauss_announce, det_gauss_sanitise)
-def det_gauss(A: NDArray, *, one: Any, progress: Progress) -> Any:
+def det_gauss[T,U](A: NDArray[T], *, one: U, progress: Progress) -> T|U:
     r"""Return the determinant.
     
     $$
@@ -140,7 +83,7 @@ def det_gauss(A: NDArray, *, one: Any, progress: Progress) -> Any:
         Square matrix.
     one : Any = MISSING
         One element.
-    progress : Iterable[str]|bool = False
+    progress : Iterable[str]|bool|Progress = False
         Progress visualisation specification.
     
     Returns
@@ -173,6 +116,7 @@ def det_gauss(A: NDArray, *, one: Any, progress: Progress) -> Any:
     --------
     - [`det_gauss_sanitise`][linalg.gauss.det_gauss_sanitise]
     - [`det_gauss_announce`][linalg.gauss.det_gauss_announce]
+    - [`inv_gauss_cost`][linalg.gauss.inv_gauss_cost]
     
     References
     ----------
@@ -214,7 +158,20 @@ def inv_gauss_sanitise(A: ArrayLike) \
     A = np.asarray(A)
     if not (A.ndim==2 and A.shape[0]==A.shape[1]):
         raise ValueError('A must be two dimensional and square')
-    return [A], {}
+    return (A,), {}
+
+def inv_gauss_cost(N: int) -> dict[str,int]:
+    """`inv_gauss` operation cost calculation.
+    
+    See also
+    --------
+    - [`inv_gauss`][linalg.gauss.inv_gauss]
+    """
+    return {
+        'sub': N**2 * (2*N-2),
+        'mul': N**2 * (2*N-2),
+        'truediv': 2 * N**2
+    }
 
 def inv_gauss_announce(A: NDArray) -> dict[str,int]:
     """`inv_gauss` announcer.
@@ -223,15 +180,10 @@ def inv_gauss_announce(A: NDArray) -> dict[str,int]:
     --------
     - [`inv_gauss`][linalg.gauss.inv_gauss]
     """
-    N = A.shape[0]
-    return {
-        'sub': N**2 * (2*N-2),
-        'mul': N**2 * (2*N-2),
-        'truediv': 2 * N**2
-    }
+    return inv_gauss_cost(A.shape[0])
 
 @visualisable(inv_gauss_announce, inv_gauss_sanitise)
-def inv_gauss(A: NDArray, *, progress: Progress) -> NDArray:
+def inv_gauss[T](A: NDArray[T], *, progress: Progress) -> NDArray[T]:
     r"""Return the inverse.
     
     $$
@@ -246,7 +198,7 @@ def inv_gauss(A: NDArray, *, progress: Progress) -> NDArray:
     ----------
     A : numpy.typing.ArrayLike
         Square matrix.
-    progress : Iterable[str]|bool = False
+    progress : Iterable[str]|bool|Progress = False
         Progress visualisation specification.
     
     Returns
@@ -278,6 +230,7 @@ def inv_gauss(A: NDArray, *, progress: Progress) -> NDArray:
     --------
     - [`inv_gauss_sanitise`][linalg.gauss.inv_gauss_sanitise]
     - [`inv_gauss_announce`][linalg.gauss.inv_gauss_announce]
+    - [`inv_gauss_cost`][linalg.gauss.inv_gauss_cost]
     
     References
     ----------
@@ -375,7 +328,27 @@ def ref_gauss_sanitise(A: NDArray, reduced: bool=True) \
         raise TypeError('A must be a numpy.ndarray')
     if A.ndim != 2:
         raise ValueError('A must be two dimensional')
-    return [A, reduced], {}
+    return (A, reduced), {}
+
+def ref_gauss_cost(M: int, N: int, R: int|None=None, reduced: bool=True) \
+        -> dict[str,int]:
+    """`ref_gauss` operation cost calculation.
+    
+    See also
+    --------
+    - [`ref_gauss`][linalg.gauss.ref_gauss]
+    """
+    if R is None:
+        R = min(M, N)
+    return {
+        'sub': N*R*(M-1),
+        'mul': N*R*(M-1),
+        'truediv': N*R
+    } if reduced else {
+        'sub': N*R*(2*M-R-1) // 2,
+        'mul': N*R*(2*M-R-1) // 2,
+        'truediv': R*(2*M-R-1) // 2
+    }
 
 def ref_gauss_announce(A: NDArray, reduced: bool=True) -> dict[str,int]:
     """`ref_gauss` announcer.
@@ -384,19 +357,7 @@ def ref_gauss_announce(A: NDArray, reduced: bool=True) -> dict[str,int]:
     --------
     - [`ref_gauss`][linalg.gauss.ref_gauss]
     """
-    M, N, R = *A.shape, min(A.shape)
-    if reduced:
-        return {
-            'sub': N*R*(M-1),
-            'mul': N*R*(M-1),
-            'truediv': N*R
-        }
-    else:
-        return {
-            'sub': N*R*(2*M-R-1) // 2,
-            'mul': N*R*(2*M-R-1) // 2,
-            'truediv': R*(2*M-R-1) // 2
-        }
+    return ref_gauss_cost(*A.shape, reduced=reduced)
 
 @visualisable(ref_gauss_announce, ref_gauss_sanitise)
 def ref_gauss(A: NDArray, reduced: bool=True, *, progress: Progress) \
@@ -417,7 +378,7 @@ def ref_gauss(A: NDArray, reduced: bool=True, *, progress: Progress) \
         Matrix.
     reduced : bool = True
         Whether should be transformed into reduced row echelon form.
-    progress : Iterable[str]|bool = False
+    progress : Iterable[str]|bool|Progress = False
         Progress visualisation specification.
     
     Returns

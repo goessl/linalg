@@ -1,5 +1,6 @@
 from linalg.triangular import *
 from linalg.random import *
+from linalg.util import is_perm, is_tril, is_triu
 from fractions import Fraction
 import numpy as np
 
@@ -14,13 +15,13 @@ def test_lu():
                 L, U = lu(A.copy())
             except ZeroDivisionError:
                 continue
-
+            
             assert is_tril(L) and is_triu(U)
             assert np.array_equal(L@U, A)
             assert np.all(np.diag(L)==1) if M<=N else np.all(np.diag(U)==1)
             tested += 1
     assert tested > 20
-
+    
     #https://en.wikipedia.org/wiki/LU_decomposition#Example
     L, U = lu(np.array([[Fraction(4), Fraction(3)],
                         [Fraction(6), Fraction(3)]]))
@@ -38,7 +39,7 @@ def test_plu():
                 P, L, U = plu(A.copy())
             except ZeroDivisionError:
                 continue
-
+            
             assert is_perm(P) and is_tril(L) and is_triu(U)
             assert np.array_equal(P@L@U, A)
             assert np.all(np.diag(L) == 1)
@@ -54,7 +55,7 @@ def test_luq():
                 L, U, Q = luq(A.copy())
             except ZeroDivisionError:
                 continue
-
+            
             assert is_tril(L) and is_triu(U) and is_perm(Q)
             assert np.array_equal(L@U@Q, A)
             assert np.all(np.diag(U) == 1)
@@ -70,7 +71,7 @@ def test_pluq():
                 P, L, U, Q = pluq(A.copy())
             except ZeroDivisionError:
                 continue
-
+            
             assert is_perm(P) and is_tril(L) and is_triu(U) and is_perm(Q)
             assert np.array_equal(P@L@U@Q, A)
             assert np.all(np.diag(L)==1) if M<=N else np.all(np.diag(U)==1)
@@ -112,50 +113,7 @@ def _product(factors):
 
 
 
-#predicates
-def test_is_perm_accepts_permutation_matrices():
-    assert is_perm(np.eye(3, dtype=int))
-    assert is_perm([[0, 1, 0], [0, 0, 1], [1, 0, 0]])
-
-@pytest.mark.parametrize('P', [
-    [[2, 0], [0, 2]],   #ones scaled away
-    [[1, 1], [0, 0]],   #column sums wrong
-    [[1, 0], [1, 0]],   #row sums wrong
-])
-def test_is_perm_rejects_non_permutations(P):
-    assert not is_perm(P)
-
-def test_is_tril_and_is_triu():
-    assert is_tril([[1, 0], [2, 3]]) and not is_triu([[1, 0], [2, 3]])
-    assert is_triu([[1, 2], [0, 3]]) and not is_tril([[1, 2], [0, 3]])
-
-def test_a_diagonal_matrix_is_both_triangular():
-    #the predicates look strictly above/below, so the diagonal is shared
-    assert is_tril(np.eye(4)) and is_triu(np.eye(4))
-
-def test_the_predicates_take_the_non_square_overhang():
-    #the factors are routinely oblong, so this is the shape they see
-    assert is_tril([[1, 0, 0], [2, 3, 0]]) and is_triu([[1, 2, 3], [0, 4, 5]])
-
-@pytest.mark.parametrize('predicate', [is_perm, is_tril, is_triu])
-def test_the_predicates_accept_array_likes(predicate):
-    predicate([[1, 0], [0, 1]])
-
-@pytest.mark.parametrize('A', [np.zeros(3), np.zeros((2, 2, 2))])
-@pytest.mark.parametrize('predicate', [is_perm, is_tril, is_triu])
-def test_the_predicates_reject_bad_dimensions(predicate, A):
-    with pytest.raises(ValueError):
-        predicate(A)
-
-def test_is_perm_rejects_a_non_square_matrix():
-    #unlike the triangular pair, a permutation matrix has to be square
-    with pytest.raises(ValueError):
-        is_perm(np.zeros((2, 3)))
-
-@pytest.mark.parametrize('predicate', [is_perm, is_tril, is_triu])
-def test_an_empty_matrix_satisfies_every_predicate(predicate):
-    #vacuously - and an empty matrix does come back out of all four
-    assert predicate(np.empty((0, 0)))
+#predicates moved to test_util.py along with the functions themselves
 
 
 

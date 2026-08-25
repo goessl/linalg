@@ -17,4 +17,5 @@ from .gauss import *
 from .rank import *
 from .triangular import *
 from .random import *
+from .util import *
 from .progress import *

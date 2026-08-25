@@ -27,7 +27,7 @@ For example:
 ... from collections.abc import Sequence
 ...
 ... @visualisable(lambda v, w: {'add':max(len(v), len(w))})
-... def f(v:Sequence, w:Sequence, *, progress:Progress) -> list:
+... def f(v: Sequence, w: Sequence, *, progress: Progress) -> list:
 ...     #Return vectorial `v + w`
 ...     r = []
 ...     for vi, wi in zip_longest(v, w, fillvalue=0):
@@ -37,7 +37,7 @@ For example:
 ...     return r
 ...
 ... @visualisable(lambda a, v, w: {'add':max(len(v), len(w)), 'mul':len(v)})
-... def g(a: Any, v: Sequence, w: Sequence, *, progress:Progress) -> list:
+... def g(a: Any, v: Sequence, w: Sequence, *, progress: Progress) -> list:
 ...     #Return vectorial `a * v + w`
 ...     av = []
 ...     for vi in v:
@@ -82,7 +82,7 @@ from warnings import warn
 from collections import Counter
 from tqdm.auto import tqdm
 from iteration import reduce_default, MISSING
-from typing import Any
+from typing import Any, TypeVar
 from collections.abc import Callable, Iterable, Sequence, Mapping
 
 
@@ -301,15 +301,16 @@ class Progress:
                 initial=initial, default=default)
 
 
-
+R = TypeVar('R')
 def visualisable(
     announcer: Callable[...,Mapping[str,int]],
-    sanitiser: Callable[...,tuple[Sequence,Mapping]]|None=None):
+    sanitiser: Callable[...,tuple[Sequence[Any],Mapping[str,Any]]]|None=None) \
+        -> Callable[[Callable[...,R]],Callable[...,R]]:
     """Make the function visualisable.
     
     ```python
     @visualisable(f_announce, f_sanitise)
-    def f(a, b, *, progress:Progress):
+    def f(a, b, *, progress: Progress):
         ...
         z = x + y
         progress.update('add')
@@ -395,7 +396,7 @@ def visualisable(
                 progress = Progress(announcer(*args, **kwargs), progress)
             
             try:
-                r = executor(*args, progress=progress, **kwargs)
+                r = executor(*args, **kwargs, progress=progress)
                 if owner:
                     progress._check()
                 return r

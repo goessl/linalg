@@ -14,7 +14,8 @@ from collections.abc import Iterable, Generator
 
 __all__ = (
     'permutations',
-    'det_leibniz_sanitise', 'det_leibniz_announce', 'det_leibniz'
+    'det_leibniz_sanitise', 'det_leibniz_announce', 'det_leibniz_cost',
+    'det_leibniz'
 )
 
 
@@ -85,7 +86,21 @@ def det_leibniz_sanitise(A: ArrayLike, *, one: Any=MISSING) \
         #don't use .item(), would unpack the numpy type to a Python type
         one = np.ones((), dtype=A.dtype)[()]
     
-    return [A], {'one':one}
+    return (A,), {'one':one}
+
+def det_leibniz_cost(N: int) -> dict[str,int]:
+    """`det_leibniz` operation cost calculation.
+    
+    See also
+    --------
+    - [`det_leibniz`][linalg.leibniz.det_leibniz]
+    """
+    return {
+        'pos': (factorial(N)+1) // 2,
+        'neg': factorial(N) // 2,
+        'add': factorial(N) - 1,
+        'mul': max(N-1, 0) * factorial(N)
+    }
 
 def det_leibniz_announce(A: NDArray, *, one: Any=1) -> dict[str,int]:
     """`det_leibniz` announcer.
@@ -94,16 +109,10 @@ def det_leibniz_announce(A: NDArray, *, one: Any=1) -> dict[str,int]:
     --------
     - [`det_leibniz`][linalg.leibniz.det_leibniz]
     """
-    N = A.shape[0]
-    return {
-        'pos': (factorial(N)+1) // 2,
-        'neg': factorial(N) // 2,
-        'add': factorial(N) - 1,
-        'mul': max(N-1, 0) * factorial(N)
-    }
+    return det_leibniz_cost(A.shape[0])
 
 @visualisable(det_leibniz_announce, det_leibniz_sanitise)
-def det_leibniz(A: NDArray, *, one: Any, progress: Progress) -> Any:
+def det_leibniz[T,U](A: NDArray[T], *, one: U, progress: Progress) -> T|U:
     r"""Return the determinant.
     
     $$
@@ -118,7 +127,7 @@ def det_leibniz(A: NDArray, *, one: Any, progress: Progress) -> Any:
         Square matrix.
     one : Any = MISSING
         One element.
-    progress : Iterable[str]|bool = False
+    progress : Iterable[str]|bool|Progress = False
         Progress visualisation specification.
     
     Returns
@@ -146,6 +155,7 @@ def det_leibniz(A: NDArray, *, one: Any, progress: Progress) -> Any:
     --------
     - [`det_leibniz_sanitise`][linalg.leibniz.det_leibniz_sanitise]
     - [`det_leibniz_announce`][linalg.leibniz.det_leibniz_announce]
+    - [`det_leibniz_cost`][linalg.leibniz.det_leibniz_cost]
     
     References
     ----------

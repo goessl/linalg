@@ -199,7 +199,7 @@ def ufunc_with_cb(op: np.ufunc, *operands: ArrayLike,
 
 
 
-def vpos_announce(a: ArrayLike) -> dict[str, int]:
+def vpos_announce(a: ArrayLike) -> dict[str,int]:
     """`vpos` announcer.
     
     See also
@@ -218,7 +218,7 @@ def vpos(a: ArrayLike, *, progress: Progress) -> Any:
     ----------
     a : numpy.typing.ArrayLike
         Input.
-    progress : Iterable[str]|bool = False
+    progress : Iterable[str]|bool|Progress = False
         Progress visualisation specification.
     
     Returns
@@ -244,7 +244,7 @@ def vpos(a: ArrayLike, *, progress: Progress) -> Any:
     return ufunc_with_cb(np.positive, a,
             cb=lambda *_: progress.update('pos'))
 
-def vneg_announce(a: ArrayLike) -> dict[str, int]:
+def vneg_announce(a: ArrayLike) -> dict[str,int]:
     """`vneg` announcer.
     
     See also
@@ -263,7 +263,7 @@ def vneg(a: ArrayLike, *, progress: Progress) -> Any:
     ----------
     a : numpy.typing.ArrayLike
         Input.
-    progress : Iterable[str]|bool = False
+    progress : Iterable[str]|bool|Progress = False
         Progress visualisation specification.
     
     Returns
@@ -289,7 +289,7 @@ def vneg(a: ArrayLike, *, progress: Progress) -> Any:
     return ufunc_with_cb(np.negative, a,
             cb=lambda *_: progress.update('neg'))
 
-def vadd_announce(a: ArrayLike, b: ArrayLike) -> dict[str, int]:
+def vadd_announce(a: ArrayLike, b: ArrayLike) -> dict[str,int]:
     """`vadd` announcer.
     
     See also
@@ -308,7 +308,7 @@ def vadd(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     ----------
     a, b : numpy.typing.ArrayLike
         Inputs.
-    progress : Iterable[str]|bool = False
+    progress : Iterable[str]|bool|Progress = False
         Progress visualisation specification.
     
     Returns
@@ -334,7 +334,7 @@ def vadd(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     return ufunc_with_cb(np.add, a, b,
             cb=lambda *_: progress.update('add'))
 
-def vsub_announce(a: ArrayLike, b: ArrayLike) -> dict[str, int]:
+def vsub_announce(a: ArrayLike, b: ArrayLike) -> dict[str,int]:
     """`vsub` announcer.
     
     See also
@@ -353,7 +353,7 @@ def vsub(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     ----------
     a, b : numpy.typing.ArrayLike
         Inputs.
-    progress : Iterable[str]|bool = False
+    progress : Iterable[str]|bool|Progress = False
         Progress visualisation specification.
     
     Returns
@@ -379,7 +379,7 @@ def vsub(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     return ufunc_with_cb(np.subtract, a, b,
             cb=lambda *_: progress.update('sub'))
 
-def vmul_announce(a: ArrayLike, b: ArrayLike) -> dict[str, int]:
+def vmul_announce(a: ArrayLike, b: ArrayLike) -> dict[str,int]:
     """`vmul` announcer.
     
     See also
@@ -398,7 +398,7 @@ def vmul(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     ----------
     a, b : numpy.typing.ArrayLike
         Inputs.
-    progress : Iterable[str]|bool = False
+    progress : Iterable[str]|bool|Progress = False
         Progress visualisation specification.
     
     Returns
@@ -424,7 +424,7 @@ def vmul(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     return ufunc_with_cb(np.multiply, a, b,
             cb=lambda *_: progress.update('mul'))
 
-def vtruediv_announce(a: ArrayLike, b: ArrayLike) -> dict[str, int]:
+def vtruediv_announce(a: ArrayLike, b: ArrayLike) -> dict[str,int]:
     """`vtruediv` announcer.
     
     See also
@@ -443,7 +443,7 @@ def vtruediv(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     ----------
     a, b : numpy.typing.ArrayLike
         Inputs.
-    progress : Iterable[str]|bool = False
+    progress : Iterable[str]|bool|Progress = False
         Progress visualisation specification.
     
     Returns
@@ -469,7 +469,7 @@ def vtruediv(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     return ufunc_with_cb(np.divide, a, b,
             cb=lambda *_: progress.update('truediv'))
 
-def vfloordiv_announce(a: ArrayLike, b: ArrayLike) -> dict[str, int]:
+def vfloordiv_announce(a: ArrayLike, b: ArrayLike) -> dict[str,int]:
     """`vfloordiv` announcer.
     
     See also
@@ -488,7 +488,7 @@ def vfloordiv(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     ----------
     a, b : numpy.typing.ArrayLike
         Inputs.
-    progress : Iterable[str]|bool = False
+    progress : Iterable[str]|bool|Progress = False
         Progress visualisation specification.
     
     Returns
@@ -514,7 +514,7 @@ def vfloordiv(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     return ufunc_with_cb(np.floor_divide, a, b,
             cb=lambda *_: progress.update('floordiv'))
 
-def vmod_announce(a: ArrayLike, b: ArrayLike) -> dict[str, int]:
+def vmod_announce(a: ArrayLike, b: ArrayLike) -> dict[str,int]:
     """`vmod` announcer.
     
     See also
@@ -533,7 +533,7 @@ def vmod(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     ----------
     a, b : numpy.typing.ArrayLike
         Inputs.
-    progress : Iterable[str]|bool = False
+    progress : Iterable[str]|bool|Progress = False
         Progress visualisation specification.
     
     Returns

@@ -79,47 +79,7 @@ ANTIDIAG = np.array([[0., 2.],
 
 
 
-#swaps
-def test_swap_rows():
-    A = np.arange(6).reshape(3, 2)
-    swap_rows(A, 0, 2)
-    assert np.array_equal(A, [[4, 5], [2, 3], [0, 1]])
-
-def test_swap_columns():
-    A = np.arange(6).reshape(2, 3)
-    swap_columns(A, 0, 2)
-    assert np.array_equal(A, [[2, 1, 0], [5, 4, 3]])
-
-def test_swap_pivot_swaps_both():
-    A = np.arange(9).reshape(3, 3)
-    swap_pivot(A, 0, 1, 2)
-    #row 0 <-> row 1, then column 0 <-> column 2
-    assert np.array_equal(A, [[5, 4, 3], [2, 1, 0], [8, 7, 6]])
-
-@pytest.mark.parametrize('f', [swap_rows, swap_columns])
-def test_swap_with_itself_changes_nothing(f):
-    A = np.arange(6).reshape(3, 2)
-    B = A.copy()
-    f(A, 1, 1)
-    assert np.array_equal(A, B)
-
-@pytest.mark.parametrize('f', [swap_rows, swap_columns])
-def test_swap_rejects_a_non_array(f):
-    with pytest.raises(TypeError):
-        f([[1, 2], [3, 4]], 0, 1)
-
-def test_swap_pivot_rejects_a_non_array():
-    with pytest.raises(TypeError):
-        swap_pivot([[1, 2], [3, 4]], 0, 1, 1)
-
-@pytest.mark.parametrize('f', [swap_rows, swap_columns])
-def test_swap_rejects_bad_shapes(f):
-    with pytest.raises(ValueError):
-        f(np.zeros(3), 0, 1)
-
-def test_swap_pivot_rejects_bad_shapes():
-    with pytest.raises(ValueError):
-        swap_pivot(np.zeros(3), 0, 1, 1)
+#swaps moved to test_util.py along with the functions themselves
 
 
 
