@@ -15,7 +15,7 @@
         <link rel="canonical" href="https://goessl.github.io/linalg/progress/">
       
       
-        <link rel="prev" href="../random/">
+        <link rel="prev" href="../util/">
       
       
       
@@ -477,6 +477,33 @@
     
   
     random
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../util/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    util
   
 
     
@@ -1007,7 +1034,7 @@ operations</li>
 <span class="o">...</span> <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
 <span class="o">...</span>
 <span class="o">...</span> <span class="nd">@visualisable</span><span class="p">(</span><span class="k">lambda</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;add&#39;</span><span class="p">:</span><span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">))})</span>
-<span class="o">...</span> <span class="k">def</span><span class="w"> </span><span class="nf">f</span><span class="p">(</span><span class="n">v</span><span class="p">:</span><span class="n">Sequence</span><span class="p">,</span> <span class="n">w</span><span class="p">:</span><span class="n">Sequence</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span><span class="n">Progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="o">...</span> <span class="k">def</span><span class="w"> </span><span class="nf">f</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">w</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
 <span class="o">...</span>     <span class="c1">#Return vectorial `v + w`</span>
 <span class="o">...</span>     <span class="n">r</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="o">...</span>     <span class="k">for</span> <span class="n">vi</span><span class="p">,</span> <span class="n">wi</span> <span class="ow">in</span> <span class="n">zip_longest</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">fillvalue</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
@@ -1017,7 +1044,7 @@ operations</li>
 <span class="o">...</span>     <span class="k">return</span> <span class="n">r</span>
 <span class="o">...</span>
 <span class="o">...</span> <span class="nd">@visualisable</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;add&#39;</span><span class="p">:</span><span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)),</span> <span class="s1">&#39;mul&#39;</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)})</span>
-<span class="o">...</span> <span class="k">def</span><span class="w"> </span><span class="nf">g</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">w</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span><span class="n">Progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="o">...</span> <span class="k">def</span><span class="w"> </span><span class="nf">g</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">w</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
 <span class="o">...</span>     <span class="c1">#Return vectorial `a * v + w`</span>
 <span class="o">...</span>     <span class="n">av</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="o">...</span>     <span class="k">for</span> <span class="n">vi</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
@@ -2444,7 +2471,7 @@ progress downstream.</p>
 
         <p>Make the function visualisable.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@visualisable</span><span class="p">(</span><span class="n">f_announce</span><span class="p">,</span> <span class="n">f_sanitise</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">f</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span><span class="n">Progress</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">f</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span><span class="p">):</span>
     <span class="o">...</span>
     <span class="n">z</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
     <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s1">&#39;add&#39;</span><span class="p">)</span>
@@ -2657,14 +2684,16 @@ resulting signature should be the one of the executor except
 <span class="normal">405</span>
 <span class="normal">406</span>
 <span class="normal">407</span>
-<span class="normal">408</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">visualisable</span><span class="p">(</span>
+<span class="normal">408</span>
+<span class="normal">409</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">visualisable</span><span class="p">(</span>
     <span class="n">announcer</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="nb">int</span><span class="p">]],</span>
-    <span class="n">sanitiser</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Sequence</span><span class="p">,</span><span class="n">Mapping</span><span class="p">]]</span><span class="o">|</span><span class="kc">None</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">sanitiser</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="n">Any</span><span class="p">]]]</span><span class="o">|</span><span class="kc">None</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> \
+        <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">R</span><span class="p">]],</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">R</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Make the function visualisable.</span>
 
 <span class="sd">    ```python</span>
 <span class="sd">    @visualisable(f_announce, f_sanitise)</span>
-<span class="sd">    def f(a, b, *, progress:Progress):</span>
+<span class="sd">    def f(a, b, *, progress: Progress):</span>
 <span class="sd">        ...</span>
 <span class="sd">        z = x + y</span>
 <span class="sd">        progress.update(&#39;add&#39;)</span>
@@ -2750,7 +2779,7 @@ resulting signature should be the one of the executor except
                 <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="p">(</span><span class="n">announcer</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">),</span> <span class="n">progress</span><span class="p">)</span>
 
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">r</span> <span class="o">=</span> <span class="n">executor</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="n">executor</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">owner</span><span class="p">:</span>
                     <span class="n">progress</span><span class="o">.</span><span class="n">_check</span><span class="p">()</span>
                 <span class="k">return</span> <span class="n">r</span>
@@ -2804,7 +2833,7 @@ resulting signature should be the one of the executor except
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../random/" class="md-footer__link md-footer__link--prev" aria-label="Previous: random">
+          <a href="../util/" class="md-footer__link md-footer__link--prev" aria-label="Previous: util">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -2814,7 +2843,7 @@ resulting signature should be the one of the executor except
                 Previous
               </span>
               <div class="md-ellipsis">
-                random
+                util
               </div>
             </div>
           </a>
