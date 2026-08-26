@@ -12,13 +12,13 @@
         <meta name="author" content="Sebastian Gössl">
       
       
-        <link rel="canonical" href="https://goessl.github.io/linalg/random/">
+        <link rel="canonical" href="https://goessl.github.io/linalg/ortho/">
       
       
-        <link rel="prev" href="../ortho/">
+        <link rel="prev" href="../triangular/">
       
       
-        <link rel="next" href="../util/">
+        <link rel="next" href="../random/">
       
       
         
@@ -29,7 +29,7 @@
     
     
       
-        <title>random - linalg</title>
+        <title>ortho - linalg</title>
       
     
     
@@ -90,7 +90,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#random" class="md-skip">
+        <a href="#ortho" class="md-skip">
           Skip to content
         </a>
       
@@ -126,7 +126,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              random
+              ortho
             
           </span>
         </div>
@@ -468,33 +468,6 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../ortho/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    ortho
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -514,7 +487,7 @@
   <span class="md-ellipsis">
     
   
-    random
+    ortho
   
 
     
@@ -532,7 +505,7 @@
   <span class="md-ellipsis">
     
   
-    random
+    ortho
   
 
     
@@ -558,10 +531,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#linalg.random.randz" class="md-nav__link">
+  <a href="#linalg.ortho.are_orthogonal" class="md-nav__link">
     <span class="md-ellipsis">
       
-        randz
+        are_orthogonal
       
     </span>
   </a>
@@ -569,10 +542,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#linalg.random.randq" class="md-nav__link">
+  <a href="#linalg.ortho.is_normalised" class="md-nav__link">
     <span class="md-ellipsis">
       
-        randq
+        is_normalised
       
     </span>
   </a>
@@ -580,10 +553,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#linalg.random.vrandz" class="md-nav__link">
+  <a href="#linalg.ortho.are_orthonormal" class="md-nav__link">
     <span class="md-ellipsis">
       
-        vrandz
+        are_orthonormal
       
     </span>
   </a>
@@ -591,10 +564,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#linalg.random.vrandq" class="md-nav__link">
+  <a href="#linalg.ortho.gram_schmidt_sanitise" class="md-nav__link">
     <span class="md-ellipsis">
       
-        vrandq
+        gram_schmidt_sanitise
       
     </span>
   </a>
@@ -602,10 +575,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#linalg.random.mrandqr" class="md-nav__link">
+  <a href="#linalg.ortho.gram_schmidt_cost" class="md-nav__link">
     <span class="md-ellipsis">
       
-        mrandqr
+        gram_schmidt_cost
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#linalg.ortho.gram_schmidt_announce" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        gram_schmidt_announce
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#linalg.ortho.gram_schmidt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        gram_schmidt
       
     </span>
   </a>
@@ -616,6 +611,33 @@
   
 </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../random/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    random
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -701,10 +723,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#linalg.random.randz" class="md-nav__link">
+  <a href="#linalg.ortho.are_orthogonal" class="md-nav__link">
     <span class="md-ellipsis">
       
-        randz
+        are_orthogonal
       
     </span>
   </a>
@@ -712,10 +734,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#linalg.random.randq" class="md-nav__link">
+  <a href="#linalg.ortho.is_normalised" class="md-nav__link">
     <span class="md-ellipsis">
       
-        randq
+        is_normalised
       
     </span>
   </a>
@@ -723,10 +745,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#linalg.random.vrandz" class="md-nav__link">
+  <a href="#linalg.ortho.are_orthonormal" class="md-nav__link">
     <span class="md-ellipsis">
       
-        vrandz
+        are_orthonormal
       
     </span>
   </a>
@@ -734,10 +756,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#linalg.random.vrandq" class="md-nav__link">
+  <a href="#linalg.ortho.gram_schmidt_sanitise" class="md-nav__link">
     <span class="md-ellipsis">
       
-        vrandq
+        gram_schmidt_sanitise
       
     </span>
   </a>
@@ -745,10 +767,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#linalg.random.mrandqr" class="md-nav__link">
+  <a href="#linalg.ortho.gram_schmidt_cost" class="md-nav__link">
     <span class="md-ellipsis">
       
-        mrandqr
+        gram_schmidt_cost
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#linalg.ortho.gram_schmidt_announce" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        gram_schmidt_announce
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#linalg.ortho.gram_schmidt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        gram_schmidt
       
     </span>
   </a>
@@ -775,7 +819,7 @@
   
 
 
-<h1 id="random">random</h1>
+<h1 id="ortho">ortho</h1>
 
 
 <div class="doc doc-object doc-module">
@@ -785,7 +829,7 @@
 
     <div class="doc doc-contents first">
 
-        <p>Random sampling.</p>
+        <p>Orthogonalisations and normalisations.</p>
 
 
 
@@ -804,33 +848,50 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <div class="doc doc-object doc-function">
 
 
-<h2 id="linalg.random.randz" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">randz</span><span class="p">(</span><span class="n">sigma</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span></code>
+<h2 id="linalg.ortho.are_orthogonal" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">are_orthogonal</span><span class="p">(</span><span class="o">*</span><span class="n">vs</span><span class="p">)</span></code>
 
 </h2>
 
 
     <div class="doc doc-contents ">
 
-        <p>Return a random binomial distributed integer.</p>
-<div class="arithmatex">\[
-    x \qquad x\in\mathbb{Z}, \ x\sim\mathcal{N}(0,\sigma)
-\]</div>
+        <p>Return if all vectors are orthogonal.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
     <ul>
         <li class="doc-section-item field-body">
-            <b><code>sigma</code></b>
-              (<code>int = 1000</code>, default:
-                  <code>1000</code>
+            <b><code>vs</code></b>
+              (<code><span title="numpy.typing.ArrayLike">ArrayLike</span></code>, default:
+                  <code>()</code>
 )
           –
           <div class="doc-md-description">
-            <p>Standard deviation.</p>
+            <p>Vectors.</p>
           </div>
         </li>
     </ul>
@@ -839,10 +900,10 @@
 <p><span class="doc-section-title">Returns:</span></p>
     <ul>
         <li class="doc-section-item field-body">
-              <code><span title="int">int</span></code>
+              <code><span title="bool">bool</span></code>
           –
           <div class="doc-md-description">
-            <p>Random value.</p>
+            <p>Whether they are orthogonal.</p>
           </div>
         </li>
     </ul>
@@ -851,17 +912,13 @@
 <details class="see-also" open>
   <summary>See also</summary>
   <ul>
-<li><a class="autorefs autorefs-internal" title="            vrandz(shape=1, sigma=1000)" href="#linalg.random.vrandz"><code>vrandz</code></a></li>
+<li><a class="autorefs autorefs-internal" title="            are_orthonormal(*vs)" href="#linalg.ortho.are_orthonormal"><code>are_orthonormal</code></a></li>
 </ul>
 </details>
 
             <details class="mkdocstrings-source">
-              <summary>Source code in <code>linalg\random.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
+              <summary>Source code in <code>linalg\ortho.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">24</span>
 <span class="normal">25</span>
 <span class="normal">26</span>
 <span class="normal">27</span>
@@ -880,30 +937,32 @@
 <span class="normal">40</span>
 <span class="normal">41</span>
 <span class="normal">42</span>
-<span class="normal">43</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">randz</span><span class="p">(</span><span class="n">sigma</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return a random binomial distributed integer.</span>
-
-<span class="sd">    $$</span>
-<span class="sd">        x \qquad x\in\mathbb{Z}, \ x\sim\mathcal{N}(0,\sigma)</span>
-<span class="sd">    $$</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">are_orthogonal</span><span class="p">(</span><span class="o">*</span><span class="n">vs</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return if all vectors are orthogonal.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    sigma : int = 1000</span>
-<span class="sd">        Standard deviation.</span>
+<span class="sd">    vs : numpy.typing.ArrayLike</span>
+<span class="sd">        Vectors.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    int</span>
-<span class="sd">        Random value.</span>
+<span class="sd">    bool</span>
+<span class="sd">        Whether they are orthogonal.</span>
 
 <span class="sd">    See also</span>
 <span class="sd">    --------</span>
-<span class="sd">    - [`vrandz`][linalg.random.vrandz]</span>
+<span class="sd">    - [`are_orthonormal`][linalg.ortho.are_orthonormal]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">sigma</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;sigma must be non-negative&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">binomialvariate</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="o">*</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">vs</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">,</span> <span class="n">vs</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">1</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vs</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;vs must be vectors&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">({</span><span class="n">v</span><span class="o">.</span><span class="n">size</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vs</span><span class="p">})</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;all vs must be of same dimensionality&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="ow">not</span> <span class="nb">bool</span><span class="p">(</span><span class="n">sumprod_default</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="p">))</span> <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="n">vs</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -918,30 +977,25 @@
 <div class="doc doc-object doc-function">
 
 
-<h2 id="linalg.random.randq" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">randq</span><span class="p">(</span><span class="n">grade</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span></code>
+<h2 id="linalg.ortho.is_normalised" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">is_normalised</span><span class="p">(</span><span class="n">v</span><span class="p">)</span></code>
 
 </h2>
 
 
     <div class="doc doc-contents ">
 
-        <p>Return a random binomial distributed rational.</p>
-<div class="arithmatex">\[
-    x \qquad x\in\mathbb{Q}, \ x\sim\mathcal{N}(0,1)
-\]</div>
+        <p>Return if a vector is normalised.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
     <ul>
         <li class="doc-section-item field-body">
-            <b><code>grade</code></b>
-              (<code>int = 1000</code>, default:
-                  <code>1000</code>
-)
+            <b><code>v</code></b>
+              (<code><span title="numpy.typing.ArrayLike">ArrayLike</span></code>)
           –
           <div class="doc-md-description">
-            <p>Denominator grading.</p>
+            <p>Vector.</p>
           </div>
         </li>
     </ul>
@@ -950,10 +1004,10 @@
 <p><span class="doc-section-title">Returns:</span></p>
     <ul>
         <li class="doc-section-item field-body">
-              <code><span title="fractions.Fraction">Fraction</span></code>
+              <code><span title="bool">bool</span></code>
           –
           <div class="doc-md-description">
-            <p>Random value.</p>
+            <p>Whether it is normalised.</p>
           </div>
         </li>
     </ul>
@@ -962,16 +1016,13 @@
 <details class="see-also" open>
   <summary>See also</summary>
   <ul>
-<li><a class="autorefs autorefs-internal" title="            vrandq(shape=1, grade=1000)" href="#linalg.random.vrandq"><code>vrandq</code></a></li>
+<li><a class="autorefs autorefs-internal" title="            are_orthonormal(*vs)" href="#linalg.ortho.are_orthonormal"><code>are_orthonormal</code></a></li>
 </ul>
 </details>
 
             <details class="mkdocstrings-source">
-              <summary>Source code in <code>linalg\random.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
+              <summary>Source code in <code>linalg\ortho.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">48</span>
 <span class="normal">49</span>
 <span class="normal">50</span>
 <span class="normal">51</span>
@@ -991,30 +1042,27 @@
 <span class="normal">65</span>
 <span class="normal">66</span>
 <span class="normal">67</span>
-<span class="normal">68</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">randq</span><span class="p">(</span><span class="n">grade</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Fraction</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return a random binomial distributed rational.</span>
-
-<span class="sd">    $$</span>
-<span class="sd">        x \qquad x\in\mathbb{Q}, \ x\sim\mathcal{N}(0,1)</span>
-<span class="sd">    $$</span>
+<span class="normal">68</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_normalised</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return if a vector is normalised.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    grade : int = 1000</span>
-<span class="sd">        Denominator grading.</span>
+<span class="sd">    v : numpy.typing.ArrayLike</span>
+<span class="sd">        Vector.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    fractions.Fraction</span>
-<span class="sd">        Random value.</span>
+<span class="sd">    bool</span>
+<span class="sd">        Whether it is normalised.</span>
 
 <span class="sd">    See also</span>
 <span class="sd">    --------</span>
-<span class="sd">    - [`vrandq`][linalg.random.vrandq]</span>
+<span class="sd">    - [`are_orthonormal`][linalg.ortho.are_orthonormal]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">grade</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;grade must be positive&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">Fraction</span><span class="p">(</span><span class="n">randz</span><span class="p">(</span><span class="n">grade</span><span class="p">),</span> <span class="n">grade</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;v must be a vector&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sumprod_default</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1029,41 +1077,27 @@
 <div class="doc doc-object doc-function">
 
 
-<h2 id="linalg.random.vrandz" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">vrandz</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span></code>
+<h2 id="linalg.ortho.are_orthonormal" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">are_orthonormal</span><span class="p">(</span><span class="o">*</span><span class="n">vs</span><span class="p">)</span></code>
 
 </h2>
 
 
     <div class="doc doc-contents ">
 
-        <p>Return an array of normally distributed integers.</p>
-<div class="arithmatex">\[
-    \mathbb{Z}^\text{shape}
-\]</div>
-<p>Just an array filled with <a class="autorefs autorefs-internal" title="            randz(sigma=1000)" href="#linalg.random.randz"><code>randz</code></a>.</p>
+        <p>Return if all vectors are orthonormal.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
     <ul>
         <li class="doc-section-item field-body">
-            <b><code>shape</code></b>
-              (<code>int|tuple[int,...] = 1</code>, default:
-                  <code>1</code>
+            <b><code>vs</code></b>
+              (<code><span title="numpy.typing.ArrayLike">ArrayLike</span></code>, default:
+                  <code>()</code>
 )
           –
           <div class="doc-md-description">
-            <p>Shape.</p>
-          </div>
-        </li>
-        <li class="doc-section-item field-body">
-            <b><code>sigma</code></b>
-              (<code>int = 1000</code>, default:
-                  <code>1000</code>
-)
-          –
-          <div class="doc-md-description">
-            <p>Standard deviation.</p>
+            <p>Vectors.</p>
           </div>
         </li>
     </ul>
@@ -1072,10 +1106,10 @@
 <p><span class="doc-section-title">Returns:</span></p>
     <ul>
         <li class="doc-section-item field-body">
-              <code><span title="numpy.typing.NDArray">NDArray</span>[<span title="object">object</span>]</code>
+              <code><span title="bool">bool</span></code>
           –
           <div class="doc-md-description">
-            <p>Random sample.</p>
+            <p>Whether they are orthonormal.</p>
           </div>
         </li>
     </ul>
@@ -1084,13 +1118,15 @@
 <details class="see-also" open>
   <summary>See also</summary>
   <ul>
-<li><a class="autorefs autorefs-internal" title="            randz(sigma=1000)" href="#linalg.random.randz"><code>randz</code></a></li>
+<li><a class="autorefs autorefs-internal" title="            are_orthogonal(*vs)" href="#linalg.ortho.are_orthogonal"><code>are_orthogonal</code></a></li>
+<li><a class="autorefs autorefs-internal" title="            is_normalised(v)" href="#linalg.ortho.is_normalised"><code>is_normalised</code></a></li>
 </ul>
 </details>
 
             <details class="mkdocstrings-source">
-              <summary>Source code in <code>linalg\random.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">71</span>
+              <summary>Source code in <code>linalg\ortho.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">70</span>
+<span class="normal">71</span>
 <span class="normal">72</span>
 <span class="normal">73</span>
 <span class="normal">74</span>
@@ -1107,46 +1143,25 @@
 <span class="normal">85</span>
 <span class="normal">86</span>
 <span class="normal">87</span>
-<span class="normal">88</span>
-<span class="normal">89</span>
-<span class="normal">90</span>
-<span class="normal">91</span>
-<span class="normal">92</span>
-<span class="normal">93</span>
-<span class="normal">94</span>
-<span class="normal">95</span>
-<span class="normal">96</span>
-<span class="normal">97</span>
-<span class="normal">98</span>
-<span class="normal">99</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">vrandz</span><span class="p">(</span><span class="n">shape</span><span class="p">:</span> <span class="nb">int</span><span class="o">|</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span><span class="o">...</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="nb">object</span><span class="p">]:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return an array of normally distributed integers.</span>
-
-<span class="sd">    $$</span>
-<span class="sd">        \mathbb{Z}^\text{shape}</span>
-<span class="sd">    $$</span>
-
-<span class="sd">    Just an array filled with [`randz`][linalg.random.randz].</span>
+<span class="normal">88</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">are_orthonormal</span><span class="p">(</span><span class="o">*</span><span class="n">vs</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return if all vectors are orthonormal.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    shape : int|tuple[int,...] = 1</span>
-<span class="sd">        Shape.</span>
-<span class="sd">    sigma : int = 1000</span>
-<span class="sd">        Standard deviation.</span>
+<span class="sd">    vs : numpy.typing.ArrayLike</span>
+<span class="sd">        Vectors.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    NDArray[object]</span>
-<span class="sd">        Random sample.</span>
+<span class="sd">    bool</span>
+<span class="sd">        Whether they are orthonormal.</span>
 
 <span class="sd">    See also</span>
 <span class="sd">    --------</span>
-<span class="sd">    - [`randz`][linalg.random.randz]</span>
+<span class="sd">    - [`are_orthogonal`][linalg.ortho.are_orthogonal]</span>
+<span class="sd">    - [`is_normalised`][linalg.ortho.is_normalised]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">ndindex</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
-        <span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">randz</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">r</span>
+    <span class="k">return</span> <span class="n">are_orthogonal</span><span class="p">(</span><span class="o">*</span><span class="n">vs</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="n">is_normalised</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vs</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1161,72 +1176,86 @@
 <div class="doc doc-object doc-function">
 
 
-<h2 id="linalg.random.vrandq" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">vrandq</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">grade</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span></code>
+<h2 id="linalg.ortho.gram_schmidt_sanitise" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">gram_schmidt_sanitise</span><span class="p">(</span><span class="n">vs</span><span class="p">)</span></code>
 
 </h2>
 
 
     <div class="doc doc-contents ">
 
-        <p>Return an array of normaly distributed rationals.</p>
-<div class="arithmatex">\[
-    \mathbb{Q}^\text{shape}
-\]</div>
-<p>Just an array filled with <a class="autorefs autorefs-internal" title="            randq(grade=1000)" href="#linalg.random.randq"><code>randq</code></a>.</p>
-
-
-<p><span class="doc-section-title">Parameters:</span></p>
-    <ul>
-        <li class="doc-section-item field-body">
-            <b><code>shape</code></b>
-              (<code>int|tuple[int,...] = 1</code>, default:
-                  <code>1</code>
-)
-          –
-          <div class="doc-md-description">
-            <p>Shape.</p>
-          </div>
-        </li>
-        <li class="doc-section-item field-body">
-            <b><code>grade</code></b>
-              (<code>int = 1000</code>, default:
-                  <code>1000</code>
-)
-          –
-          <div class="doc-md-description">
-            <p>Denominator grading.</p>
-          </div>
-        </li>
-    </ul>
-
-
-<p><span class="doc-section-title">Returns:</span></p>
-    <ul>
-        <li class="doc-section-item field-body">
-              <code><span title="numpy.typing.NDArray">NDArray</span>[<span title="object">object</span>]</code>
-          –
-          <div class="doc-md-description">
-            <p>Random sample.</p>
-          </div>
-        </li>
-    </ul>
+        <p><code>gram_schmidt</code> sanitiser.</p>
 
 
 <details class="see-also" open>
   <summary>See also</summary>
   <ul>
-<li><a class="autorefs autorefs-internal" title="            randq(grade=1000)" href="#linalg.random.randq"><code>randq</code></a></li>
+<li><a class="autorefs autorefs-internal" title="            gram_schmidt(vs, *, progress)" href="#linalg.ortho.gram_schmidt"><code>gram_schmidt</code></a></li>
 </ul>
 </details>
 
             <details class="mkdocstrings-source">
-              <summary>Source code in <code>linalg\random.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">101</span>
+              <summary>Source code in <code>linalg\ortho.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
 <span class="normal">102</span>
-<span class="normal">103</span>
-<span class="normal">104</span>
-<span class="normal">105</span>
+<span class="normal">103</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">gram_schmidt_sanitise</span><span class="p">(</span><span class="n">vs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ArrayLike</span><span class="p">])</span> \
+        <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">NDArray</span><span class="p">]],</span><span class="nb">dict</span><span class="p">[</span><span class="n">Never</span><span class="p">,</span><span class="n">Never</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;`gram_schmidt` sanitiser.</span>
+
+<span class="sd">    See also</span>
+<span class="sd">    --------</span>
+<span class="sd">    - [`gram_schmidt`][linalg.ortho.gram_schmidt]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vs</span><span class="p">)):</span>
+        <span class="n">vs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">vs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">all</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">1</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vs</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">({</span><span class="n">v</span><span class="o">.</span><span class="n">size</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vs</span><span class="p">})</span><span class="o">&lt;=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;vs must be vector and of the same length&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">vs</span><span class="p">,),</span> <span class="p">{}</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="linalg.ortho.gram_schmidt_cost" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">gram_schmidt_cost</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p><code>gram_schmidt</code> operation cost calculation.</p>
+
+
+<details class="see-also" open>
+  <summary>See also</summary>
+  <ul>
+<li><a class="autorefs autorefs-internal" title="            gram_schmidt(vs, *, progress)" href="#linalg.ortho.gram_schmidt"><code>gram_schmidt</code></a></li>
+</ul>
+</details>
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>linalg\ortho.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">105</span>
 <span class="normal">106</span>
 <span class="normal">107</span>
 <span class="normal">108</span>
@@ -1238,47 +1267,19 @@
 <span class="normal">114</span>
 <span class="normal">115</span>
 <span class="normal">116</span>
-<span class="normal">117</span>
-<span class="normal">118</span>
-<span class="normal">119</span>
-<span class="normal">120</span>
-<span class="normal">121</span>
-<span class="normal">122</span>
-<span class="normal">123</span>
-<span class="normal">124</span>
-<span class="normal">125</span>
-<span class="normal">126</span>
-<span class="normal">127</span>
-<span class="normal">128</span>
-<span class="normal">129</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">vrandq</span><span class="p">(</span><span class="n">shape</span><span class="p">:</span> <span class="nb">int</span><span class="o">|</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span><span class="o">...</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">grade</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="nb">object</span><span class="p">]:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return an array of normaly distributed rationals.</span>
-
-<span class="sd">    $$</span>
-<span class="sd">        \mathbb{Q}^\text{shape}</span>
-<span class="sd">    $$</span>
-
-<span class="sd">    Just an array filled with [`randq`][linalg.random.randq].</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    shape : int|tuple[int,...] = 1</span>
-<span class="sd">        Shape.</span>
-<span class="sd">    grade : int = 1000</span>
-<span class="sd">        Denominator grading.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    NDArray[object]</span>
-<span class="sd">        Random sample.</span>
+<span class="normal">117</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">gram_schmidt_cost</span><span class="p">(</span><span class="n">M</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;`gram_schmidt` operation cost calculation.</span>
 
 <span class="sd">    See also</span>
 <span class="sd">    --------</span>
-<span class="sd">    - [`randq`][linalg.random.randq]</span>
+<span class="sd">    - [`gram_schmidt`][linalg.ortho.gram_schmidt]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">ndindex</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
-        <span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">randq</span><span class="p">(</span><span class="n">grade</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">r</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;add&#39;</span><span class="p">:</span> <span class="n">M</span><span class="o">*</span><span class="p">(</span><span class="n">M</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="s1">&#39;sub&#39;</span><span class="p">:</span> <span class="n">M</span><span class="o">*</span><span class="p">(</span><span class="n">M</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">N</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="s1">&#39;mul&#39;</span><span class="p">:</span> <span class="n">M</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">N</span><span class="p">,</span>
+        <span class="s1">&#39;truediv&#39;</span><span class="p">:</span> <span class="n">M</span><span class="o">*</span><span class="p">(</span><span class="n">M</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+    <span class="p">}</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1293,84 +1294,137 @@
 <div class="doc doc-object doc-function">
 
 
-<h2 id="linalg.random.mrandqr" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">mrandqr</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">grade</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span></code>
+<h2 id="linalg.ortho.gram_schmidt_announce" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">gram_schmidt_announce</span><span class="p">(</span><span class="n">vs</span><span class="p">)</span></code>
 
 </h2>
 
 
     <div class="doc doc-contents ">
 
-        <p>Return a rational matrix of specific rank.</p>
-<div class="arithmatex">\[
-    \mathbb{Q}^{M\times N} \qquad \text{with rank $R$}
-\]</div>
-
-
-<p><span class="doc-section-title">Parameters:</span></p>
-    <ul>
-        <li class="doc-section-item field-body">
-            <b><code>M</code></b>
-              (<code><span title="int">int</span></code>)
-          –
-          <div class="doc-md-description">
-            <p>Shape.</p>
-          </div>
-        </li>
-        <li class="doc-section-item field-body">
-            <b><code>N</code></b>
-              (<code><span title="int">int</span></code>)
-          –
-          <div class="doc-md-description">
-            <p>Shape.</p>
-          </div>
-        </li>
-        <li class="doc-section-item field-body">
-            <b><code>R</code></b>
-              (<code><span title="int">int</span></code>, default:
-                  <code>0</code>
-)
-          –
-          <div class="doc-md-description">
-            <p>Rank.</p>
-          </div>
-        </li>
-        <li class="doc-section-item field-body">
-            <b><code>grade</code></b>
-              (<code>int = 1000</code>, default:
-                  <code>1000</code>
-)
-          –
-          <div class="doc-md-description">
-            <p>Denominator grading.</p>
-          </div>
-        </li>
-    </ul>
-
-
-<p><span class="doc-section-title">Returns:</span></p>
-    <ul>
-        <li class="doc-section-item field-body">
-              <code><span title="numpy.typing.NDArray">NDArray</span>[<span title="object">object</span>]</code>
-          –
-          <div class="doc-md-description">
-            <p>Random sample.</p>
-          </div>
-        </li>
-    </ul>
+        <p><code>gram_schmidt</code> announcer.</p>
 
 
 <details class="see-also" open>
   <summary>See also</summary>
   <ul>
-<li><a class="autorefs autorefs-internal" title="            randq(grade=1000)" href="#linalg.random.randq"><code>randq</code></a></li>
-<li><a class="autorefs autorefs-internal" title="            vrandq(shape=1, grade=1000)" href="#linalg.random.vrandq"><code>vrandq</code></a></li>
+<li><a class="autorefs autorefs-internal" title="            gram_schmidt(vs, *, progress)" href="#linalg.ortho.gram_schmidt"><code>gram_schmidt</code></a></li>
 </ul>
 </details>
 
             <details class="mkdocstrings-source">
-              <summary>Source code in <code>linalg\random.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">132</span>
+              <summary>Source code in <code>linalg\ortho.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">gram_schmidt_announce</span><span class="p">(</span><span class="n">vs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">NDArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;`gram_schmidt` announcer.</span>
+
+<span class="sd">    See also</span>
+<span class="sd">    --------</span>
+<span class="sd">    - [`gram_schmidt`][linalg.ortho.gram_schmidt]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vs</span><span class="p">)</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">({</span><span class="n">v</span><span class="o">.</span><span class="n">size</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vs</span><span class="p">}),</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">gram_schmidt_cost</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="linalg.ortho.gram_schmidt" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <code class="highlight language-python"><span class="n">gram_schmidt</span><span class="p">(</span><span class="n">vs</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Orthogonalise.</p>
+<p>Transformation happens in-place.</p>
+<p>Don't use with data types that don't divide exactly.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+            <b><code>vs</code></b>
+              (<code><span title="list">list</span>[<span title="numpy.typing.ArrayLike">ArrayLike</span>]</code>)
+          –
+          <div class="doc-md-description">
+            <p>Vectors.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+            <b><code>progress</code></b>
+              (<code>Iterable[str]|bool|Progress = False</code>)
+          –
+          <div class="doc-md-description">
+            <p>Progress visualisation specification.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><span title="ZeroDivisionError">ZeroDivisionError</span></code>
+            –
+          <div class="doc-md-description">
+            <p>If the vectors can't be orthogonalised.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<details class="complexity" open>
+  <summary>Complexity</summary>
+  <p>For <span class="arithmatex">\(M\)</span> vectors of length <span class="arithmatex">\(N\)</span> there will be</p>
+<ul>
+<li><span class="arithmatex">\(\frac{M(M+1)}{2}\max\{N-1,0\}\)</span> scalar additions (<code>add</code>),</li>
+<li><span class="arithmatex">\(\frac{M(M-1)N}{2}\)</span> scalar subtractions (<code>sub</code>),</li>
+<li><span class="arithmatex">\(M^2N\)</span> scalar multiplications (<code>mul</code>) &amp;</li>
+<li><span class="arithmatex">\(\frac{M(M-1)}{2}\)</span> scalar true divisions (<code>truediv</code>).</li>
+</ul>
+</details>
+
+<details class="see-also" open>
+  <summary>See also</summary>
+  <ul>
+<li><a class="autorefs autorefs-internal" title="            gram_schmidt_sanitise(vs)" href="#linalg.ortho.gram_schmidt_sanitise"><code>gram_schmidt_sanitise</code></a></li>
+<li><a class="autorefs autorefs-internal" title="            gram_schmidt_announce(vs)" href="#linalg.ortho.gram_schmidt_announce"><code>gram_schmidt_announce</code></a></li>
+<li><a class="autorefs autorefs-internal" title="            gram_schmidt_cost(M, N)" href="#linalg.ortho.gram_schmidt_cost"><code>gram_schmidt_cost</code></a></li>
+</ul>
+</details>
+
+<details class="references" open>
+  <summary>References</summary>
+  <ul>
+<li><a href="https://en.wikipedia.org/wiki/Gram%E2%80%93Schmidt_process">Wikipedia - Gram–Schmidt process</a></li>
+</ul>
+</details>
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>linalg\ortho.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
 <span class="normal">133</span>
 <span class="normal">134</span>
 <span class="normal">135</span>
@@ -1399,36 +1453,88 @@
 <span class="normal">158</span>
 <span class="normal">159</span>
 <span class="normal">160</span>
-<span class="normal">161</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">mrandqr</span><span class="p">(</span><span class="n">M</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">R</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">grade</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span> \
-        <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="nb">object</span><span class="p">]:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return a rational matrix of specific rank.</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@visualisable</span><span class="p">(</span><span class="n">gram_schmidt_announce</span><span class="p">,</span> <span class="n">gram_schmidt_sanitise</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">gram_schmidt</span><span class="p">(</span><span class="n">vs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">NDArray</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Orthogonalise.</span>
 
-<span class="sd">    $$</span>
-<span class="sd">        \mathbb{Q}^{M\times N} \qquad \text{with rank $R$}</span>
-<span class="sd">    $$</span>
+<span class="sd">    Transformation happens in-place.</span>
+
+<span class="sd">    Don&#39;t use with data types that don&#39;t divide exactly.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    M, N : int</span>
-<span class="sd">        Shape.</span>
-<span class="sd">    R : int</span>
-<span class="sd">        Rank.</span>
-<span class="sd">    grade : int = 1000</span>
-<span class="sd">        Denominator grading.</span>
+<span class="sd">    vs : list[numpy.typing.ArrayLike]</span>
+<span class="sd">        Vectors.</span>
+<span class="sd">    progress : Iterable[str]|bool|Progress = False</span>
+<span class="sd">        Progress visualisation specification.</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    NDArray[object]</span>
-<span class="sd">        Random sample.</span>
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ZeroDivisionError</span>
+<span class="sd">        If the vectors can&#39;t be orthogonalised.</span>
+
+<span class="sd">    Complexity</span>
+<span class="sd">    ----------</span>
+<span class="sd">    For $M$ vectors of length $N$ there will be</span>
+
+<span class="sd">    - $\frac{M(M+1)}{2}\max\{N-1,0\}$ scalar additions (`add`),</span>
+<span class="sd">    - $\frac{M(M-1)N}{2}$ scalar subtractions (`sub`),</span>
+<span class="sd">    - $M^2N$ scalar multiplications (`mul`) &amp;</span>
+<span class="sd">    - $\frac{M(M-1)}{2}$ scalar true divisions (`truediv`).</span>
 
 <span class="sd">    See also</span>
 <span class="sd">    --------</span>
-<span class="sd">    - [`randq`][linalg.random.randq]</span>
-<span class="sd">    - [`vrandq`][linalg.random.vrandq]</span>
+<span class="sd">    - [`gram_schmidt_sanitise`][linalg.ortho.gram_schmidt_sanitise]</span>
+<span class="sd">    - [`gram_schmidt_announce`][linalg.ortho.gram_schmidt_announce]</span>
+<span class="sd">    - [`gram_schmidt_cost`][linalg.ortho.gram_schmidt_cost]</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - [Wikipedia - Gram–Schmidt process](https://en.wikipedia.org/wiki/Gram%E2%80%93Schmidt_process)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">R</span><span class="p">:</span> <span class="c1">#an empty matmul would fill with int(0)</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="n">Fraction</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">vrandq</span><span class="p">((</span><span class="n">M</span><span class="p">,</span> <span class="n">R</span><span class="p">),</span> <span class="n">grade</span><span class="o">=</span><span class="n">grade</span><span class="p">)</span> <span class="o">@</span> <span class="n">vrandq</span><span class="p">((</span><span class="n">R</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="n">grade</span><span class="o">=</span><span class="n">grade</span><span class="p">)</span>
+    <span class="n">dots</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vs</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+            <span class="c1">#vs[i] -= vs[i] @ vs[j] / dots[j] * vs[j]</span>
+            <span class="n">vs</span><span class="p">[</span><span class="n">i</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">vsub</span><span class="p">(</span>
+                    <span class="n">vs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                    <span class="n">vmul</span><span class="p">(</span>
+                        <span class="n">progress</span><span class="o">.</span><span class="n">truediv</span><span class="p">(</span>
+                            <span class="n">matmul</span><span class="p">(</span><span class="n">vs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">vs</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">),</span>
+                            <span class="n">dots</span><span class="p">[</span><span class="n">j</span><span class="p">]),</span>
+                        <span class="n">vs</span><span class="p">[</span><span class="n">j</span><span class="p">],</span>
+                        <span class="n">progress</span><span class="o">=</span><span class="n">progress</span>
+                    <span class="p">),</span>
+                    <span class="n">progress</span><span class="o">=</span><span class="n">progress</span>
+            <span class="p">)</span>
+        <span class="n">dots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">matmul</span><span class="p">(</span><span class="n">vs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">vs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">dots</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ZeroDivisionError</span><span class="p">(</span><span class="s1">&#39;not orthogonalisable&#39;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1472,7 +1578,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../ortho/" class="md-footer__link md-footer__link--prev" aria-label="Previous: ortho">
+          <a href="../triangular/" class="md-footer__link md-footer__link--prev" aria-label="Previous: triangular">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1482,20 +1588,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                ortho
+                triangular
               </div>
             </div>
           </a>
         
         
           
-          <a href="../util/" class="md-footer__link md-footer__link--next" aria-label="Next: util">
+          <a href="../random/" class="md-footer__link md-footer__link--next" aria-label="Next: random">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                util
+                random
               </div>
             </div>
             <div class="md-footer__button md-icon">

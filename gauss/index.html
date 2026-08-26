@@ -661,6 +661,33 @@
   
   
     <li class="md-nav__item">
+      <a href="../ortho/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ortho
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../random/" class="md-nav__link">
         
   
@@ -1254,7 +1281,9 @@ scalar multiplications (<code>mul</code>) &amp;</li>
 
 <details class="references" open>
   <summary>References</summary>
-  <p><a href="https://en.wikipedia.org/wiki/Gaussian_elimination#Computing_determinants">Wikipedia - Gaussian elimination - Computing determinants</a></p>
+  <ul>
+<li><a href="https://en.wikipedia.org/wiki/Gaussian_elimination#Computing_determinants">Wikipedia - Gaussian elimination - Computing determinants</a></li>
+</ul>
 </details>
 
             <details class="mkdocstrings-source">
@@ -1393,7 +1422,7 @@ scalar multiplications (<code>mul</code>) &amp;</li>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
-<span class="sd">    [Wikipedia - Gaussian elimination - Computing determinants](https://en.wikipedia.org/wiki/Gaussian_elimination#Computing_determinants)</span>
+<span class="sd">    - [Wikipedia - Gaussian elimination - Computing determinants](https://en.wikipedia.org/wiki/Gaussian_elimination#Computing_determinants)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">N</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">s</span> <span class="o">=</span> <span class="kc">True</span>
@@ -1684,7 +1713,9 @@ and transformed in-place into the identity matrix.</p>
 
 <details class="references" open>
   <summary>References</summary>
-  <p><a href="https://math.stackexchange.com/a/744213/1170417">StackExchange - Gauss-Jordan: Effect of column pivoting on result matrix</a></p>
+  <ul>
+<li><a href="https://math.stackexchange.com/a/744213/1170417">StackExchange - Gauss-Jordan: Effect of column pivoting on result matrix</a></li>
+</ul>
 </details>
 
             <details class="mkdocstrings-source">
@@ -1839,7 +1870,7 @@ and transformed in-place into the identity matrix.</p>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
-<span class="sd">    [StackExchange - Gauss-Jordan: Effect of column pivoting on result matrix](https://math.stackexchange.com/a/744213/1170417)</span>
+<span class="sd">    - [StackExchange - Gauss-Jordan: Effect of column pivoting on result matrix](https://math.stackexchange.com/a/744213/1170417)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">N</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
@@ -1850,10 +1881,10 @@ and transformed in-place into the identity matrix.</p>
         <span class="n">i_max</span><span class="p">,</span> <span class="n">j_max</span> <span class="o">=</span> \
                 <span class="n">np</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">:,</span> <span class="n">i</span><span class="p">:])),</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">:,</span> <span class="n">i</span><span class="p">:]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">i_max</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="n">j_max</span><span class="p">]:</span> <span class="c1">#early exit</span>
-            <span class="n">M</span> <span class="o">=</span> <span class="n">N</span> <span class="o">-</span> <span class="n">i</span>
-            <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s1">&#39;sub&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">M</span><span class="o">*</span><span class="n">N</span><span class="o">*</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
-            <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s1">&#39;mul&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">M</span><span class="o">*</span><span class="n">N</span><span class="o">*</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
-            <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s1">&#39;truediv&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">M</span><span class="o">*</span><span class="n">N</span><span class="p">)</span>
+            <span class="c1">#M = N - i</span>
+            <span class="c1">#progress.update(&#39;sub&#39;, 2*M*N*(N-1))</span>
+            <span class="c1">#progress.update(&#39;mul&#39;, 2*M*N*(N-1))</span>
+            <span class="c1">#progress.update(&#39;truediv&#39;, 2*M*N)</span>
             <span class="k">raise</span> <span class="ne">ZeroDivisionError</span><span class="p">(</span><span class="s1">&#39;matrix is singular&#39;</span><span class="p">)</span>
         <span class="n">swap_pivot</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="n">i_max</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="n">j_max</span><span class="p">)</span>
         <span class="n">swap_rows</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="n">i_max</span><span class="p">)</span>
@@ -2287,7 +2318,9 @@ and transformed in-place into the identity matrix.</p>
 
 <details class="references" open>
   <summary>References</summary>
-  <p><a href="https://en.wikipedia.org/wiki/Gaussian_elimination#Pseudocode">Wikipedia - Gaussian elimination - Pseudocode</a></p>
+  <ul>
+<li><a href="https://en.wikipedia.org/wiki/Gaussian_elimination#Pseudocode">Wikipedia - Gaussian elimination - Pseudocode</a></li>
+</ul>
 </details>
 
             <details class="mkdocstrings-source">
@@ -2438,7 +2471,7 @@ and transformed in-place into the identity matrix.</p>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
-<span class="sd">    [Wikipedia - Gaussian elimination - Pseudocode](https://en.wikipedia.org/wiki/Gaussian_elimination#Pseudocode)</span>
+<span class="sd">    - [Wikipedia - Gaussian elimination - Pseudocode](https://en.wikipedia.org/wiki/Gaussian_elimination#Pseudocode)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">M</span><span class="p">,</span> <span class="n">N</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span>
     <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
