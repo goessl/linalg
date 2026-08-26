@@ -80,6 +80,7 @@ nav:
   - gauss.md
   - rank.md
   - triangular.md
+  - ortho.md
   - random.md
   - util.md
   - progress.md

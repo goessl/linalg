@@ -133,7 +133,7 @@ def swap_rows(A: NDArray, i: int, j: int) -> None:
     
     References
     ----------
-    [stackoverflow - Swap two rows in a numpy array in python](https://stackoverflow.com/a/54069951)
+    - [stackoverflow - Swap two rows in a numpy array in python](https://stackoverflow.com/a/54069951)
     """
     if not isinstance(A, np.ndarray):
         raise TypeError('A must be a numpy.ndarray')
@@ -154,7 +154,7 @@ def swap_columns(A: NDArray, i: int, j: int) -> None:
     
     References
     ----------
-    [stackoverflow - Swap two rows in a numpy array in python](https://stackoverflow.com/a/54069951)
+    - [stackoverflow - Swap two rows in a numpy array in python](https://stackoverflow.com/a/54069951)
     """
     if not isinstance(A, np.ndarray):
         raise TypeError('A must be a numpy.ndarray')
@@ -175,7 +175,7 @@ def swap_pivot(A: NDArray, p: int, i: int, j: int) -> None:
     
     References
     ----------
-    [stackoverflow - Swap two rows in a numpy array in python](https://stackoverflow.com/a/54069951)
+    - [stackoverflow - Swap two rows in a numpy array in python](https://stackoverflow.com/a/54069951)
     """
     if not isinstance(A, np.ndarray):
         raise TypeError('A must be a numpy.ndarray')
@@ -222,7 +222,7 @@ def is_tril(L: ArrayLike) -> bool:
     
     References
     ----------
-    [`numpy.triu_indices_from`](https://numpy.org/doc/stable/reference/generated/numpy.triu_indices_from.html)
+    - [`numpy.triu_indices_from`](https://numpy.org/doc/stable/reference/generated/numpy.triu_indices_from.html)
     """
     L = np.asarray(L)
     if L.ndim != 2:
@@ -245,7 +245,7 @@ def is_triu(U: ArrayLike) -> bool:
     
     References
     ----------
-    [`numpy.tril_indices_from`](https://numpy.org/doc/stable/reference/generated/numpy.tril_indices_from.html)
+    - [`numpy.tril_indices_from`](https://numpy.org/doc/stable/reference/generated/numpy.tril_indices_from.html)
     """
     U = np.asarray(U)
     if U.ndim != 2:

@@ -301,7 +301,7 @@ def matmulchain(*As: ArrayLike, zero: Any,
     
     References
     ----------
-    [Wikipedia - Matrix chain multiplication](https://en.wikipedia.org/wiki/Matrix_chain_multiplication)
+    - [Wikipedia - Matrix chain multiplication](https://en.wikipedia.org/wiki/Matrix_chain_multiplication)
     """
     for i in order:
         As = As[:i] \

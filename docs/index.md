@@ -12,6 +12,7 @@
 - [`gauss`](gauss.md)
 - [`rank`](rank.md)
 - [`triangular`](triangular.md)
+- [`ortho`](ortho.md)
 - [`random`](random.md)
 - [`util`](util.md)
 - [`progress`](progress.md)
@@ -74,6 +75,10 @@ mkdocs build --clean --strict
     - [x] `rank_decomp`
     - [x] `pinv`
     - [x] `lstsq`
+- [x] `ortho`
+    - [x] `gram_schmidt`
+    - [ ] `qr`
+    - [ ] complex support
 - [x] `random`
     - [x] `randz`, `randq`, `vrandz`, `vrandq`
     - [x] `mrandqr`

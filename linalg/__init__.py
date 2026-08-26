@@ -16,6 +16,7 @@ from .leibniz import *
 from .gauss import *
 from .rank import *
 from .triangular import *
+from .ortho import *
 from .random import *
 from .util import *
 from .progress import *

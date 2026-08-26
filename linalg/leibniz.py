@@ -159,7 +159,7 @@ def det_leibniz[T,U](A: NDArray[T], *, one: U, progress: Progress) -> T|U:
     
     References
     ----------
-    [Wikipedia - Leibniz formula for determinants](https://en.wikipedia.org/wiki/Leibniz_formula_for_determinants)
+    - [Wikipedia - Leibniz formula for determinants](https://en.wikipedia.org/wiki/Leibniz_formula_for_determinants)
     """
     i = tuple(range(A.shape[0]))
     return progress.sum_default(

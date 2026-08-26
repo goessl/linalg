@@ -120,7 +120,7 @@ def det_gauss[T,U](A: NDArray[T], *, one: U, progress: Progress) -> T|U:
     
     References
     ----------
-    [Wikipedia - Gaussian elimination - Computing determinants](https://en.wikipedia.org/wiki/Gaussian_elimination#Computing_determinants)
+    - [Wikipedia - Gaussian elimination - Computing determinants](https://en.wikipedia.org/wiki/Gaussian_elimination#Computing_determinants)
     """
     N = A.shape[0]
     s = True
@@ -234,7 +234,7 @@ def inv_gauss[T](A: NDArray[T], *, progress: Progress) -> NDArray[T]:
     
     References
     ----------
-    [StackExchange - Gauss-Jordan: Effect of column pivoting on result matrix](https://math.stackexchange.com/a/744213/1170417)
+    - [StackExchange - Gauss-Jordan: Effect of column pivoting on result matrix](https://math.stackexchange.com/a/744213/1170417)
     """
     N = A.shape[0]
     P = np.eye(A.shape[0], dtype=A.dtype)
@@ -245,10 +245,10 @@ def inv_gauss[T](A: NDArray[T], *, progress: Progress) -> NDArray[T]:
         i_max, j_max = \
                 np.unravel_index(np.argmax(np.abs(A[i:, i:])), A[i:, i:].shape)
         if not A[i+i_max, i+j_max]: #early exit
-            M = N - i
-            progress.update('sub', 2*M*N*(N-1))
-            progress.update('mul', 2*M*N*(N-1))
-            progress.update('truediv', 2*M*N)
+            #M = N - i
+            #progress.update('sub', 2*M*N*(N-1))
+            #progress.update('mul', 2*M*N*(N-1))
+            #progress.update('truediv', 2*M*N)
             raise ZeroDivisionError('matrix is singular')
         swap_pivot(A, i, i+i_max, i+j_max)
         swap_rows(P, i, i+i_max)
@@ -407,7 +407,7 @@ def ref_gauss(A: NDArray, reduced: bool=True, *, progress: Progress) \
     
     References
     ----------
-    [Wikipedia - Gaussian elimination - Pseudocode](https://en.wikipedia.org/wiki/Gaussian_elimination#Pseudocode)
+    - [Wikipedia - Gaussian elimination - Pseudocode](https://en.wikipedia.org/wiki/Gaussian_elimination#Pseudocode)
     """
     M, N = A.shape
     i, j = 0, 0

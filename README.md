@@ -73,6 +73,10 @@ mkdocs build --clean --strict
     - [x] `rank_decomp`
     - [x] `pinv`
     - [x] `lstsq`
+- [x] `ortho`
+    - [x] `gram_schmidt`
+    - [ ] `qr`
+    - [ ] complex support
 - [x] `random`
     - [x] `randz`, `randq`, `vrandz`, `vrandq`
     - [x] `mrandqr`

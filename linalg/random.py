@@ -36,7 +36,7 @@ def randz(sigma: int=1000) -> int:
     
     See also
     --------
-    [`vrandz`][linalg.random.vrandz]
+    - [`vrandz`][linalg.random.vrandz]
     """
     if sigma < 0:
         raise ValueError('sigma must be non-negative')
@@ -61,7 +61,7 @@ def randq(grade: int=1000) -> Fraction:
     
     See also
     --------
-    [`vrandq`][linalg.random.vrandq]
+    - [`vrandq`][linalg.random.vrandq]
     """
     if grade <= 0:
         raise ValueError('grade must be positive')
@@ -91,7 +91,7 @@ def vrandz(shape: int|tuple[int,...]=1, sigma: int=1000) -> NDArray[object]:
     
     See also
     --------
-    [`randz`][linalg.random.randz]
+    - [`randz`][linalg.random.randz]
     """
     r = np.empty(shape, dtype=object)
     for i in np.ndindex(r.shape):
@@ -121,7 +121,7 @@ def vrandq(shape: int|tuple[int,...]=1, grade: int=1000) -> NDArray[object]:
     
     See also
     --------
-    [`randq`][linalg.random.randq]
+    - [`randq`][linalg.random.randq]
     """
     r = np.empty(shape, dtype=object)
     for i in np.ndindex(r.shape):
@@ -153,8 +153,8 @@ def mrandqr(M: int, N: int, R: int=0, grade: int=1000) \
     
     See also
     --------
-    [`randq`][linalg.random.randq]
-    [`vrandq`][linalg.random.vrandq]
+    - [`randq`][linalg.random.randq]
+    - [`vrandq`][linalg.random.vrandq]
     """
     if not R: #an empty matmul would fill with int(0)
         return np.full((M, N), Fraction(0), dtype=object)

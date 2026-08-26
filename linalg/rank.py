@@ -99,7 +99,7 @@ def rank_decomp[T](A: NDArray[T], *, progress: Progress) \
     
     References
     ----------
-    [Wikipedia - Rank factorization - Rank factorization from reduced row echelon forms](https://en.wikipedia.org/wiki/Rank_factorization#Rank_factorization_from_reduced_row_echelon_forms)
+    - [Wikipedia - Rank factorization - Rank factorization from reduced row echelon forms](https://en.wikipedia.org/wiki/Rank_factorization#Rank_factorization_from_reduced_row_echelon_forms)
     """
     C = A.copy()
     pivots = ref_gauss(C, progress=progress)
@@ -197,7 +197,7 @@ def pinv[T,U](A: NDArray[T], *, zero: U, progress: Progress) -> NDArray[T|U]:
     
     References
     ----------
-    [Moore-Penrose inverse - Rank decomposition](https://en.wikipedia.org/wiki/Moore%E2%80%93Penrose_inverse#Rank_decomposition)
+    - [Moore-Penrose inverse - Rank decomposition](https://en.wikipedia.org/wiki/Moore%E2%80%93Penrose_inverse#Rank_decomposition)
     """
     B, C = rank_decomp(A, progress=progress)
     
@@ -319,7 +319,7 @@ def lstsq[T,U](X: NDArray[T], y: NDArray[T], *, zero: U, progress: Progress) \
     
     References
     ----------
-    [Moore-Penrose inverse - Rank decomposition](https://en.wikipedia.org/wiki/Moore%E2%80%93Penrose_inverse#Rank_decomposition)
+    - [Moore-Penrose inverse - Rank decomposition](https://en.wikipedia.org/wiki/Moore%E2%80%93Penrose_inverse#Rank_decomposition)
     """
     XTX_inv = pinv(matmul(X.T, X, zero=zero, progress=progress),
                    zero=zero, progress=progress)
