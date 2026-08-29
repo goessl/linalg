@@ -1144,7 +1144,40 @@
 
     <div class="doc doc-contents ">
 
-        <p><code>lu</code> operation cost calculation.</p>
+        <p><code>lu</code> cost.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+            <b><code>N</code></b>
+              (<code><span title="int">int</span></code>)
+          –
+          <div class="doc-md-description">
+            <p>Dimensions.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+            <b><code>M</code></b>
+              (<code><span title="int">int</span></code>)
+          –
+          <div class="doc-md-description">
+            <p>Dimensions.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Returns:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="int">int</span>]</code>
+          –
+          <div class="doc-md-description">
+            <p>Cost.</p>
+          </div>
+        </li>
+    </ul>
 
 
 <details class="see-also" open>
@@ -1168,8 +1201,28 @@
 <span class="normal">44</span>
 <span class="normal">45</span>
 <span class="normal">46</span>
-<span class="normal">47</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">lu_cost</span><span class="p">(</span><span class="n">M</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="nb">int</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;`lu` operation cost calculation.</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">lu_cost</span><span class="p">(</span><span class="n">M</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;`lu` cost.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    N, M : int</span>
+<span class="sd">        Dimensions.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict[str,int]</span>
+<span class="sd">        Cost.</span>
 
 <span class="sd">    See also</span>
 <span class="sd">    --------</span>
@@ -1215,14 +1268,14 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>linalg\triangular.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span>
-<span class="normal">56</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">lu_announce</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="nb">int</span><span class="p">]:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">lu_announce</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;`lu` announcer.</span>
 
 <span class="sd">    See also</span>
@@ -1279,7 +1332,7 @@
     <ul>
         <li class="doc-section-item field-body">
             <b><code>A</code></b>
-              (<code><span title="numpy.typing.ArrayLike">ArrayLike</span></code>)
+              (<code><span title="numpy">numpy</span>.<span title="numpy.typing">typing</span>.<span title="numpy.typing.ArrayLike">ArrayLike</span></code>)
           –
           <div class="doc-md-description">
             <p>Matrix.</p>
@@ -1299,14 +1352,14 @@
 <p><span class="doc-section-title">Returns:</span></p>
     <ul>
         <li class="doc-section-item field-body">
-<b><code>L</code></b> (              <code><span title="numpy.typing.NDArray">NDArray</span></code>
+<b><code>L</code></b> (              <code><span title="numpy">numpy</span>.<span title="numpy.typing">typing</span>.<span title="numpy.typing.NDArray">NDArray</span></code>
 )          –
           <div class="doc-md-description">
             <p>Lower triangular factor.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
-<b><code>U</code></b> (              <code><span title="numpy.typing.NDArray">NDArray</span></code>
+<b><code>U</code></b> (              <code><span title="numpy">numpy</span>.<span title="numpy.typing">typing</span>.<span title="numpy.typing.NDArray">NDArray</span></code>
 )          –
           <div class="doc-md-description">
             <p>Upper triangular factor.</p>
@@ -1350,17 +1403,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>linalg\triangular.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 58</span>
-<span class="normal"> 59</span>
-<span class="normal"> 60</span>
-<span class="normal"> 61</span>
-<span class="normal"> 62</span>
-<span class="normal"> 63</span>
-<span class="normal"> 64</span>
-<span class="normal"> 65</span>
-<span class="normal"> 66</span>
-<span class="normal"> 67</span>
-<span class="normal"> 68</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 68</span>
 <span class="normal"> 69</span>
 <span class="normal"> 70</span>
 <span class="normal"> 71</span>
@@ -1431,7 +1474,17 @@
 <span class="normal">136</span>
 <span class="normal">137</span>
 <span class="normal">138</span>
-<span class="normal">139</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@visualisable</span><span class="p">(</span><span class="n">lu_announce</span><span class="p">,</span> <span class="n">lu_sanitise</span><span class="p">)</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@visualisable</span><span class="p">(</span><span class="n">lu_announce</span><span class="p">,</span> <span class="n">lu_sanitise</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">lu</span><span class="p">[</span><span class="n">T</span><span class="p">](</span><span class="n">A</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">[</span><span class="n">T</span><span class="p">],</span><span class="n">NDArray</span><span class="p">[</span><span class="n">T</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the LU decomposition.</span>
@@ -1547,17 +1600,17 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>linalg\triangular.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">142</span>
-<span class="normal">143</span>
-<span class="normal">144</span>
-<span class="normal">145</span>
-<span class="normal">146</span>
-<span class="normal">147</span>
-<span class="normal">148</span>
-<span class="normal">149</span>
-<span class="normal">150</span>
-<span class="normal">151</span>
-<span class="normal">152</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plu_sanitise</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">],</span><span class="nb">dict</span><span class="p">[</span><span class="n">Never</span><span class="p">,</span><span class="n">Never</span><span class="p">]]:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plu_sanitise</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">],</span><span class="nb">dict</span><span class="p">[</span><span class="n">Never</span><span class="p">,</span><span class="n">Never</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;`plu` sanitiser.</span>
 
 <span class="sd">    See also</span>
@@ -1590,7 +1643,40 @@
 
     <div class="doc doc-contents ">
 
-        <p><code>plu</code> operation cost calculation.</p>
+        <p><code>plu</code> cost.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+            <b><code>N</code></b>
+              (<code><span title="int">int</span></code>)
+          –
+          <div class="doc-md-description">
+            <p>Dimensions.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+            <b><code>M</code></b>
+              (<code><span title="int">int</span></code>)
+          –
+          <div class="doc-md-description">
+            <p>Dimensions.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Returns:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="int">int</span>]</code>
+          –
+          <div class="doc-md-description">
+            <p>Cost.</p>
+          </div>
+        </li>
+    </ul>
 
 
 <details class="see-also" open>
@@ -1602,20 +1688,40 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>linalg\triangular.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">154</span>
-<span class="normal">155</span>
-<span class="normal">156</span>
-<span class="normal">157</span>
-<span class="normal">158</span>
-<span class="normal">159</span>
-<span class="normal">160</span>
-<span class="normal">161</span>
-<span class="normal">162</span>
-<span class="normal">163</span>
-<span class="normal">164</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">164</span>
 <span class="normal">165</span>
-<span class="normal">166</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plu_cost</span><span class="p">(</span><span class="n">M</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="nb">int</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;`plu` operation cost calculation.</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plu_cost</span><span class="p">(</span><span class="n">M</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;`plu` cost.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    N, M : int</span>
+<span class="sd">        Dimensions.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict[str,int]</span>
+<span class="sd">        Cost.</span>
 
 <span class="sd">    See also</span>
 <span class="sd">    --------</span>
@@ -1661,14 +1767,14 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>linalg\triangular.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">168</span>
-<span class="normal">169</span>
-<span class="normal">170</span>
-<span class="normal">171</span>
-<span class="normal">172</span>
-<span class="normal">173</span>
-<span class="normal">174</span>
-<span class="normal">175</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plu_announce</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="nb">int</span><span class="p">]:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plu_announce</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;`plu` announcer.</span>
 
 <span class="sd">    See also</span>
@@ -1717,7 +1823,7 @@
     <ul>
         <li class="doc-section-item field-body">
             <b><code>A</code></b>
-              (<code><span title="numpy.typing.ArrayLike">ArrayLike</span></code>)
+              (<code><span title="numpy">numpy</span>.<span title="numpy.typing">typing</span>.<span title="numpy.typing.ArrayLike">ArrayLike</span></code>)
           –
           <div class="doc-md-description">
             <p>Matrix.</p>
@@ -1737,21 +1843,21 @@
 <p><span class="doc-section-title">Returns:</span></p>
     <ul>
         <li class="doc-section-item field-body">
-<b><code>P</code></b> (              <code><span title="numpy.typing.NDArray">NDArray</span>[<span title="bool">bool</span>]</code>
+<b><code>P</code></b> (              <code><span title="numpy">numpy</span>.<span title="numpy.typing">typing</span>.<span title="numpy.typing.NDArray">NDArray</span>[<span title="bool">bool</span>]</code>
 )          –
           <div class="doc-md-description">
             <p>Permutation factor.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
-<b><code>L</code></b> (              <code><span title="numpy.typing.NDArray">NDArray</span></code>
+<b><code>L</code></b> (              <code><span title="numpy">numpy</span>.<span title="numpy.typing">typing</span>.<span title="numpy.typing.NDArray">NDArray</span></code>
 )          –
           <div class="doc-md-description">
             <p>Lower triangular factor.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
-<b><code>U</code></b> (              <code><span title="numpy.typing.NDArray">NDArray</span></code>
+<b><code>U</code></b> (              <code><span title="numpy">numpy</span>.<span title="numpy.typing">typing</span>.<span title="numpy.typing.NDArray">NDArray</span></code>
 )          –
           <div class="doc-md-description">
             <p>Upper triangular factor.</p>
@@ -1795,27 +1901,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>linalg\triangular.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">177</span>
-<span class="normal">178</span>
-<span class="normal">179</span>
-<span class="normal">180</span>
-<span class="normal">181</span>
-<span class="normal">182</span>
-<span class="normal">183</span>
-<span class="normal">184</span>
-<span class="normal">185</span>
-<span class="normal">186</span>
-<span class="normal">187</span>
-<span class="normal">188</span>
-<span class="normal">189</span>
-<span class="normal">190</span>
-<span class="normal">191</span>
-<span class="normal">192</span>
-<span class="normal">193</span>
-<span class="normal">194</span>
-<span class="normal">195</span>
-<span class="normal">196</span>
-<span class="normal">197</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">197</span>
 <span class="normal">198</span>
 <span class="normal">199</span>
 <span class="normal">200</span>
@@ -1874,7 +1960,27 @@
 <span class="normal">253</span>
 <span class="normal">254</span>
 <span class="normal">255</span>
-<span class="normal">256</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@visualisable</span><span class="p">(</span><span class="n">plu_announce</span><span class="p">,</span> <span class="n">plu_sanitise</span><span class="p">)</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@visualisable</span><span class="p">(</span><span class="n">plu_announce</span><span class="p">,</span> <span class="n">plu_sanitise</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">plu</span><span class="p">[</span><span class="n">T</span><span class="p">](</span><span class="n">A</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span><span class="n">Progress</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">[</span><span class="nb">bool</span><span class="p">],</span><span class="n">NDArray</span><span class="p">[</span><span class="n">T</span><span class="p">],</span><span class="n">NDArray</span><span class="p">[</span><span class="n">T</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the PLU decomposition.</span>
@@ -1988,17 +2094,17 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>linalg\triangular.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">259</span>
-<span class="normal">260</span>
-<span class="normal">261</span>
-<span class="normal">262</span>
-<span class="normal">263</span>
-<span class="normal">264</span>
-<span class="normal">265</span>
-<span class="normal">266</span>
-<span class="normal">267</span>
-<span class="normal">268</span>
-<span class="normal">269</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">luq_sanitise</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">],</span><span class="nb">dict</span><span class="p">[</span><span class="n">Never</span><span class="p">,</span><span class="n">Never</span><span class="p">]]:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">luq_sanitise</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">],</span><span class="nb">dict</span><span class="p">[</span><span class="n">Never</span><span class="p">,</span><span class="n">Never</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;`luq` sanitiser.</span>
 
 <span class="sd">    See also</span>
@@ -2031,7 +2137,40 @@
 
     <div class="doc doc-contents ">
 
-        <p><code>luq</code> operation cost calculation.</p>
+        <p><code>luq</code> cost.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+            <b><code>N</code></b>
+              (<code><span title="int">int</span></code>)
+          –
+          <div class="doc-md-description">
+            <p>Dimensions.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+            <b><code>M</code></b>
+              (<code><span title="int">int</span></code>)
+          –
+          <div class="doc-md-description">
+            <p>Dimensions.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Returns:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="int">int</span>]</code>
+          –
+          <div class="doc-md-description">
+            <p>Cost.</p>
+          </div>
+        </li>
+    </ul>
 
 
 <details class="see-also" open>
@@ -2043,20 +2182,40 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>linalg\triangular.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">271</span>
-<span class="normal">272</span>
-<span class="normal">273</span>
-<span class="normal">274</span>
-<span class="normal">275</span>
-<span class="normal">276</span>
-<span class="normal">277</span>
-<span class="normal">278</span>
-<span class="normal">279</span>
-<span class="normal">280</span>
-<span class="normal">281</span>
-<span class="normal">282</span>
-<span class="normal">283</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">luq_cost</span><span class="p">(</span><span class="n">M</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="nb">int</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;`luq` operation cost calculation.</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">luq_cost</span><span class="p">(</span><span class="n">M</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;`luq` cost.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    N, M : int</span>
+<span class="sd">        Dimensions.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict[str,int]</span>
+<span class="sd">        Cost.</span>
 
 <span class="sd">    See also</span>
 <span class="sd">    --------</span>
@@ -2102,14 +2261,14 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>linalg\triangular.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">285</span>
-<span class="normal">286</span>
-<span class="normal">287</span>
-<span class="normal">288</span>
-<span class="normal">289</span>
-<span class="normal">290</span>
-<span class="normal">291</span>
-<span class="normal">292</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">luq_announce</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="nb">int</span><span class="p">]:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">luq_announce</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;`luq` announcer.</span>
 
 <span class="sd">    See also</span>
@@ -2158,7 +2317,7 @@
     <ul>
         <li class="doc-section-item field-body">
             <b><code>A</code></b>
-              (<code><span title="numpy.typing.ArrayLike">ArrayLike</span></code>)
+              (<code><span title="numpy">numpy</span>.<span title="numpy.typing">typing</span>.<span title="numpy.typing.ArrayLike">ArrayLike</span></code>)
           –
           <div class="doc-md-description">
             <p>Matrix.</p>
@@ -2178,21 +2337,21 @@
 <p><span class="doc-section-title">Returns:</span></p>
     <ul>
         <li class="doc-section-item field-body">
-<b><code>L</code></b> (              <code><span title="numpy.typing.NDArray">NDArray</span></code>
+<b><code>L</code></b> (              <code><span title="numpy">numpy</span>.<span title="numpy.typing">typing</span>.<span title="numpy.typing.NDArray">NDArray</span></code>
 )          –
           <div class="doc-md-description">
             <p>Lower triangular factor.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
-<b><code>U</code></b> (              <code><span title="numpy.typing.NDArray">NDArray</span></code>
+<b><code>U</code></b> (              <code><span title="numpy">numpy</span>.<span title="numpy.typing">typing</span>.<span title="numpy.typing.NDArray">NDArray</span></code>
 )          –
           <div class="doc-md-description">
             <p>Upper triangular factor.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
-<b><code>Q</code></b> (              <code><span title="numpy.typing.NDArray">NDArray</span>[<span title="bool">bool</span>]</code>
+<b><code>Q</code></b> (              <code><span title="numpy">numpy</span>.<span title="numpy.typing">typing</span>.<span title="numpy.typing.NDArray">NDArray</span>[<span title="bool">bool</span>]</code>
 )          –
           <div class="doc-md-description">
             <p>Permutation factor.</p>
@@ -2236,37 +2395,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>linalg\triangular.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">294</span>
-<span class="normal">295</span>
-<span class="normal">296</span>
-<span class="normal">297</span>
-<span class="normal">298</span>
-<span class="normal">299</span>
-<span class="normal">300</span>
-<span class="normal">301</span>
-<span class="normal">302</span>
-<span class="normal">303</span>
-<span class="normal">304</span>
-<span class="normal">305</span>
-<span class="normal">306</span>
-<span class="normal">307</span>
-<span class="normal">308</span>
-<span class="normal">309</span>
-<span class="normal">310</span>
-<span class="normal">311</span>
-<span class="normal">312</span>
-<span class="normal">313</span>
-<span class="normal">314</span>
-<span class="normal">315</span>
-<span class="normal">316</span>
-<span class="normal">317</span>
-<span class="normal">318</span>
-<span class="normal">319</span>
-<span class="normal">320</span>
-<span class="normal">321</span>
-<span class="normal">322</span>
-<span class="normal">323</span>
-<span class="normal">324</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">324</span>
 <span class="normal">325</span>
 <span class="normal">326</span>
 <span class="normal">327</span>
@@ -2315,7 +2444,37 @@
 <span class="normal">370</span>
 <span class="normal">371</span>
 <span class="normal">372</span>
-<span class="normal">373</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@visualisable</span><span class="p">(</span><span class="n">luq_announce</span><span class="p">,</span> <span class="n">luq_sanitise</span><span class="p">)</span>
+<span class="normal">373</span>
+<span class="normal">374</span>
+<span class="normal">375</span>
+<span class="normal">376</span>
+<span class="normal">377</span>
+<span class="normal">378</span>
+<span class="normal">379</span>
+<span class="normal">380</span>
+<span class="normal">381</span>
+<span class="normal">382</span>
+<span class="normal">383</span>
+<span class="normal">384</span>
+<span class="normal">385</span>
+<span class="normal">386</span>
+<span class="normal">387</span>
+<span class="normal">388</span>
+<span class="normal">389</span>
+<span class="normal">390</span>
+<span class="normal">391</span>
+<span class="normal">392</span>
+<span class="normal">393</span>
+<span class="normal">394</span>
+<span class="normal">395</span>
+<span class="normal">396</span>
+<span class="normal">397</span>
+<span class="normal">398</span>
+<span class="normal">399</span>
+<span class="normal">400</span>
+<span class="normal">401</span>
+<span class="normal">402</span>
+<span class="normal">403</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@visualisable</span><span class="p">(</span><span class="n">luq_announce</span><span class="p">,</span> <span class="n">luq_sanitise</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">luq</span><span class="p">[</span><span class="n">T</span><span class="p">](</span><span class="n">A</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span><span class="n">Progress</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">[</span><span class="n">T</span><span class="p">],</span><span class="n">NDArray</span><span class="p">[</span><span class="n">T</span><span class="p">],</span><span class="n">NDArray</span><span class="p">[</span><span class="nb">bool</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the LUQ decomposition.</span>
@@ -2429,17 +2588,17 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>linalg\triangular.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">376</span>
-<span class="normal">377</span>
-<span class="normal">378</span>
-<span class="normal">379</span>
-<span class="normal">380</span>
-<span class="normal">381</span>
-<span class="normal">382</span>
-<span class="normal">383</span>
-<span class="normal">384</span>
-<span class="normal">385</span>
-<span class="normal">386</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">pluq_sanitise</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">],</span><span class="nb">dict</span><span class="p">[</span><span class="n">Never</span><span class="p">,</span><span class="n">Never</span><span class="p">]]:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">406</span>
+<span class="normal">407</span>
+<span class="normal">408</span>
+<span class="normal">409</span>
+<span class="normal">410</span>
+<span class="normal">411</span>
+<span class="normal">412</span>
+<span class="normal">413</span>
+<span class="normal">414</span>
+<span class="normal">415</span>
+<span class="normal">416</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">pluq_sanitise</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">],</span><span class="nb">dict</span><span class="p">[</span><span class="n">Never</span><span class="p">,</span><span class="n">Never</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;`pluq` sanitiser.</span>
 
 <span class="sd">    See also</span>
@@ -2472,7 +2631,40 @@
 
     <div class="doc doc-contents ">
 
-        <p><code>pluq</code> operation cost calculation.</p>
+        <p><code>pluq</code> cost.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+            <b><code>N</code></b>
+              (<code><span title="int">int</span></code>)
+          –
+          <div class="doc-md-description">
+            <p>Dimensions.</p>
+          </div>
+        </li>
+        <li class="doc-section-item field-body">
+            <b><code>M</code></b>
+              (<code><span title="int">int</span></code>)
+          –
+          <div class="doc-md-description">
+            <p>Dimensions.</p>
+          </div>
+        </li>
+    </ul>
+
+
+<p><span class="doc-section-title">Returns:</span></p>
+    <ul>
+        <li class="doc-section-item field-body">
+              <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="int">int</span>]</code>
+          –
+          <div class="doc-md-description">
+            <p>Cost.</p>
+          </div>
+        </li>
+    </ul>
 
 
 <details class="see-also" open>
@@ -2484,20 +2676,40 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>linalg\triangular.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">388</span>
-<span class="normal">389</span>
-<span class="normal">390</span>
-<span class="normal">391</span>
-<span class="normal">392</span>
-<span class="normal">393</span>
-<span class="normal">394</span>
-<span class="normal">395</span>
-<span class="normal">396</span>
-<span class="normal">397</span>
-<span class="normal">398</span>
-<span class="normal">399</span>
-<span class="normal">400</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">pluq_cost</span><span class="p">(</span><span class="n">M</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="nb">int</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;`pluq` operation cost calculation.</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">418</span>
+<span class="normal">419</span>
+<span class="normal">420</span>
+<span class="normal">421</span>
+<span class="normal">422</span>
+<span class="normal">423</span>
+<span class="normal">424</span>
+<span class="normal">425</span>
+<span class="normal">426</span>
+<span class="normal">427</span>
+<span class="normal">428</span>
+<span class="normal">429</span>
+<span class="normal">430</span>
+<span class="normal">431</span>
+<span class="normal">432</span>
+<span class="normal">433</span>
+<span class="normal">434</span>
+<span class="normal">435</span>
+<span class="normal">436</span>
+<span class="normal">437</span>
+<span class="normal">438</span>
+<span class="normal">439</span>
+<span class="normal">440</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">pluq_cost</span><span class="p">(</span><span class="n">M</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;`pluq` cost.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    N, M : int</span>
+<span class="sd">        Dimensions.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict[str,int]</span>
+<span class="sd">        Cost.</span>
 
 <span class="sd">    See also</span>
 <span class="sd">    --------</span>
@@ -2543,14 +2755,14 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>linalg\triangular.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">402</span>
-<span class="normal">403</span>
-<span class="normal">404</span>
-<span class="normal">405</span>
-<span class="normal">406</span>
-<span class="normal">407</span>
-<span class="normal">408</span>
-<span class="normal">409</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">pluq_announce</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="nb">int</span><span class="p">]:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">442</span>
+<span class="normal">443</span>
+<span class="normal">444</span>
+<span class="normal">445</span>
+<span class="normal">446</span>
+<span class="normal">447</span>
+<span class="normal">448</span>
+<span class="normal">449</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">pluq_announce</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;`pluq` announcer.</span>
 
 <span class="sd">    See also</span>
@@ -2607,7 +2819,7 @@
     <ul>
         <li class="doc-section-item field-body">
             <b><code>A</code></b>
-              (<code><span title="numpy.typing.ArrayLike">ArrayLike</span></code>)
+              (<code><span title="numpy">numpy</span>.<span title="numpy.typing">typing</span>.<span title="numpy.typing.ArrayLike">ArrayLike</span></code>)
           –
           <div class="doc-md-description">
             <p>Matrix.</p>
@@ -2627,28 +2839,28 @@
 <p><span class="doc-section-title">Returns:</span></p>
     <ul>
         <li class="doc-section-item field-body">
-<b><code>P</code></b> (              <code><span title="numpy.typing.NDArray">NDArray</span>[<span title="bool">bool</span>]</code>
+<b><code>P</code></b> (              <code><span title="numpy">numpy</span>.<span title="numpy.typing">typing</span>.<span title="numpy.typing.NDArray">NDArray</span>[<span title="bool">bool</span>]</code>
 )          –
           <div class="doc-md-description">
             <p>Permutation factor.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
-<b><code>L</code></b> (              <code><span title="numpy.typing.NDArray">NDArray</span></code>
+<b><code>L</code></b> (              <code><span title="numpy">numpy</span>.<span title="numpy.typing">typing</span>.<span title="numpy.typing.NDArray">NDArray</span></code>
 )          –
           <div class="doc-md-description">
             <p>Lower triangular factor.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
-<b><code>U</code></b> (              <code><span title="numpy.typing.NDArray">NDArray</span></code>
+<b><code>U</code></b> (              <code><span title="numpy">numpy</span>.<span title="numpy.typing">typing</span>.<span title="numpy.typing.NDArray">NDArray</span></code>
 )          –
           <div class="doc-md-description">
             <p>Upper triangular factor.</p>
           </div>
         </li>
         <li class="doc-section-item field-body">
-<b><code>Q</code></b> (              <code><span title="numpy.typing.NDArray">NDArray</span>[<span title="bool">bool</span>]</code>
+<b><code>Q</code></b> (              <code><span title="numpy">numpy</span>.<span title="numpy.typing">typing</span>.<span title="numpy.typing.NDArray">NDArray</span>[<span title="bool">bool</span>]</code>
 )          –
           <div class="doc-md-description">
             <p>Permutation factor.</p>
@@ -2686,47 +2898,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>linalg\triangular.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">411</span>
-<span class="normal">412</span>
-<span class="normal">413</span>
-<span class="normal">414</span>
-<span class="normal">415</span>
-<span class="normal">416</span>
-<span class="normal">417</span>
-<span class="normal">418</span>
-<span class="normal">419</span>
-<span class="normal">420</span>
-<span class="normal">421</span>
-<span class="normal">422</span>
-<span class="normal">423</span>
-<span class="normal">424</span>
-<span class="normal">425</span>
-<span class="normal">426</span>
-<span class="normal">427</span>
-<span class="normal">428</span>
-<span class="normal">429</span>
-<span class="normal">430</span>
-<span class="normal">431</span>
-<span class="normal">432</span>
-<span class="normal">433</span>
-<span class="normal">434</span>
-<span class="normal">435</span>
-<span class="normal">436</span>
-<span class="normal">437</span>
-<span class="normal">438</span>
-<span class="normal">439</span>
-<span class="normal">440</span>
-<span class="normal">441</span>
-<span class="normal">442</span>
-<span class="normal">443</span>
-<span class="normal">444</span>
-<span class="normal">445</span>
-<span class="normal">446</span>
-<span class="normal">447</span>
-<span class="normal">448</span>
-<span class="normal">449</span>
-<span class="normal">450</span>
-<span class="normal">451</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">451</span>
 <span class="normal">452</span>
 <span class="normal">453</span>
 <span class="normal">454</span>
@@ -2780,7 +2952,47 @@
 <span class="normal">502</span>
 <span class="normal">503</span>
 <span class="normal">504</span>
-<span class="normal">505</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@visualisable</span><span class="p">(</span><span class="n">pluq_announce</span><span class="p">,</span> <span class="n">pluq_sanitise</span><span class="p">)</span>
+<span class="normal">505</span>
+<span class="normal">506</span>
+<span class="normal">507</span>
+<span class="normal">508</span>
+<span class="normal">509</span>
+<span class="normal">510</span>
+<span class="normal">511</span>
+<span class="normal">512</span>
+<span class="normal">513</span>
+<span class="normal">514</span>
+<span class="normal">515</span>
+<span class="normal">516</span>
+<span class="normal">517</span>
+<span class="normal">518</span>
+<span class="normal">519</span>
+<span class="normal">520</span>
+<span class="normal">521</span>
+<span class="normal">522</span>
+<span class="normal">523</span>
+<span class="normal">524</span>
+<span class="normal">525</span>
+<span class="normal">526</span>
+<span class="normal">527</span>
+<span class="normal">528</span>
+<span class="normal">529</span>
+<span class="normal">530</span>
+<span class="normal">531</span>
+<span class="normal">532</span>
+<span class="normal">533</span>
+<span class="normal">534</span>
+<span class="normal">535</span>
+<span class="normal">536</span>
+<span class="normal">537</span>
+<span class="normal">538</span>
+<span class="normal">539</span>
+<span class="normal">540</span>
+<span class="normal">541</span>
+<span class="normal">542</span>
+<span class="normal">543</span>
+<span class="normal">544</span>
+<span class="normal">545</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@visualisable</span><span class="p">(</span><span class="n">pluq_announce</span><span class="p">,</span> <span class="n">pluq_sanitise</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">pluq</span><span class="p">[</span><span class="n">T</span><span class="p">](</span><span class="n">A</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span><span class="p">)</span> \
         <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">[</span><span class="nb">bool</span><span class="p">],</span><span class="n">NDArray</span><span class="p">[</span><span class="n">T</span><span class="p">],</span><span class="n">NDArray</span><span class="p">[</span><span class="n">T</span><span class="p">],</span><span class="n">NDArray</span><span class="p">[</span><span class="nb">bool</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the PLUQ decomposition.</span>
