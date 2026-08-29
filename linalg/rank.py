@@ -13,10 +13,10 @@ from typing import Any, Never
 
 
 __all__ = (
-    'rank_decomp_sanitise', 'rank_decomp_announce', 'rank_decomp_cost',
+    'rank_decomp_sanitise', 'rank_decomp_cost', 'rank_decomp_announce',
     'rank_decomp',
-    'pinv_sanitise', 'pinv_announce', 'pinv_cost', 'pinv',
-    'lstsq_sanitise', 'lstsq_announce', 'lstsq_cost', 'lstsq'
+    'pinv_sanitise', 'pinv_cost', 'pinv_announce', 'pinv',
+    'lstsq_sanitise', 'lstsq_cost', 'lstsq_announce', 'lstsq'
 )
 
 
@@ -35,12 +35,23 @@ def rank_decomp_sanitise(A: ArrayLike) \
     return (A,), {}
 
 def rank_decomp_cost(M: int, N: int, R: int|None=None) -> dict[str,int]:
-    """`rank_decomp` operation cost calculation.
+    """`rank_decomp` cost.
+    
+    Parameters
+    ----------
+    N, M : int
+        Dimensions.
+    R : int
+        Rank.
+    
+    Returns
+    -------
+    dict[str,int]
+        Cost.
     
     See also
     --------
     - [`rank_decomp`][linalg.rank.rank_decomp]
-    - [`ref_gauss_cost`][linalg.gauss.ref_gauss_cost]
     """
     if R is None:
         R = min(M, N)
@@ -126,7 +137,19 @@ def pinv_sanitise(A: ArrayLike, *, zero: Any=0) \
     return (A,), {'zero':zero}
 
 def pinv_cost(M: int, N: int, R: int|None=None) -> dict[str,int]:
-    """`pinv` operation cost calculation.
+    """`pinv` cost.
+    
+    Parameters
+    ----------
+    N, M : int
+        Dimensions.
+    R : int
+        Rank.
+    
+    Returns
+    -------
+    dict[str,int]
+        Cost.
     
     See also
     --------
@@ -247,7 +270,17 @@ def lstsq_sanitise(X: ArrayLike, y: ArrayLike, *, zero: Any=0) \
     return (X, y), {'zero':zero}
 
 def lstsq_cost(M: int, N: int) -> dict[str,int]:
-    """`lstsq` operation cost calculation.
+    """`lstsq` cost.
+    
+    Parameters
+    ----------
+    N, M : int
+        Dimensions.
+    
+    Returns
+    -------
+    dict[str,int]
+        Cost.
     
     See also
     --------
@@ -313,9 +346,9 @@ def lstsq[T,U](X: NDArray[T], y: NDArray[T], *, zero: U, progress: Progress) \
     
     See also
     --------
-    - [`pinv_sanitise`][linalg.rank.pinv_sanitise]
-    - [`pinv_announce`][linalg.rank.pinv_announce]
-    - [`pinv_cost`][linalg.rank.pinv_cost]
+    - [`lstsq_sanitise`][linalg.rank.lstsq_sanitise]
+    - [`lstsq_announce`][linalg.rank.lstsq_announce]
+    - [`lstsq_cost`][linalg.rank.lstsq_cost]
     
     References
     ----------

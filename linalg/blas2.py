@@ -14,15 +14,16 @@ import numpy as np
 from numpy.typing import ArrayLike, NDArray
 from typing import Any, Never
 from types import MappingProxyType
+from collections.abc import Iterable
 
 
 
 __all__ = (
-    'matmul_sanitise', 'matmul_announce', 'matmul_promote', 'matmul_cost',
+    'matmul_sanitise', 'matmul_cost', 'matmul_announce', 'matmul_promote',
     'matmul',
-    'outer_sanitise', 'outer_announce', 'outer_cost', 'outer',
-    'matmulchain_sanitise', 'matmulchain_announce', 'matmulchain_plan',
-    'matmulchain'
+    'outer_sanitise', 'outer_cost', 'outer_announce', 'outer',
+    'matmulchain_sanitise', 'matmulchain_plan', 'matmulchain_cost',
+    'matmulchain_announce', 'matmulchain'
 )
 
 
@@ -44,7 +45,17 @@ def matmul_sanitise(A: ArrayLike, B: ArrayLike, *, zero: Any=0) \
     return (A, B), {'zero':zero}
 
 def matmul_cost(L: int, M: int, N: int) -> dict[str,int]:
-    """`matmul` operation cost calculation.
+    """`matmul` cost.
+    
+    Parameters
+    ----------
+    L, M, N : int
+        Dimensions.
+    
+    Returns
+    -------
+    dict[str,int]
+        Cost.
     
     See also
     --------
@@ -67,7 +78,12 @@ def matmul_announce(A: NDArray, B: NDArray, *, zero: Any=0) \
     return matmul_cost(A.shape[0], A.shape[1], B.shape[1])
 
 def matmul_promote(A: NDArray, B: NDArray) -> tuple[NDArray, NDArray]:
-    """Promote both matrix/vector factors to matrices."""
+    """Promote both matrix/vector factors to matrices.
+    
+    See also
+    --------
+    - [`matmul`][linalg.blas2.matmul]
+    """
     return (A if A.ndim == 2 else A[np.newaxis, :],
             B if B.ndim == 2 else B[:, np.newaxis])
 
@@ -116,6 +132,7 @@ def matmul(A: NDArray, B: NDArray, *, zero: Any, progress: Progress) \
     - [`matmul_sanitise`][linalg.blas2.matmul_sanitise]
     - [`matmul_announce`][linalg.blas2.matmul_announce]
     - [`matmul_cost`][linalg.blas2.matmul_cost]
+    - [`matmul_promote`][linalg.blas2.matmul_promote]
     """
     Ap, Bp = matmul_promote(A, B)
     r = np.empty((Ap.shape[0], Bp.shape[1]), np.result_type(A, B))
@@ -145,7 +162,17 @@ def outer_sanitise(a: ArrayLike, b: ArrayLike) \
     return (a, b), {}
 
 def outer_cost(M: int, N: int) -> dict[str,int]:
-    """`outer` operation cost calculation.
+    """`outer` cost.
+    
+    Parameters
+    ----------
+    M, N : int
+        Dimensions.
+    
+    Returns
+    -------
+    dict[str,int]
+        Cost.
     
     See also
     --------
@@ -200,6 +227,29 @@ def outer(a: NDArray, b: NDArray, *, progress: Progress) -> NDArray:
     return r
 
 
+def matmulchain_sanitise(*As: ArrayLike, zero: Any=0,
+        order: tuple[int,...]|None=None) \
+        -> tuple[tuple[NDArray,...], dict[str,Any]]:
+    """`matmulchain` sanitiser.
+    
+    See also
+    --------
+    - [`matmulchain`][linalg.blas2.matmulchain]
+    """
+    As = tuple(map(np.asarray, As))
+    if not As:
+        raise ValueError('at least one array required')
+    if not all(a.ndim==2 for a in As):
+        raise ValueError('matrices expected')
+    if not all(a.shape[1]==b.shape[0] for a, b in pairwise(As)):
+        raise ValueError('shapes not matching')
+    
+    if order is None: #sanitiser idempotency
+        s = (As[0].shape[0],) + tuple(a.shape[1] for a in As)
+        _, order = matmulchain_plan(s)
+    
+    return As, {'zero':zero, 'order':order}
+
 @cache
 def matmulchain_plan(s: tuple[int,...]) \
         -> tuple[MappingProxyType[str,int], tuple[int,...]]:
@@ -227,28 +277,24 @@ def matmulchain_plan(s: tuple[int,...]) \
         
     return MappingProxyType(cost), order
 
-def matmulchain_sanitise(*As: ArrayLike, zero: Any=0,
-        order: tuple[int,...]|None=None) \
-        -> tuple[tuple[NDArray,...], dict[str,Any]]:
-    """`matmulchain` sanitiser.
+def matmulchain_cost(s: Iterable[int]) -> dict[str,int]:
+    """`matmulchain` cost.
+    
+    Parameters
+    ----------
+    s : Iterable[int]
+        Sizes.
+    
+    Returns
+    -------
+    dict[str,int]
+        Cost.
     
     See also
     --------
     - [`matmulchain`][linalg.blas2.matmulchain]
     """
-    As = tuple(map(np.asarray, As))
-    if not As:
-        raise ValueError('at least one array required')
-    if not all(a.ndim==2 for a in As):
-        raise ValueError('matrices expected')
-    if not all(a.shape[1]==b.shape[0] for a, b in pairwise(As)):
-        raise ValueError('shapes not matching')
-    
-    if order is None: #sanitiser idempotency
-        s = (As[0].shape[0],) + tuple(a.shape[1] for a in As)
-        _, order = matmulchain_plan(s)
-    
-    return As, {'zero':zero, 'order':order}
+    return dict(matmulchain_plan(tuple(s))[0])
 
 def matmulchain_announce(*As: NDArray, zero: Any=0,
         order: tuple[int,...]) -> dict[str,int]:
@@ -297,6 +343,7 @@ def matmulchain(*As: ArrayLike, zero: Any,
     --------
     - [`matmulchain_sanitise`][linalg.blas2.matmulchain_sanitise]
     - [`matmulchain_announce`][linalg.blas2.matmulchain_announce]
+    - [`matmulchain_cost`][linalg.blas2.matmulchain_cost]
     - [`matmulchain_plan`][linalg.blas2.matmulchain_plan]
     
     References

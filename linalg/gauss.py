@@ -15,10 +15,10 @@ from typing import Any, Never
 
 
 __all__ = (
-    'det_gauss_sanitise', 'det_gauss_announce', 'det_gauss_cost', 'det_gauss',
-    'inv_gauss_sanitise', 'inv_gauss_announce', 'inv_gauss_cost', 'inv_gauss',
+    'det_gauss_sanitise', 'det_gauss_cost', 'det_gauss_announce', 'det_gauss',
+    'inv_gauss_sanitise', 'inv_gauss_cost', 'inv_gauss_announce', 'inv_gauss',
     'is_ref',
-    'ref_gauss_sanitise', 'ref_gauss_announce', 'ref_gauss_cost', 'ref_gauss'
+    'ref_gauss_sanitise', 'ref_gauss_cost', 'ref_gauss_announce', 'ref_gauss'
 )
 
 
@@ -42,7 +42,17 @@ def det_gauss_sanitise(A: ArrayLike, *, one: Any=MISSING) \
     return (A,), {'one':one}
 
 def det_gauss_cost(N: int) -> dict[str,int]:
-    """`det_gauss` operation cost calculation.
+    """`det_gauss` cost.
+    
+    Parameters
+    ----------
+    N : int
+        Dimension.
+    
+    Returns
+    -------
+    dict[str,int]
+        Cost.
     
     See also
     --------
@@ -116,7 +126,7 @@ def det_gauss[T,U](A: NDArray[T], *, one: U, progress: Progress) -> T|U:
     --------
     - [`det_gauss_sanitise`][linalg.gauss.det_gauss_sanitise]
     - [`det_gauss_announce`][linalg.gauss.det_gauss_announce]
-    - [`inv_gauss_cost`][linalg.gauss.inv_gauss_cost]
+    - [`det_gauss_cost`][linalg.gauss.det_gauss_cost]
     
     References
     ----------
@@ -161,7 +171,17 @@ def inv_gauss_sanitise(A: ArrayLike) \
     return (A,), {}
 
 def inv_gauss_cost(N: int) -> dict[str,int]:
-    """`inv_gauss` operation cost calculation.
+    """`inv_gauss` cost.
+    
+    Parameters
+    ----------
+    N : int
+        Dimension.
+    
+    Returns
+    -------
+    dict[str,int]
+        Cost.
     
     See also
     --------
@@ -316,8 +336,8 @@ def is_ref(A: ArrayLike, reduced: bool=True) -> bool:
     return True
 
 
-def ref_gauss_sanitise(A: NDArray, reduced: bool=True) \
-        -> tuple[tuple[NDArray,bool],dict[Never,Never]]:
+def ref_gauss_sanitise[T](A: NDArray[T], reduced: bool=True) \
+        -> tuple[tuple[NDArray[T],bool],dict[Never,Never]]:
     """`ref_gauss` sanitiser.
     
     See also
@@ -332,7 +352,17 @@ def ref_gauss_sanitise(A: NDArray, reduced: bool=True) \
 
 def ref_gauss_cost(M: int, N: int, R: int|None=None, reduced: bool=True) \
         -> dict[str,int]:
-    """`ref_gauss` operation cost calculation.
+    """`ref_gauss` cost.
+    
+    Parameters
+    ----------
+    M, N : int
+        Dimensions.
+    
+    Returns
+    -------
+    dict[str,int]
+        Cost.
     
     See also
     --------
@@ -350,7 +380,7 @@ def ref_gauss_cost(M: int, N: int, R: int|None=None, reduced: bool=True) \
         'truediv': R*(2*M-R-1) // 2
     }
 
-def ref_gauss_announce(A: NDArray, reduced: bool=True) -> dict[str,int]:
+def ref_gauss_announce[T](A: NDArray[T], reduced: bool=True) -> dict[str,int]:
     """`ref_gauss` announcer.
     
     See also
@@ -360,7 +390,7 @@ def ref_gauss_announce(A: NDArray, reduced: bool=True) -> dict[str,int]:
     return ref_gauss_cost(*A.shape, reduced=reduced)
 
 @visualisable(ref_gauss_announce, ref_gauss_sanitise)
-def ref_gauss(A: NDArray, reduced: bool=True, *, progress: Progress) \
+def ref_gauss[T](A: NDArray[T], reduced: bool=True, *, progress: Progress) \
         -> list[int]:
     r"""Transform to (reduced) row echelon form.
     
@@ -374,7 +404,7 @@ def ref_gauss(A: NDArray, reduced: bool=True, *, progress: Progress) \
     
     Parameters
     ----------
-    A : numpy.typing.NDArray
+    A : numpy.typing.NDArray[T]
         Matrix.
     reduced : bool = True
         Whether should be transformed into reduced row echelon form.
@@ -404,6 +434,7 @@ def ref_gauss(A: NDArray, reduced: bool=True, *, progress: Progress) \
     --------
     - [`ref_gauss_sanitise`][linalg.gauss.ref_gauss_sanitise]
     - [`ref_gauss_announce`][linalg.gauss.ref_gauss_announce]
+    - [`ref_gauss_cost`][linalg.gauss.ref_gauss_cost]
     
     References
     ----------

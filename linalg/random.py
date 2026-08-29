@@ -18,7 +18,7 @@ __all__ = (
 
 
 def randz(sigma: int=1000) -> int:
-    r"""Return a random binomial distributed integer.
+    r"""Return a random normal distributed integer.
     
     $$
         x \qquad x\in\mathbb{Z}, \ x\sim\mathcal{N}(0,\sigma)
@@ -43,7 +43,7 @@ def randz(sigma: int=1000) -> int:
     return binomialvariate(4*sigma**2) - 2*sigma**2
 
 def randq(grade: int=1000) -> Fraction:
-    r"""Return a random binomial distributed rational.
+    r"""Return a random normal distributed rational.
     
     $$
         x \qquad x\in\mathbb{Q}, \ x\sim\mathcal{N}(0,1)

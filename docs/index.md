@@ -6,16 +6,81 @@
 
 ## Modules
 
-- [`blas`](blas.md)
-- [`blas2`](blas2.md)
-- [`leibniz`](leibniz.md)
-- [`gauss`](gauss.md)
-- [`rank`](rank.md)
-- [`triangular`](triangular.md)
-- [`ortho`](ortho.md)
-- [`random`](random.md)
-- [`util`](util.md)
-- [`progress`](progress.md)
+### [`blas`](blas.md)
+
+- [`ufunc_with_cb`][linalg.blas.ufunc_with_cb]
+- [`vpos`][linalg.blas.vpos]
+- [`vneg`][linalg.blas.vneg]
+- [`vadd`][linalg.blas.vadd]
+- [`vsub`][linalg.blas.vsub]
+- [`vmul`][linalg.blas.vmul]
+- [`vtruediv`][linalg.blas.vtruediv]
+- [`vfloordiv`][linalg.blas.vfloordiv]
+- [`vmod`][linalg.blas.vmod]
+
+### [`blas2`](blas2.md)
+
+- [`matmul`][linalg.blas2.matmul]
+- [`outer`][linalg.blas2.outer]
+- [`matmulchain`][linalg.blas2.matmulchain]
+
+### [`leibniz`](leibniz.md)
+
+- [`permutations`][linalg.leibniz.permutations]
+- [`det_leibniz`][linalg.leibniz.det_leibniz]
+
+### [`gauss`](gauss.md)
+
+- [`det_gauss`][linalg.gauss.det_gauss]
+- [`inv_gauss`][linalg.gauss.inv_gauss]
+- [`is_ref`][linalg.gauss.is_ref]
+- [`ref_gauss`][linalg.gauss.ref_gauss]
+
+### [`rank`](rank.md)
+
+- [`rank_decomp`][linalg.rank.rank_decomp]
+- [`pinv`][linalg.rank.pinv]
+- [`lstsq`][linalg.rank.lstsq]
+
+### [`triangular`](triangular.md)
+
+- [`lu`][linalg.triangular.lu]
+- [`plu`][linalg.triangular.plu]
+- [`luq`][linalg.triangular.luq]
+- [`pluq`][linalg.triangular.pluq]
+
+### [`ortho`](ortho.md)
+
+- [`are_orthogonal`][linalg.ortho.are_orthogonal]
+- [`is_normalised`][linalg.ortho.is_normalised]
+- [`are_orthonormal`][linalg.ortho.are_orthonormal]
+- [`gram_schmidt`][linalg.ortho.gram_schmidt]
+
+### [`random`](random.md)
+
+- [`randz`][linalg.random.randz]
+- [`randq`][linalg.random.randq]
+- [`vrandz`][linalg.random.vrandz]
+- [`vrandq`][linalg.random.vrandq]
+- [`mrandqr`][linalg.random.mrandqr]
+
+### [`util`](util.md)
+
+- [`dict_add`][linalg.util.dict_add]
+- [`dict_iadd`][linalg.util.dict_iadd]
+- [`dict_sub`][linalg.util.dict_sub]
+- [`dict_isub`][linalg.util.dict_isub]
+- [`swap_rows`][linalg.util.swap_rows]
+- [`swap_columns`][linalg.util.swap_columns]
+- [`swap_pivot`][linalg.util.swap_pivot]
+- [`is_perm`][linalg.util.is_perm]
+- [`is_tril`][linalg.util.is_tril]
+- [`is_triu`][linalg.util.is_triu]
+
+### [`progress`](progress.md)
+
+- [`Progress`][linalg.progress.Progress]
+- [`visualisable`][linalg.progress.visualisable]
 
 ## Installation
 

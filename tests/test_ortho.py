@@ -1,16 +1,18 @@
 from linalg.ortho import *
 from linalg.random import *
 from random import randint
+import numpy as np
 import pytest
 
 
 
 def test_are_orthogonal_empty():
-    assert are_orthogonal() == True
-    assert are_orthogonal([]) == True
-    assert are_orthogonal([], []) == True
-    assert are_orthogonal([1]) == True
-    assert are_orthogonal([1], [1]) == False
+    assert are_orthogonal([[]]) == True
+    assert are_orthogonal([[],
+                           []]) == True
+    assert are_orthogonal([[1]]) == True
+    assert are_orthogonal([[1],
+                           [1]]) == False
 
 def test_is_normalised():
     assert is_normalised([]) == False
@@ -24,10 +26,10 @@ def test_gram_schmidt():
     for _ in range(100):
         N = randint(0, 20)
         M = randint(0, N)
-        vs = [vrandq(N) for _ in range(M)]
+        vs = vrandq((M, N))
         gram_schmidt(vs)
-
-        assert are_orthogonal(*vs)
+        
+        assert are_orthogonal(vs)
 
 
 
@@ -39,7 +41,6 @@ def test_gram_schmidt():
 #############################################################################
 
 from fractions import Fraction
-import numpy as np
 
 #every category `Progress` knows, for asserting that the untracked ones
 #are rejected rather than silently dropped
@@ -48,64 +49,71 @@ CATEGORIES = ('pos', 'neg', 'add', 'sub', 'mul', 'truediv', 'floordiv', 'mod')
 
 
 def _vs(M, N):
-    """`M` almost surely independent float vectors of length `N`."""
-    return [np.random.rand(N) for _ in range(M)]
+    """`M` almost surely independent float row vectors of length `N`."""
+    return np.random.rand(M, N)
 
 
 
 #predicates
 def test_are_orthogonal_checks_every_pair():
     #neighbours only would compare (e1, e2) & (e2, e1) and miss the repeat
-    e1, e2 = [1, 0, 0], [0, 1, 0]
-    assert are_orthogonal(e1, e2)
-    assert not are_orthogonal(e1, e2, e1)
+    assert are_orthogonal([[1, 0, 0], [0, 1, 0]])
+    assert not are_orthogonal([[1, 0, 0], [0, 1, 0], [1, 0, 0]])
 
 def test_zero_vectors_are_orthogonal_in_every_dimension():
     #the dot product is zero in each of these, and the empty sum is no
     #exception - dimension zero must not become a special case of its own
-    assert are_orthogonal([0, 0], [0, 0])
-    assert are_orthogonal([0, 0], [1, 1])
-    assert are_orthogonal([], [])
+    assert are_orthogonal([[0, 0], [0, 0]])
+    assert are_orthogonal([[0, 0], [1, 1]])
+    assert are_orthogonal([[], []])
 
 def test_an_empty_vector_is_orthogonal_but_not_normalised():
     #`are_orthonormal` has to be False here, and normalisation is what decides
     #it: the empty vector has norm zero, orthogonality has nothing to object to
-    assert are_orthogonal([], []) and not is_normalised([])
-    assert not are_orthonormal([], [])
+    assert are_orthogonal([[], []]) and not is_normalised([])
+    assert not are_orthonormal([[], []])
 
 def test_orthogonality_does_not_imply_independence():
     #plain pairwise orthogonality admits the zero vector, so it is weaker than
     #the orthogonal basis `gram_schmidt` insists on - which is why the
     #`are_orthogonal` assertion in `test_gram_schmidt` is necessary but not
     #sufficient on its own
-    assert are_orthogonal(np.zeros(2), np.zeros(2))
+    assert are_orthogonal(np.zeros((2, 2)))
     with pytest.raises(ZeroDivisionError):
-        gram_schmidt([np.zeros(2), np.zeros(2)])
+        gram_schmidt(np.zeros((2, 2)))
 
 @pytest.mark.parametrize('vs', [
-    (),
-    ([1, 0],),                  #normalised
-    ([2, 0],),                  #not normalised
-    ([1, 0], [0, 1]),           #orthonormal
-    ([2, 0], [0, 1]),           #orthogonal, not normalised
-    ([1, 0], [1, 0]),           #normalised, not orthogonal
-    ([1, 0], [0, 1], [1, 0]),   #only the outer pair is bad
+    np.empty((0, 2)),
+    [[1, 0]],                   #normalised
+    [[2, 0]],                   #not normalised
+    [[1, 0], [0, 1]],           #orthonormal
+    [[2, 0], [0, 1]],           #orthogonal, not normalised
+    [[1, 0], [1, 0]],           #normalised, not orthogonal
+    [[1, 0], [0, 1], [1, 0]],   #only the outer pair is bad
 ])
 def test_are_orthonormal_agrees_with_its_parts(vs):
     #it repeats the `are_orthogonal` expression instead of calling it, so the
     #two can drift apart
-    assert are_orthonormal(*vs) == (are_orthogonal(*vs)
-            and all(is_normalised(v) for v in vs))
+    assert are_orthonormal(vs) == (are_orthogonal(vs)
+            and all(is_normalised(v) for v in np.asarray(vs)))
 
 @pytest.mark.parametrize('f', [are_orthogonal, are_orthonormal])
-def test_predicates_reject_mismatched_dimensionality(f):
-    with pytest.raises(ValueError):
-        f([1, 0], [1, 0, 0])
+def test_predicates_reject_a_loose_vector(f):
+    #the vectors arrive as the rows of one array now, so a bare vector is a
+    #shape error rather than a call with a single vector
+    with pytest.raises(ValueError, match='two dimensional'):
+        f([1, 0])
 
-@pytest.mark.parametrize('f', [are_orthogonal, are_orthonormal, is_normalised])
-def test_predicates_reject_non_vectors(f):
+@pytest.mark.parametrize('f', [are_orthogonal, are_orthonormal])
+def test_predicates_reject_ragged_rows(f):
     with pytest.raises(ValueError):
-        f(np.zeros((2, 2)))
+        f([[1, 0], [1, 0, 0]])
+
+def test_is_normalised_still_takes_one_vector():
+    #it is the one predicate that did not move to a matrix
+    assert is_normalised([1, 0])
+    with pytest.raises(ValueError, match='vector'):
+        is_normalised(np.zeros((2, 2)))
 
 
 
@@ -125,6 +133,12 @@ def test_gram_schmidt_announces_the_documented_complexity(
     gram_schmidt(_vs(M, N), progress=True)
     assert {(b.desc, b.total) for b in bars.instances} == expected
 
+def test_gram_schmidt_announcer_reads_the_shape_in_order():
+    #`gram_schmidt_cost` takes (vectors, dimension), which is the shape of the
+    #array and not its transpose - these two disagree, so the order is pinned
+    assert gram_schmidt_cost(2, 5) != gram_schmidt_cost(5, 2)
+    assert gram_schmidt_announce(np.zeros((2, 5))) == gram_schmidt_cost(2, 5)
+
 def test_gram_schmidt_fills_its_bars_exactly(bars):
     #the announcement is exact rather than an upper bound, so nothing is ever
     #left to top up - the reason the executor needs no early exit credit
@@ -138,8 +152,7 @@ def test_gram_schmidt_does_not_credit_the_error_path(bars):
     #whose early exit is a normal return - there is nothing to make up for,
     #and the bars are expected to stop short
     with pytest.raises(ZeroDivisionError):
-        gram_schmidt([np.array([1., 0.]), np.array([2., 0.]),
-                      np.array([0., 1.])], progress=True)
+        gram_schmidt(np.array([[1., 0.], [2., 0.], [0., 1.]]), progress=True)
     assert any(b.n < b.total for b in bars.instances)
     assert all(b.closed for b in bars.instances)
 
@@ -173,111 +186,134 @@ def test_gram_schmidt_bars_are_closed(bars):
 
 #sanitiser
 def test_gram_schmidt_sanitiser_returns_args_and_kwargs():
-    args, kwargs = gram_schmidt_sanitise([[1., 0.], [1., 1.]])
+    args, kwargs = gram_schmidt_sanitise(np.array([[1., 0.], [1., 1.]]))
     vs, = args
-    assert all(isinstance(v, np.ndarray) for v in vs) and kwargs == {}
-
-def test_gram_schmidt_sanitiser_keeps_the_list_identity():
-    #it fills the caller's list rather than building a new one, which is what
-    #carries the result back out for a list of lists
-    vs = [[1., 0.], [1., 1.]]
-    assert gram_schmidt_sanitise(vs)[0][0] is vs
+    assert isinstance(vs, np.ndarray) and vs.ndim == 2 and kwargs == {}
 
 def test_gram_schmidt_sanitiser_keeps_the_array_identity():
-    #`gram_schmidt` writes through the entries, so an ndarray has to survive
+    #`gram_schmidt` writes through the rows, so an ndarray has to survive
     #`asarray` untouched - a copy would silently drop the whole result
-    v = np.array([1., 0.])
-    assert gram_schmidt_sanitise([v])[0][0][0] is v
+    vs = np.array([[1., 0.], [1., 1.]])
+    assert gram_schmidt_sanitise(vs)[0][0] is vs
 
 def test_gram_schmidt_sanitiser_is_idempotent():
     #it may run again on a nested call, so feeding it its own output - kwargs
     #included, the way the decorator hands them on - must be safe
-    once, kwargs = gram_schmidt_sanitise([[1., 0.], [1., 1.]])
+    once, kwargs = gram_schmidt_sanitise(np.array([[1., 0.], [1., 1.]]))
     twice, kwargs_again = gram_schmidt_sanitise(*once, **kwargs)
     assert twice[0] is once[0] and kwargs == kwargs_again
 
 @pytest.mark.parametrize('vs', [
-    [np.zeros((2, 2))],             #not one dimensional
-    [np.zeros(2), np.zeros(3)],     #ragged
+    [[1., 0.], [1., 1.]],   #a nested list
+    ((1., 0.), (1., 1.)),   #a nested tuple
 ])
-def test_gram_schmidt_sanitiser_rejects_bad_shapes(vs):
-    with pytest.raises(ValueError):
+def test_gram_schmidt_sanitiser_rejects_what_it_cannot_write_through(vs):
+    #`asarray` would copy these and the orthogonalisation would be lost, so
+    #they are refused outright rather than silently thrown away - the guard
+    #`ref_gauss_sanitise` and `swap_rows` use for the same reason
+    with pytest.raises(TypeError, match='numpy.ndarray'):
         gram_schmidt_sanitise(vs)
 
-def test_gram_schmidt_sanitiser_rejects_immutable_sequences():
-    #it fills the sequence in place, so a tuple never gets as far as the
-    #shape checks
-    with pytest.raises(TypeError):
-        gram_schmidt_sanitise((np.zeros(2),))
+@pytest.mark.parametrize('vs', [
+    np.zeros(2),            #a bare vector
+    np.zeros((2, 2, 2)),    #a stack of matrices
+])
+def test_gram_schmidt_sanitiser_rejects_bad_shapes(vs):
+    with pytest.raises(ValueError, match='two dimensional'):
+        gram_schmidt_sanitise(vs)
+
+def test_gram_schmidt_sanitiser_rejects_ragged_rows():
+    #ragged rows only survive `np.array` as an object array of rows, which is
+    #one dimensional, so the shape check is what turns them away
+    with pytest.raises(ValueError, match='two dimensional'):
+        gram_schmidt_sanitise(np.array([[1., 0.], [1., 0., 0.]], dtype=object))
 
 
 
 #in-place contract
-def test_gram_schmidt_writes_through_its_arrays():
+def test_gram_schmidt_writes_through_its_array():
     #documented: the transformation happens in-place
-    a, b = np.array([1., 0.]), np.array([1., 1.])
-    gram_schmidt([a, b])
-    assert np.allclose(a, [1., 0.]) and np.allclose(b, [0., 1.])
-
-def test_gram_schmidt_fills_a_list_of_lists():
-    #`asarray` copies a list, but the sanitiser writes the copy back into the
-    #caller's list, so unlike `det_gauss` a list argument is consumed too
-    vs = [[1., 0.], [1., 1.]]
+    vs = np.array([[1., 0.], [1., 1.]])
     gram_schmidt(vs)
-    assert all(isinstance(v, np.ndarray) for v in vs)
-    assert np.allclose(vs[1], [0., 1.])
+    assert np.allclose(vs, [[1., 0.], [0., 1.]])
+
+def test_gram_schmidt_rejects_a_list_rather_than_losing_the_result():
+    #a copy could only ever be orthogonalised and dropped, so the in-place
+    #contract is enforced instead of merely documented - `ref_gauss` is the
+    #same, and neither can silently do nothing
+    with pytest.raises(TypeError, match='numpy.ndarray'):
+        gram_schmidt([[1., 0.], [1., 1.]])
+
+
+
+#return value
+def test_gram_schmidt_returns_the_squared_norms():
+    vs = np.array([[3., 0.], [1., 1.]])
+    dots = gram_schmidt(vs)
+    #[1, 1] - 1/3 [3, 0] = [0, 1]
+    assert np.allclose(vs, [[3., 0.], [0., 1.]])
+    assert np.allclose(dots, [9., 1.])
+
+def test_gram_schmidt_returns_one_norm_per_vector():
+    for M in range(4):
+        assert len(gram_schmidt(_vs(M, 4))) == M
+
+def test_gram_schmidt_norms_describe_the_output_not_the_input():
+    #the denominators handed back are the ones it divided by, so they belong
+    #to the orthogonalised rows
+    vs = _vs(4, 5)
+    dots = gram_schmidt(vs)
+    assert np.allclose(dots, [v@v for v in vs])
 
 
 
 #scalar objects
 def test_gram_schmidt_is_exact_for_fractions():
-    vs = [np.array([Fraction(1), Fraction(1)], object),
-          np.array([Fraction(1), Fraction(0)], object)]
-    gram_schmidt(vs)
+    vs = np.array([[Fraction(1), Fraction(1)],
+                   [Fraction(1), Fraction(0)]], object)
+    dots = gram_schmidt(vs)
     #[1, 0] - 1/2 [1, 1], with no floating point anywhere
-    assert vs[1].dtype == object
+    assert vs.dtype == object
     assert list(vs[1]) == [Fraction(1, 2), Fraction(-1, 2)]
-    assert are_orthogonal(*vs)
+    assert dots == [Fraction(2), Fraction(1, 2)]
+    assert are_orthogonal(vs)
 
 def test_gram_schmidt_orthogonalises_without_normalising():
     #the name says orthogonalise; the lengths are left alone
-    vs = [np.array([3., 0.]), np.array([1., 1.])]
+    vs = np.array([[3., 0.], [1., 1.]])
     gram_schmidt(vs)
-    assert are_orthogonal(*vs) and not are_orthonormal(*vs)
+    assert are_orthogonal(vs) and not are_orthonormal(vs)
 
 
 
 #edge cases
 def test_gram_schmidt_of_no_vectors_does_nothing():
-    vs = []
-    gram_schmidt(vs)
-    assert vs == []
+    vs = np.empty((0, 3))
+    assert gram_schmidt(vs) == []
+    assert vs.shape == (0, 3)
 
 def test_gram_schmidt_of_a_single_vector_leaves_it_alone():
-    v = np.array([3., 4.])
-    gram_schmidt([v])
-    assert np.allclose(v, [3., 4.])
+    vs = np.array([[3., 4.]])
+    assert gram_schmidt(vs) == [25.]
+    assert np.allclose(vs, [[3., 4.]])
 
 def test_gram_schmidt_of_empty_vectors_raises():
     #a zero length vector has a zero norm, so it can never span anything
     with pytest.raises(ZeroDivisionError):
-        gram_schmidt([np.empty(0)])
+        gram_schmidt(np.empty((1, 0)))
 
 
 
 #errors
 def test_gram_schmidt_dependent_vectors_raise():
     with pytest.raises(ZeroDivisionError, match='orthogonalisable'):
-        gram_schmidt([np.array([1., 1.]), np.array([2., 2.])])
+        gram_schmidt(np.array([[1., 1.], [2., 2.]]))
 
-@pytest.mark.parametrize('vs', [
-    [np.zeros((2, 2))],
-    [np.zeros(2), np.zeros(3)],
-])
+@pytest.mark.parametrize('vs', [np.zeros(2), np.zeros((2, 2, 2))])
 def test_gram_schmidt_errors_match_with_and_without_progress(bars, vs):
     #the sanitiser & announcer must not raise a different error first
     with pytest.raises(ValueError) as bare:
-        gram_schmidt(list(vs))
+        gram_schmidt(vs)
     with pytest.raises(ValueError) as shown:
-        gram_schmidt(list(vs), progress=True)
+        gram_schmidt(vs, progress=True)
     assert str(bare.value) == str(shown.value)

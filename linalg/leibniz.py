@@ -14,7 +14,7 @@ from collections.abc import Iterable, Generator
 
 __all__ = (
     'permutations',
-    'det_leibniz_sanitise', 'det_leibniz_announce', 'det_leibniz_cost',
+    'det_leibniz_sanitise', 'det_leibniz_cost', 'det_leibniz_announce',
     'det_leibniz'
 )
 
@@ -89,7 +89,17 @@ def det_leibniz_sanitise(A: ArrayLike, *, one: Any=MISSING) \
     return (A,), {'one':one}
 
 def det_leibniz_cost(N: int) -> dict[str,int]:
-    """`det_leibniz` operation cost calculation.
+    """`det_leibniz` cost.
+    
+    Parameters
+    ----------
+    N : int
+        Dimension.
+    
+    Returns
+    -------
+    dict[str,int]
+        Cost.
     
     See also
     --------

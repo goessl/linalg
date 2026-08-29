@@ -12,10 +12,10 @@ from typing import Never
 
 
 __all__ = (
-    'lu_sanitise', 'lu_announce', 'lu_cost', 'lu',
-    'plu_sanitise', 'plu_announce', 'plu_cost', 'plu',
-    'luq_sanitise', 'luq_announce', 'luq_cost', 'luq',
-    'pluq_sanitise', 'pluq_announce', 'pluq_cost', 'pluq'
+    'lu_sanitise', 'lu_cost', 'lu_announce', 'lu',
+    'plu_sanitise', 'plu_cost', 'plu_announce', 'plu',
+    'luq_sanitise', 'luq_cost', 'luq_announce', 'luq',
+    'pluq_sanitise', 'pluq_cost', 'pluq_announce', 'pluq'
 )
 
 
@@ -33,7 +33,17 @@ def lu_sanitise(A: ArrayLike) -> tuple[tuple[NDArray],dict[Never,Never]]:
     return (A,), {}
 
 def lu_cost(M: int, N: int) -> dict[str,int]:
-    """`lu` operation cost calculation.
+    """`lu` cost.
+    
+    Parameters
+    ----------
+    N, M : int
+        Dimensions.
+    
+    Returns
+    -------
+    dict[str,int]
+        Cost.
     
     See also
     --------
@@ -152,7 +162,17 @@ def plu_sanitise(A: ArrayLike) -> tuple[tuple[NDArray],dict[Never,Never]]:
     return (A,), {}
 
 def plu_cost(M: int, N: int) -> dict[str,int]:
-    """`plu` operation cost calculation.
+    """`plu` cost.
+    
+    Parameters
+    ----------
+    N, M : int
+        Dimensions.
+    
+    Returns
+    -------
+    dict[str,int]
+        Cost.
     
     See also
     --------
@@ -269,7 +289,17 @@ def luq_sanitise(A: ArrayLike) -> tuple[tuple[NDArray],dict[Never,Never]]:
     return (A,), {}
 
 def luq_cost(M: int, N: int) -> dict[str,int]:
-    """`luq` operation cost calculation.
+    """`luq` cost.
+    
+    Parameters
+    ----------
+    N, M : int
+        Dimensions.
+    
+    Returns
+    -------
+    dict[str,int]
+        Cost.
     
     See also
     --------
@@ -386,7 +416,17 @@ def pluq_sanitise(A: ArrayLike) -> tuple[tuple[NDArray],dict[Never,Never]]:
     return (A,), {}
 
 def pluq_cost(M: int, N: int) -> dict[str,int]:
-    """`pluq` operation cost calculation.
+    """`pluq` cost.
+    
+    Parameters
+    ----------
+    N, M : int
+        Dimensions.
+    
+    Returns
+    -------
+    dict[str,int]
+        Cost.
     
     See also
     --------

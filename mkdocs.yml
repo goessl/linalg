@@ -41,6 +41,7 @@ plugins:
             group_by_category: false
             docstring_style: numpy
             docstring_section_style: list
+            annotations_path: full
 
 extra:
   social:

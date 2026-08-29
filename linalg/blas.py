@@ -34,14 +34,14 @@ from collections.abc import Callable
 
 __all__ = (
     'ufunc_with_cb',
-    'vpos_announce', 'vpos',
-    'vneg_announce', 'vneg',
-    'vadd_announce', 'vadd',
-    'vsub_announce', 'vsub',
-    'vmul_announce', 'vmul',
-    'vtruediv_announce', 'vtruediv',
-    'vfloordiv_announce', 'vfloordiv',
-    'vmod_announce', 'vmod'
+    'vpos_cost', 'vpos_announce', 'vpos',
+    'vneg_cost', 'vneg_announce', 'vneg',
+    'vadd_cost', 'vadd_announce', 'vadd',
+    'vsub_cost', 'vsub_announce', 'vsub',
+    'vmul_cost', 'vmul_announce', 'vmul',
+    'vtruediv_cost', 'vtruediv_announce', 'vtruediv',
+    'vfloordiv_cost', 'vfloordiv_announce', 'vfloordiv',
+    'vmod_cost', 'vmod_announce', 'vmod'
 )
 
 
@@ -199,6 +199,25 @@ def ufunc_with_cb(op: np.ufunc, *operands: ArrayLike,
 
 
 
+def vpos_cost(N: int) -> dict[str,int]:
+    """`vpos` cost.
+    
+    Parameters
+    ----------
+    N : int
+        Argument/result size.
+    
+    Returns
+    -------
+    dict[str,int]
+        Cost.
+    
+    See also
+    --------
+    - [`vpos`][linalg.blas.vpos]
+    """
+    return {'pos': N}
+
 def vpos_announce(a: ArrayLike) -> dict[str,int]:
     """`vpos` announcer.
     
@@ -206,7 +225,7 @@ def vpos_announce(a: ArrayLike) -> dict[str,int]:
     --------
     - [`vpos`][linalg.blas.vpos]
     """
-    return {'pos': np.size(a)}
+    return vpos_cost(np.size(a))
 
 @visualisable(vpos_announce)
 def vpos(a: ArrayLike, *, progress: Progress) -> Any:
@@ -236,6 +255,7 @@ def vpos(a: ArrayLike, *, progress: Progress) -> Any:
     --------
     - [`ufunc_with_cb`][linalg.blas.ufunc_with_cb]
     - [`vpos_announce`][linalg.blas.vpos_announce]
+    - [`vpos_cost`][linalg.blas.vpos_cost]
     
     References
     ----------
@@ -244,6 +264,26 @@ def vpos(a: ArrayLike, *, progress: Progress) -> Any:
     return ufunc_with_cb(np.positive, a,
             cb=lambda *_: progress.update('pos'))
 
+
+def vneg_cost(N: int) -> dict[str,int]:
+    """`vneg` cost.
+    
+    Parameters
+    ----------
+    N : int
+        Argument/result size.
+    
+    Returns
+    -------
+    dict[str,int]
+        Cost.
+    
+    See also
+    --------
+    - [`vneg`][linalg.blas.vneg]
+    """
+    return {'neg': N}
+
 def vneg_announce(a: ArrayLike) -> dict[str,int]:
     """`vneg` announcer.
     
@@ -251,7 +291,7 @@ def vneg_announce(a: ArrayLike) -> dict[str,int]:
     --------
     - [`vneg`][linalg.blas.vneg]
     """
-    return {'neg': np.size(a)}
+    return vneg_cost(np.size(a))
 
 @visualisable(vneg_announce)
 def vneg(a: ArrayLike, *, progress: Progress) -> Any:
@@ -281,6 +321,7 @@ def vneg(a: ArrayLike, *, progress: Progress) -> Any:
     --------
     - [`ufunc_with_cb`][linalg.blas.ufunc_with_cb]
     - [`vneg_announce`][linalg.blas.vneg_announce]
+    - [`vneg_cost`][linalg.blas.vneg_cost]
     
     References
     ----------
@@ -289,6 +330,26 @@ def vneg(a: ArrayLike, *, progress: Progress) -> Any:
     return ufunc_with_cb(np.negative, a,
             cb=lambda *_: progress.update('neg'))
 
+
+def vadd_cost(N: int) -> dict[str,int]:
+    """`vadd` cost.
+    
+    Parameters
+    ----------
+    N : int
+        Combined arguments broadcast/result size.
+    
+    Returns
+    -------
+    dict[str,int]
+        Cost.
+    
+    See also
+    --------
+    - [`vadd`][linalg.blas.vadd]
+    """
+    return {'add': N}
+
 def vadd_announce(a: ArrayLike, b: ArrayLike) -> dict[str,int]:
     """`vadd` announcer.
     
@@ -296,7 +357,7 @@ def vadd_announce(a: ArrayLike, b: ArrayLike) -> dict[str,int]:
     --------
     - [`vadd`][linalg.blas.vadd]
     """
-    return {'add': np.broadcast(a, b).size}
+    return vadd_cost(np.broadcast(a, b).size)
 
 @visualisable(vadd_announce)
 def vadd(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
@@ -326,6 +387,7 @@ def vadd(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     --------
     - [`ufunc_with_cb`][linalg.blas.ufunc_with_cb]
     - [`vadd_announce`][linalg.blas.vadd_announce]
+    - [`vadd_cost`][linalg.blas.vadd_cost]
     
     References
     ----------
@@ -334,6 +396,26 @@ def vadd(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     return ufunc_with_cb(np.add, a, b,
             cb=lambda *_: progress.update('add'))
 
+
+def vsub_cost(N: int) -> dict[str,int]:
+    """`vsub` cost.
+    
+    Parameters
+    ----------
+    N : int
+        Combined arguments broadcast/result size.
+    
+    Returns
+    -------
+    dict[str,int]
+        Cost.
+    
+    See also
+    --------
+    - [`vsub`][linalg.blas.vsub]
+    """
+    return {'sub': N}
+
 def vsub_announce(a: ArrayLike, b: ArrayLike) -> dict[str,int]:
     """`vsub` announcer.
     
@@ -341,7 +423,7 @@ def vsub_announce(a: ArrayLike, b: ArrayLike) -> dict[str,int]:
     --------
     - [`vsub`][linalg.blas.vsub]
     """
-    return {'sub': np.broadcast(a, b).size}
+    return vsub_cost(np.broadcast(a, b).size)
 
 @visualisable(vsub_announce)
 def vsub(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
@@ -371,6 +453,7 @@ def vsub(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     --------
     - [`ufunc_with_cb`][linalg.blas.ufunc_with_cb]
     - [`vsub_announce`][linalg.blas.vsub_announce]
+    - [`vsub_cost`][linalg.blas.vsub_cost]
     
     References
     ----------
@@ -379,6 +462,26 @@ def vsub(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     return ufunc_with_cb(np.subtract, a, b,
             cb=lambda *_: progress.update('sub'))
 
+
+def vmul_cost(N: int) -> dict[str,int]:
+    """`vmul` cost.
+    
+    Parameters
+    ----------
+    N : int
+        Combined arguments broadcast/result size.
+    
+    Returns
+    -------
+    dict[str,int]
+        Cost.
+    
+    See also
+    --------
+    - [`vmul`][linalg.blas.vmul]
+    """
+    return {'mul': N}
+
 def vmul_announce(a: ArrayLike, b: ArrayLike) -> dict[str,int]:
     """`vmul` announcer.
     
@@ -386,7 +489,7 @@ def vmul_announce(a: ArrayLike, b: ArrayLike) -> dict[str,int]:
     --------
     - [`vmul`][linalg.blas.vmul]
     """
-    return {'mul': np.broadcast(a, b).size}
+    return vmul_cost(np.broadcast(a, b).size)
 
 @visualisable(vmul_announce)
 def vmul(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
@@ -416,6 +519,7 @@ def vmul(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     --------
     - [`ufunc_with_cb`][linalg.blas.ufunc_with_cb]
     - [`vmul_announce`][linalg.blas.vmul_announce]
+    - [`vmul_cost`][linalg.blas.vmul_cost]
     
     References
     ----------
@@ -424,6 +528,26 @@ def vmul(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     return ufunc_with_cb(np.multiply, a, b,
             cb=lambda *_: progress.update('mul'))
 
+
+def vtruediv_cost(N: int) -> dict[str,int]:
+    """`vtruediv` cost.
+    
+    Parameters
+    ----------
+    N : int
+        Combined arguments broadcast/result size.
+    
+    Returns
+    -------
+    dict[str,int]
+        Cost.
+    
+    See also
+    --------
+    - [`vtruediv`][linalg.blas.vtruediv]
+    """
+    return {'truediv': N}
+
 def vtruediv_announce(a: ArrayLike, b: ArrayLike) -> dict[str,int]:
     """`vtruediv` announcer.
     
@@ -431,7 +555,7 @@ def vtruediv_announce(a: ArrayLike, b: ArrayLike) -> dict[str,int]:
     --------
     - [`vtruediv`][linalg.blas.vtruediv]
     """
-    return {'truediv': np.broadcast(a, b).size}
+    return vtruediv_cost(np.broadcast(a, b).size)
 
 @visualisable(vtruediv_announce)
 def vtruediv(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
@@ -461,6 +585,7 @@ def vtruediv(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     --------
     - [`ufunc_with_cb`][linalg.blas.ufunc_with_cb]
     - [`vtruediv_announce`][linalg.blas.vtruediv_announce]
+    - [`vtruediv_cost`][linalg.blas.vtruediv_cost]
     
     References
     ----------
@@ -469,6 +594,26 @@ def vtruediv(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     return ufunc_with_cb(np.divide, a, b,
             cb=lambda *_: progress.update('truediv'))
 
+
+def vfloordiv_cost(N: int) -> dict[str,int]:
+    """`vfloordiv` cost.
+    
+    Parameters
+    ----------
+    N : int
+        Combined arguments broadcast/result size.
+    
+    Returns
+    -------
+    dict[str,int]
+        Cost.
+    
+    See also
+    --------
+    - [`vfloordiv`][linalg.blas.vfloordiv]
+    """
+    return {'floordiv': N}
+
 def vfloordiv_announce(a: ArrayLike, b: ArrayLike) -> dict[str,int]:
     """`vfloordiv` announcer.
     
@@ -476,7 +621,7 @@ def vfloordiv_announce(a: ArrayLike, b: ArrayLike) -> dict[str,int]:
     --------
     - [`vfloordiv`][linalg.blas.vfloordiv]
     """
-    return {'floordiv': np.broadcast(a, b).size}
+    return vfloordiv_cost(np.broadcast(a, b).size)
 
 @visualisable(vfloordiv_announce)
 def vfloordiv(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
@@ -506,6 +651,7 @@ def vfloordiv(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     --------
     - [`ufunc_with_cb`][linalg.blas.ufunc_with_cb]
     - [`vfloordiv_announce`][linalg.blas.vfloordiv_announce]
+    - [`vfloordiv_cost`][linalg.blas.vfloordiv_cost]
     
     References
     ----------
@@ -514,6 +660,26 @@ def vfloordiv(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     return ufunc_with_cb(np.floor_divide, a, b,
             cb=lambda *_: progress.update('floordiv'))
 
+
+def vmod_cost(N: int) -> dict[str,int]:
+    """`vmod` cost.
+    
+    Parameters
+    ----------
+    N : int
+        Combined arguments broadcast/result size.
+    
+    Returns
+    -------
+    dict[str,int]
+        Cost.
+    
+    See also
+    --------
+    - [`vmod`][linalg.blas.vmod]
+    """
+    return {'mod': N}
+
 def vmod_announce(a: ArrayLike, b: ArrayLike) -> dict[str,int]:
     """`vmod` announcer.
     
@@ -521,7 +687,7 @@ def vmod_announce(a: ArrayLike, b: ArrayLike) -> dict[str,int]:
     --------
     - [`vmod`][linalg.blas.vmod]
     """
-    return {'mod': np.broadcast(a, b).size}
+    return vmod_cost(np.broadcast(a, b).size)
 
 @visualisable(vmod_announce)
 def vmod(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
@@ -551,6 +717,7 @@ def vmod(a: ArrayLike, b: ArrayLike, *, progress: Progress) -> Any:
     --------
     - [`ufunc_with_cb`][linalg.blas.ufunc_with_cb]
     - [`vmod_announce`][linalg.blas.vmod_announce]
+    - [`vmod_cost`][linalg.blas.vmod_cost]
     
     References
     ----------
