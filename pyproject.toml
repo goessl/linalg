@@ -7,7 +7,7 @@ allow-direct-references = true
 
 [project]
 name = "linalg"
-version = "1.7"
+version = "1.8"
 description = "Linear algebra with scalar object support & progress visualisation."
 readme = "README.md"
 requires-python = ">=3.14"
@@ -28,4 +28,4 @@ Documentation = "https://goessl.github.io/linalg"
 Repository = "https://github.com/goessl/linalg.git"
 
 [project.optional-dependencies]
-test = ["pytest"]
+test = ["pytest", "sympy"]

@@ -75,7 +75,7 @@ mkdocs build --clean --strict
     - [x] `lstsq`
 - [x] `ortho`
     - [x] `gram_schmidt`
-    - [ ] `qr`
+    - [x] `qr`
     - [ ] complex support
 - [x] `random`
     - [x] `randz`, `randq`, `vrandz`, `vrandq`

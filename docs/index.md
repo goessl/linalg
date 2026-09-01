@@ -44,6 +44,9 @@
 
 ### [`triangular`](triangular.md)
 
+- [`is_perm`][linalg.triangular.is_perm]
+- [`is_tril`][linalg.triangular.is_tril]
+- [`is_triu`][linalg.triangular.is_triu]
 - [`lu`][linalg.triangular.lu]
 - [`plu`][linalg.triangular.plu]
 - [`luq`][linalg.triangular.luq]
@@ -52,9 +55,14 @@
 ### [`ortho`](ortho.md)
 
 - [`are_orthogonal`][linalg.ortho.are_orthogonal]
-- [`is_normalised`][linalg.ortho.is_normalised]
+- [`are_normalised`][linalg.ortho.are_normalised]
 - [`are_orthonormal`][linalg.ortho.are_orthonormal]
+- [`is_orthogonal`][linalg.ortho.is_orthogonal]
+- [`is_semiorthogonal`][linalg.ortho.is_semiorthogonal]
+- [`is_orthonormal`][linalg.ortho.is_orthonormal]
+- [`is_semiorthonormal`][linalg.ortho.is_semiorthonormal]
 - [`gram_schmidt`][linalg.ortho.gram_schmidt]
+- [`qr_decomp`][linalg.ortho.qr_decomp]
 
 ### [`random`](random.md)
 
@@ -73,9 +81,6 @@
 - [`swap_rows`][linalg.util.swap_rows]
 - [`swap_columns`][linalg.util.swap_columns]
 - [`swap_pivot`][linalg.util.swap_pivot]
-- [`is_perm`][linalg.util.is_perm]
-- [`is_tril`][linalg.util.is_tril]
-- [`is_triu`][linalg.util.is_triu]
 
 ### [`progress`](progress.md)
 
@@ -142,7 +147,7 @@ mkdocs build --clean --strict
     - [x] `lstsq`
 - [x] `ortho`
     - [x] `gram_schmidt`
-    - [ ] `qr`
+    - [x] `qr`
     - [ ] complex support
 - [x] `random`
     - [x] `randz`, `randq`, `vrandz`, `vrandq`

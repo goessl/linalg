@@ -3,15 +3,14 @@
 
 
 import numpy as np
-from numpy.typing import ArrayLike, NDArray
+from numpy.typing import NDArray
 from collections.abc import Mapping, MutableMapping
 
 
 
 __all__ = (
     'dict_add', 'dict_iadd', 'dict_sub', 'dict_isub',
-    'swap_rows', 'swap_columns', 'swap_pivot',
-    'is_perm', 'is_tril', 'is_triu'
+    'swap_rows', 'swap_columns', 'swap_pivot'
 )
 
 
@@ -184,71 +183,3 @@ def swap_pivot(A: NDArray, p: int, i: int, j: int) -> None:
     
     swap_rows(A, p, i)
     swap_columns(A, p, j)
-
-
-def is_perm(P: ArrayLike) -> bool:
-    """Return if `P` is a permutation matrix.
-    
-    Parameters
-    ----------
-    P : numpy.typing.ArrayLike
-        Matrix.
-    
-    Returns
-    -------
-    bool
-        Whether `P` is a permutation matrix.
-    """
-    P = np.asarray(P)
-    if not (P.ndim==2 and P.shape[0]==P.shape[1]):
-        raise ValueError('P must be two dimensional and square')
-    
-    #https://stackoverflow.com/a/28896366
-    return np.all(P.sum(axis=0) == 1) and np.all(P.sum(axis=1) == 1) \
-            and np.all((P == 1) | (P == 0))
-
-def is_tril(L: ArrayLike) -> bool:
-    """Return if `L` is lower triangular.
-    
-    Parameters
-    ----------
-    L : numpy.typing.ArrayLike
-        Matrix.
-    
-    Returns
-    -------
-    bool
-        Whether `L` is lower triangular.
-    
-    References
-    ----------
-    - [`numpy.triu_indices_from`](https://numpy.org/doc/stable/reference/generated/numpy.triu_indices_from.html)
-    """
-    L = np.asarray(L)
-    if L.ndim != 2:
-        raise ValueError('L must be two dimensional')
-    
-    return not np.any(L[np.triu_indices_from(L, k=+1)])
-
-def is_triu(U: ArrayLike) -> bool:
-    """Return if `U` is upper triangular.
-    
-    Parameters
-    ----------
-    U : numpy.typing.ArrayLike
-        Matrix.
-    
-    Returns
-    -------
-    bool
-        Whether `U` is upper triangular.
-    
-    References
-    ----------
-    - [`numpy.tril_indices_from`](https://numpy.org/doc/stable/reference/generated/numpy.tril_indices_from.html)
-    """
-    U = np.asarray(U)
-    if U.ndim != 2:
-        raise ValueError('U must be two dimensional')
-    
-    return not np.any(U[np.tril_indices_from(U, k=-1)])

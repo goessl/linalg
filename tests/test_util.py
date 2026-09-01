@@ -6,9 +6,9 @@ import pytest
 
 
 #############################################################################
-#appended by Claude - the swaps came from test_gauss.py and the predicates
-#from test_triangular.py when both moved into linalg.util; the dict helpers
-#are new.
+#appended by Claude - the swaps came from test_gauss.py when they moved into
+#linalg.util; the dict helpers are new. the predicates that used to sit here
+#went back to test_triangular.py with linalg.triangular.
 #############################################################################
 
 #dictionary accumulation
@@ -155,50 +155,3 @@ def test_swaps_are_exact_for_fractions():
                   [Fraction(1, 2), Fraction(1, 5)]], object)
     swap_rows(A, 0, 1)
     assert A[0, 0] == Fraction(1, 2) and A[1, 0] == Fraction(1, 3)
-
-
-
-#predicates
-def test_is_perm_accepts_permutation_matrices():
-    assert is_perm(np.eye(3, dtype=int))
-    assert is_perm([[0, 1, 0], [0, 0, 1], [1, 0, 0]])
-
-@pytest.mark.parametrize('P', [
-    [[2, 0], [0, 2]],   #ones scaled away
-    [[1, 1], [0, 0]],   #column sums wrong
-    [[1, 0], [1, 0]],   #row sums wrong
-])
-def test_is_perm_rejects_non_permutations(P):
-    assert not is_perm(P)
-
-def test_is_tril_and_is_triu():
-    assert is_tril([[1, 0], [2, 3]]) and not is_triu([[1, 0], [2, 3]])
-    assert is_triu([[1, 2], [0, 3]]) and not is_tril([[1, 2], [0, 3]])
-
-def test_a_diagonal_matrix_is_both_triangular():
-    #the predicates look strictly above/below, so the diagonal is shared
-    assert is_tril(np.eye(4)) and is_triu(np.eye(4))
-
-def test_the_predicates_take_the_non_square_overhang():
-    #the factors are routinely oblong, so this is the shape they see
-    assert is_tril([[1, 0, 0], [2, 3, 0]]) and is_triu([[1, 2, 3], [0, 4, 5]])
-
-@pytest.mark.parametrize('predicate', [is_perm, is_tril, is_triu])
-def test_the_predicates_accept_array_likes(predicate):
-    predicate([[1, 0], [0, 1]])
-
-@pytest.mark.parametrize('A', [np.zeros(3), np.zeros((2, 2, 2))])
-@pytest.mark.parametrize('predicate', [is_perm, is_tril, is_triu])
-def test_the_predicates_reject_bad_dimensions(predicate, A):
-    with pytest.raises(ValueError):
-        predicate(A)
-
-def test_is_perm_rejects_a_non_square_matrix():
-    #unlike the triangular pair, a permutation matrix has to be square
-    with pytest.raises(ValueError):
-        is_perm(np.zeros((2, 3)))
-
-@pytest.mark.parametrize('predicate', [is_perm, is_tril, is_triu])
-def test_an_empty_matrix_satisfies_every_predicate(predicate):
-    #vacuously - and an empty matrix does come back out of all four
-    assert predicate(np.empty((0, 0)))
