@@ -71,6 +71,7 @@ mkdocs build --clean --strict
     - [ ] `banachiewicz`
 - [x] `rank`
     - [x] `rank_decomp`
+    - [x] `nullspace`
     - [x] `pinv`
     - [x] `lstsq`
 - [x] `ortho`

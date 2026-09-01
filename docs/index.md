@@ -39,6 +39,7 @@
 ### [`rank`](rank.md)
 
 - [`rank_decomp`][linalg.rank.rank_decomp]
+- [`nullspace`][linalg.rank.nullspace]
 - [`pinv`][linalg.rank.pinv]
 - [`lstsq`][linalg.rank.lstsq]
 
@@ -108,17 +109,17 @@ mkdocs build --clean --strict
 
 ### Modules
 
-- [x] [`blas`](blas.md)
+- [x] `blas`
     - [x] `numpy.ufunc`s with callback (same broadcasting, same promotion, ...)
     - [ ] in-place operations
-- [x] [`blas2`](blas2.md)
+- [x] `blas2`
     - [x] `matmul`
     - [x] `outer`
     - [x] `matmulchain`
 - [ ] `blas3`
     - [ ] `strassen`
     - [ ] `fft`
-- [x] [`progress`](progress.md)
+- [x] `progress`
     - [x] progress visualisation in ~~context block~~ decorator
     - [ ] complexity tracking for functions in development
 - [x] `leibniz`
@@ -143,6 +144,7 @@ mkdocs build --clean --strict
     - [ ] `banachiewicz`
 - [x] `rank`
     - [x] `rank_decomp`
+    - [x] `nullspace`
     - [x] `pinv`
     - [x] `lstsq`
 - [x] `ortho`

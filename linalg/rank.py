@@ -4,6 +4,7 @@
 
 import numpy as np
 from numpy.typing import ArrayLike, NDArray
+from iteration import MISSING
 from .blas2 import matmul
 from .gauss import inv_gauss, ref_gauss
 from .util import dict_sub, dict_isub
@@ -15,6 +16,7 @@ from typing import Any, Never
 __all__ = (
     'rank_decomp_sanitise', 'rank_decomp_cost', 'rank_decomp_announce',
     'rank_decomp',
+    'nullspace_sanitise', 'nullspace_cost', 'nullspace_announce', 'nullspace',
     'pinv_sanitise', 'pinv_cost', 'pinv_announce', 'pinv',
     'lstsq_sanitise', 'lstsq_cost', 'lstsq_announce', 'lstsq'
 )
@@ -121,6 +123,161 @@ def rank_decomp[T](A: NDArray[T], *, progress: Progress) \
         if np.all(np.logical_not(C[i, :])):
             C = np.delete(C, i, 0)
     return B, C
+
+
+def nullspace_sanitise(A: ArrayLike, *, zero: Any=MISSING, one: Any=MISSING) \
+        -> tuple[tuple[NDArray],dict[str,Any]]:
+    """`nullspace` sanitiser.
+    
+    See also
+    --------
+    - [`nullspace`][linalg.rank.nullspace]
+    """
+    A = np.asarray(A)
+    if A.ndim != 2:
+        raise ValueError('A must be two dimensional')
+    
+    #don't use .item(), would unpack the numpy type to a Python type
+    if zero is MISSING:
+        zero = np.zeros((), dtype=A.dtype)[()]
+    if one is MISSING:
+        one = np.ones((), dtype=A.dtype)[()]
+    
+    return (A,), {'zero':zero, 'one':one}
+
+def nullspace_cost(M: int, N: int, R: int|None=None) -> dict[str,int]:
+    """`nullspace` cost.
+    
+    Parameters
+    ----------
+    M, N : int
+        Dimensions.
+    R : int|None = None
+        Rank.
+    
+    Returns
+    -------
+    dict[str,int]
+        Cost.
+    
+    Notes
+    -----
+    Full rank is **not** the worst case:
+    the elimination gets more expensive with every pivot,
+    but the $R(N-R)$ negations peak at $R=N/2$.
+    
+    See also
+    --------
+    - [`nullspace`][linalg.rank.nullspace]
+    """
+    if R is None:
+        R, S = min(M, N), min(M, N, N//2)
+    else:
+        S = R
+    return {
+        'sub': N*R*(M-1),
+        'mul': N*R*(M-1),
+        'truediv': N*R,
+        'neg': S*(N-S)
+    }
+
+def nullspace_announce(A: NDArray, *, zero: Any=0, one: Any=1) \
+        -> dict[str,int]:
+    """`nullspace` announcer.
+    
+    See also
+    --------
+    - [`nullspace`][linalg.rank.nullspace]
+    """
+    return nullspace_cost(*A.shape)
+
+@visualisable(nullspace_announce, nullspace_sanitise)
+def nullspace[T,U,V](A: NDArray[T], *, zero: U, one: V, progress: Progress) \
+        -> NDArray[T|U|V]:
+    r"""Return a basis of the nullspace (kernel).
+    
+    $$
+        K \quad AK=0 \qquad \mathbb{K}^{M\times N}\to\mathbb{K}^{N\times(N-R)} \quad \operatorname{rank}A=R
+    $$
+    
+    TODO: Review. Currently written by Claude.
+    
+    The basis vectors are the **columns** of the returned matrix.
+    
+    Reduces `A` to reduced row echelon form and reads the free columns off
+    it. The basis is the usual one, so it is neither orthogonal nor
+    normalised.
+    
+    Don't use with data types that don't divide exactly.
+    
+    Parameters
+    ----------
+    A : numpy.typing.ArrayLike
+        Matrix.
+    zero : Any = MISSING
+        Zero element.
+    one : Any = MISSING
+        One element.
+    progress : Iterable[str]|bool|Progress = False
+        Progress visualisation specification.
+    
+    Returns
+    -------
+    numpy.typing.NDArray
+        Nullspace basis in the columns.
+    
+    Edge cases
+    ----------
+    For an object matrix provide `zero` & `one` arguments to not get type
+    unspecific `int(0)` & `int(1)` entries back.
+    
+    A full column rank matrix gives a $N \times 0$ matrix back,
+    a $0 \times N$ one the $N \times N$ identity (the whole space).
+    
+    Complexity
+    ----------
+    With $R=\operatorname{rank}A$ there will be
+    
+    - $NR(M-1)$ scalar subtractions (`sub`),
+    - $NR(M-1)$ scalar multiplications (`mul`),
+    - $NR$ scalar true divisions (`truediv`) &
+    - $R(N-R)$ scalar negations (`neg`).
+    
+    Notes
+    -----
+    The matrix will be wrapped with [`numpy.asarray`](https://numpy.org/doc/stable/reference/generated/numpy.asarray.html)
+    and transformed in-place into its reduced row echelon form.
+    
+    The zero and one entries are filled in as the very same objects, not as
+    copies, like [`numpy.full`](https://numpy.org/doc/stable/reference/generated/numpy.full.html)
+    does. Use immutable scalars.
+    
+    See also
+    --------
+    - [`nullspace_sanitise`][linalg.rank.nullspace_sanitise]
+    - [`nullspace_announce`][linalg.rank.nullspace_announce]
+    - [`nullspace_cost`][linalg.rank.nullspace_cost]
+    
+    References
+    ----------
+    - [Wikipedia - Kernel (linear algebra) - Computation by Gaussian elimination](https://en.wikipedia.org/wiki/Kernel_(linear_algebra)#Computation_by_Gaussian_elimination)
+    """
+    pivots = ref_gauss(A, progress=progress)
+    
+    #progress adjustment, `ref_gauss` corrects its own share internally,
+    #only the negations, that depend on the actual rank, are left
+    M, N = A.shape
+    R, S = len(pivots), min(M, N, N//2)
+    progress.update('neg', S*(N-S) - R*(N-R))
+    
+    free = [j for j in range(N) if j not in pivots]
+    K = np.full((N, len(free)), zero, dtype=A.dtype)
+    for k, j in enumerate(free):
+        K[j, k] = one
+        #the pivot variables follow from the free one set to one
+        for i, p in enumerate(pivots):
+            K[p, k] = progress.neg(A[i, j])
+    return K
 
 
 def pinv_sanitise(A: ArrayLike, *, zero: Any=0) \

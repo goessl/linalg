@@ -22,6 +22,18 @@ def test_rank_decomp():
                            for i, j in np.ndindex(C.shape))
 
 @pytest.mark.filterwarnings('error')
+def test_nullspace():
+    for M in range(1, 10):
+        for N in range(1, 10):
+            for R in range(min(M, N)+1):
+                A = mrandqr(M, N, R)
+                K = nullspace(A.copy(), zero=Fraction(0), one=Fraction(1))
+                
+                assert all(np.all(A@v == 0) for v in K.T)
+                assert all(isinstance(K[i,j], Fraction)
+                           for i, j in np.ndindex(K.shape))
+
+@pytest.mark.filterwarnings('error')
 def test_pinv():
     for M in range(1, 10):
         for N in range(1, 10):
@@ -207,4 +219,185 @@ def test_rank_decomp_errors_match_with_and_without_progress(A):
         rank_decomp(A)
     with pytest.raises(ValueError) as shown:
         rank_decomp(A, progress=True)
+    assert str(bare.value) == str(shown.value)
+
+
+
+#nullspace - the basis vectors are the columns
+def test_nullspace_is_annihilated_by_a():
+    for _ in range(30):
+        M, N = randint(1, 7), randint(1, 7)
+        A = _holey(M, N, randint(0, min(M, N)))
+        before = A.copy()    #`nullspace` reduces A in-place
+        K = nullspace(A, zero=Fraction(0), one=Fraction(1))
+        assert K.shape[0] == N
+        if K.size:
+            assert np.all(before@K == Fraction(0))
+
+def test_nullspace_has_the_rank_nullity_dimension():
+    for _ in range(30):
+        M, N = randint(1, 7), randint(1, 7)
+        A = _holey(M, N, randint(0, min(M, N)))
+        R = np.linalg.matrix_rank(A.astype(float))
+        K = nullspace(A, zero=Fraction(0), one=Fraction(1))
+        assert K.shape == (N, N - R)
+
+def test_nullspace_columns_are_independent():
+    #annihilation plus the right count only makes it a basis if the columns
+    #are independent - the `one` in each free row is what guarantees that
+    for _ in range(30):
+        M, N = randint(1, 7), randint(1, 7)
+        A = _holey(M, N, randint(0, min(M, N)))
+        K = nullspace(A, zero=Fraction(0), one=Fraction(1))
+        if K.size:
+            assert np.linalg.matrix_rank(K.astype(float)) == K.shape[1]
+
+def test_nullspace_entries_are_exact():
+    A = np.array([[Fraction(1), Fraction(2), Fraction(3)],
+                  [Fraction(2), Fraction(4), Fraction(6)]], dtype=object)
+    K = nullspace(A, zero=Fraction(0), one=Fraction(1))
+    #rref is [[1, 2, 3]], free columns 1 & 2
+    assert np.all(K == np.array([[Fraction(-2), Fraction(-3)],
+                                 [Fraction( 1), Fraction( 0)],
+                                 [Fraction( 0), Fraction( 1)]], dtype=object))
+
+
+
+#in-place contract
+def test_nullspace_consumes_its_argument():
+    #unlike `rank_decomp` it reduces A itself, like `inv_gauss` does
+    A = _holey(4, 3, 2)
+    K = nullspace(A, zero=Fraction(0), one=Fraction(1))
+    assert is_ref(A, reduced=True)
+    #row operations preserve the nullspace, so what is left over annihilates
+    #K just as the original did
+    assert K.size == 0 or np.all(A@K == Fraction(0))
+
+def test_nullspace_accepts_array_likes():
+    K = nullspace([[1., 2.], [2., 4.]])
+    assert np.allclose(np.array([[1., 2.], [2., 4.]])@K, 0.)
+
+
+
+#zero & one
+def test_nullspace_takes_zero_and_one_from_the_dtype():
+    #an object matrix has no usable dtype, so the fallbacks are plain ints -
+    #the same type unspecific fallback `det_gauss` documents for `one`.
+    #only the structural cells are affected, the pivot rows come from A
+    K = nullspace(np.array([[Fraction(1), Fraction(2), Fraction(0)]],
+                           dtype=object))
+    #column 0 is the free column 1, column 1 the free column 2
+    assert [type(K[1, 0]), type(K[2, 1])] == [int, int]      #the ones
+    assert [type(K[2, 0]), type(K[1, 1])] == [int, int]      #the zeros
+    assert isinstance(K[0, 0], Fraction)                     #from A
+
+def test_nullspace_keeps_the_given_zero_and_one():
+    K = nullspace(np.array([[Fraction(1), Fraction(2), Fraction(0)]],
+                           dtype=object), zero=Fraction(0), one=Fraction(1))
+    assert all(isinstance(K[i, j], Fraction) for i, j in np.ndindex(K.shape))
+
+def test_nullspace_of_a_float_matrix_stays_float():
+    assert nullspace(np.array([[1., 2.], [2., 4.]])).dtype == np.float64
+
+
+
+#announcements
+@pytest.mark.parametrize('M, N, expected', [
+    (1, 1, {('sub',  0), ('mul',  0), ('truediv',  1), ('neg', 0)}),
+    (3, 3, {('sub', 18), ('mul', 18), ('truediv',  9), ('neg', 2)}),
+    (4, 3, {('sub', 27), ('mul', 27), ('truediv',  9), ('neg', 2)}),
+    (2, 5, {('sub', 10), ('mul', 10), ('truediv', 10), ('neg', 6)}),
+    (5, 2, {('sub', 16), ('mul', 16), ('truediv',  4), ('neg', 1)}),
+])
+def test_nullspace_announces_ref_gauss_plus_the_negations(bars, M, N, expected):
+    #the reduced `ref_gauss` cost at rank min(M,N), plus the R(N-R)
+    #negations at the rank that maximises them
+    nullspace(np.random.rand(M, N), progress=True)
+    assert {(b.desc, b.total) for b in bars.instances} == expected
+
+@pytest.mark.parametrize('M', range(0, 9))
+@pytest.mark.parametrize('N', range(0, 9))
+def test_nullspace_announcement_is_an_upper_bound(M, N):
+    #`visualisable` demands a hard upper limit. R(N-R) peaks at R=N/2, so
+    #unlike everywhere else min(M,N) is not the worst case
+    announced = nullspace_cost(M, N)
+    assert all(announced[k] >= nullspace_cost(M, N, R)[k]
+               for R in range(min(M, N)+1) for k in announced)
+
+def test_nullspace_fills_its_bars_on_a_rank_deficient_matrix(bars):
+    #both directions are exercised here: `ref_gauss` credits the pivots that
+    #never happen, `nullspace` credits the negations that never happen
+    for _ in range(20):
+        M, N = randint(1, 7), randint(1, 7)
+        nullspace(_holey(M, N, randint(0, min(M, N))),
+                  zero=Fraction(0), one=Fraction(1), progress=True)
+    assert bars.instances and all(b.n == b.total for b in bars.instances)
+
+def test_nullspace_bars_never_overrun(bars):
+    #the credit is paid up front, so no bar may pass its total on the way
+    for _ in range(20):
+        M, N = randint(1, 7), randint(1, 7)
+        nullspace(_holey(M, N, randint(0, min(M, N))),
+                  zero=Fraction(0), one=Fraction(1), progress=True)
+        assert all(0 <= b.n <= b.total for b in bars.instances)
+
+def test_nullspace_untracked_category_raises():
+    with pytest.raises(ValueError, match='untracked'):
+        nullspace(np.random.rand(3, 3), progress=CATEGORIES)
+
+def test_nullspace_bars_are_closed(bars):
+    nullspace(np.random.rand(3, 3), progress=True)
+    assert all(b.closed for b in bars.instances)
+
+def test_nullspace_draws_nothing_by_default(bars):
+    nullspace(np.random.rand(3, 3))
+    assert bars.instances == []
+
+
+
+#edge cases
+@pytest.mark.parametrize('shape, expected', [
+    ((0, 0), (0, 0)),
+    ((0, 3), (3, 3)),   #no rows, no constraints - the whole space
+    ((3, 0), (0, 0)),
+])
+def test_nullspace_of_an_empty_matrix(shape, expected):
+    assert nullspace(np.empty(shape, dtype=object)).shape == expected
+
+def test_nullspace_of_a_zero_matrix_is_the_identity():
+    K = nullspace(np.full((3, 4), Fraction(0), dtype=object),
+                  zero=Fraction(0), one=Fraction(1))
+    assert np.all(K == np.eye(4, dtype=object))
+
+def test_nullspace_of_a_full_column_rank_matrix_is_empty():
+    assert nullspace(mrandqr(4, 3, 3)).shape == (3, 0)
+
+
+
+#sanitiser
+def test_nullspace_sanitiser_returns_args_and_kwargs():
+    args, kwargs = nullspace_sanitise([[1., 2.], [3., 4.]])
+    A, = args
+    assert isinstance(A, np.ndarray) and kwargs.keys() == {'zero', 'one'}
+
+@pytest.mark.parametrize('A', [
+    np.zeros(3),            #not two dimensional
+    np.zeros((2, 2, 2)),    #not two dimensional
+])
+def test_nullspace_sanitiser_rejects_bad_shapes(A):
+    with pytest.raises(ValueError):
+        nullspace_sanitise(A)
+
+def test_nullspace_sanitiser_is_idempotent():
+    once, kwargs = nullspace_sanitise([[1., 2.], [3., 4.]])
+    twice, kwargs_again = nullspace_sanitise(*once, **kwargs)
+    assert np.array_equal(once[0], twice[0]) and kwargs == kwargs_again
+
+@pytest.mark.parametrize('A', [np.zeros(3), np.zeros((2, 2, 2))])
+def test_nullspace_errors_match_with_and_without_progress(A):
+    #the sanitiser & announcer must not raise a different error first
+    with pytest.raises(ValueError) as bare:
+        nullspace(A)
+    with pytest.raises(ValueError) as shown:
+        nullspace(A, progress=True)
     assert str(bare.value) == str(shown.value)
